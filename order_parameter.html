@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+   
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ 
+     <!-- Site Metas -->
+    <title>OPS | Blog1 | DMCODERS'</title>  
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Site Icons -->
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/camera.css">
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/prettyPhoto.css">
+    <link rel="stylesheet" href="css/owl.carousel.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="style_blog.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+    <script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <script>
+      function getDetails(ox,oy,oz,h1x,h1y,h1z,h2x,h2y,h2z) {
+          var atoms = [{elem: 'O', x: ox, y: oy, z: oz, 
+          bonds: [1,2], bondOrder: [1,1]}, 
+          {elem: 'H', x: h1x, y: h1y, z: h1z, bonds: [0]},
+          {elem: 'H', x: h2x, y: h2y, z: h2z, bonds: [0]}];
+          return atoms 
+      }
+  
+      $(document).ready(function() {
+              fetch('ice1h1.gro')
+              .then(response => response.text())
+              .then(data => {
+              let element = $('#gldiv')
+              viewer = $3Dmol.createViewer(element, {
+              defaultcolors : $3Dmol.rasmolElementColors
+              });
+              
+              //viewer.setBackgroundColor(0xffffff);
+              viewer.setBackgroundColor(0x000000,0);
+  
+              //viewer.setBackgroundColor(0xffffffff);
+              var m = viewer.addModel();
+      
+                  a = data; 
+                  b = a.split("\n")
+                  total_n = parseInt(b.length/4) - 1
+                  for (let i = 0; i < total_n; i++) {
+                  
+                  var ox = b[4*i + 2].split(" ").filter(Boolean);
+                  var ox1 = 10*parseFloat(ox[3]);
+                  var ox2 = 10*parseFloat(ox[4]);
+                  var ox3 = 10*parseFloat(ox[5]);
+                  var hw1 = b[4*i + 3].split(" ").filter(Boolean);
+                  var hw1x = 10*parseFloat(hw1[3]);
+                  var hw1y = 10*parseFloat(hw1[4]);
+                  var hw1z = 10*parseFloat(hw1[5]);
+                  var hw2 = b[4*i + 4].split(" ").filter(Boolean);
+                  var hw2x = 10*parseFloat(hw2[3]);
+                  var hw2y = 10*parseFloat(hw2[4]);
+                  var hw2z = 10*parseFloat(hw2[5]);
+    
+                  var atoms = getDetails(ox1,ox2,ox3,hw1x,hw1y,hw1z,hw2x,hw2y,hw2z)
+                  //console.log(atoms);
+                  m.addAtoms(atoms);}
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:-0.06,z:0.34},end:{x:8.313,y:-0.06,z:0.34}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:-0.06,z:0.34},end:{x:8.313,y:7.294,z:0.34}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:7.294,z:0.34},end:{x:0.49,y:7.294,z:0.34}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:7.294,z:0.34},end:{x:0.49,y:-0.06,z:0.34}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:-0.06,z:9.377},end:{x:0.49,y:7.294,z:9.377}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:7.294,z:9.377},end:{x:8.313,y:7.294,z:9.377}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:7.294,z:9.377},end:{x:8.313,y:-0.06,z:9.377}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:-0.06,z:9.377},end:{x:0.49,y:-0.06,z:9.377}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:-0.06,z:0.34},end:{x:0.49,y:-0.06,z:9.377}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:-0.06,z:0.34},end:{x:8.313,y:-0.06,z:9.377}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:7.294,z:0.34},end:{x:8.313,y:7.294,z:9.377}});
+                  viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:7.294,z:0.34},end:{x:0.49,y:7.294,z:9.377}});
+  
+                  m.setStyle({},{stick:{},sphere:{radius:0.4}});
+                  viewer.zoomTo(0.1);
+                  viewer.zoom(2.3,1000);
+                  viewer.rotate(15, "vx");
+                  
+                  viewer.spin("vy",1)
+                  viewer.render();
+                  $(".someclass1").mouseleave(function() {viewer.spin("y",1)});
+                  $(".someclass1").mouseenter(function() {viewer.spin("y",0)});
+                  viewer.setProjection("orthographic");
+                          });
+                  });
+  
+              
+  
+  
+  </script>
+
+<style>
+    ul {
+        list-style:circle;
+    }
+
+    ul li {
+        margin:5px 10px;
+        float:left;
+    }
+
+    .wp-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 30%;
+    text-align: center;
+    line-height: 35px;
+    vertical-align: middle;
+    color: #fff;
+    margin-left: 10px;
+    margin-bottom: 0px;
+    }
+
+    .fa-facebook-f {
+    background: #3B5998;
+    }
+
+    .fa-linkedin {
+    background: #0077B5;
+    }
+
+    .fa-twitter {
+    background: #1DA1F2;
+    }
+    .fa-instagram {
+    background: #d6249f;
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
+    box-shadow: 0px 3px 10px rgba(0,0,0,.25);
+    }
+    .fa-google-plus {
+    background: #D04338;
+    }
+    .fa-youtube {
+    background: #FF0000;
+    }
+
+    .fa-pinterest {
+    background: #BD081C;
+    }
+
+</style>
+
+</head>
+<body id="page-top" class="politics_version">
+
+    <!-- LOADER -->
+    <div id="preloader">
+        <div id="main-ld">
+			<div id="loader"></div>  
+		</div>
+    </div><!-- end loader -->
+    <!-- END LOADER -->
+	
+    <!-- Navigation -->
+    <nav class="navbar navbar-dark navbar-expand-lg relative" id="mainNav" style="background-color:#333333">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+			<img class="img-fluid" src="images/dmlogo1.png" alt="" />
+		</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav text-uppercase ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger active" href="index.html">Home</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="section wb">
+      <div class="container">
+
+        <div class="section-title text-center">
+          <h3>Order Paramter : a measure of order!</h3>
+        </div>
+        <div class="post">
+          <h2 class="title"><a href="#">Hexagonal Ice (ice Ih)</a></h2>
+          <p class="meta">Posted by <a href="#">Someone</a> on November 8, 2011
+            &nbsp;&bull;&nbsp; <a href="#" class="comments">Comments (64)</a> &nbsp;&bull;&nbsp; <a href="#" class="permalink">Full article</a></p>
+
+          <div class="entry">
+              <div style="float:left;padding-right: 20px;padding-left: 20px;padding-top: 20px;">
+                <div  id="gldiv" class="someclass1" style="height: 40vh; width: 40vh;position: relative;"></div> 
+              </div>
+              <p>Well, we can visully distinguish few of the ice phases using the 3rd party softwars like VMD , PyMpl etc if not all. But it is not always 
+                desired to stress on naked eye that much to classify them. 
+              Even more importantly we will not be using our weakling eyes to conduct simulations 
+                along certain paths. So we have strong needs for order parameters. Order parameters are mathematical functions, which takes the attributes of the states 
+                and gives a scalar value, hopefully unique for each state available there.</p>
+              <p></p>		
+          </div>
+        </div>
+      
+      </div>
+
+    </div>
+
+
+
+    <div class="copyrights">
+        <div class="container">
+            <div class="footer-distributed">
+                <div class="footer-left">
+                    
+                        <a href="#"><i class="fa wp-icon fa-facebook-f fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-linkedin fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-twitter fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-instagram fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-google-plus fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-youtube fa-lg"></i></a>
+        
+                    <p class="footer-company-name">All Rights Reserved. &copy; 2018 <a href="#">Dominic</a> Design By : 
+					<a href="https://html.design/">html design</a></p>
+                </div>
+            </div>
+        </div><!-- end container -->
+    </div><!-- end copyrights -->
+
+    <a href="#" id="scroll-to-top" class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+
+    <!-- ALL JS FILES -->
+    <script src="js/all.js"></script>
+	<!-- Camera Slider -->
+	<script src="js/jquery.mobile.customized.min.js"></script>
+	<script src="js/jquery.easing.1.3.js"></script> 
+	<script src="js/parallaxie.js"></script>
+	<script src="js/headline.js"></script>
+	<!-- Contact form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+    <!-- ALL PLUGINS -->
+    <script src="js/custom.js"></script>
+    <script src="js/jquery.vide.js"></script>
+
+</body>
+</html>

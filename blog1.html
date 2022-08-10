@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+   
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ 
+     <!-- Site Metas -->
+    <title>Blog1 : DMCODERS'</title>  
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Site Icons -->
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/camera.css">
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/prettyPhoto.css">
+    <link rel="stylesheet" href="css/owl.carousel.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="style_blog.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+    <script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+        function getDetails(ox,oy,oz,h1x,h1y,h1z,h2x,h2y,h2z) {
+            var atoms = [{elem: 'O', x: ox, y: oy, z: oz, 
+            bonds: [1,2], bondOrder: [1,1]}, 
+            {elem: 'H', x: h1x, y: h1y, z: h1z, bonds: [0]},
+            {elem: 'H', x: h2x, y: h2y, z: h2z, bonds: [0]}];
+            return atoms 
+        }
+    
+        $(document).ready(function() {
+                fetch('ice1h1.gro')
+                .then(response => response.text())
+                .then(data => {
+                let element = $('#gldiv')
+                viewer = $3Dmol.createViewer(element, {
+                defaultcolors : $3Dmol.rasmolElementColors
+                });
+                
+                //viewer.setBackgroundColor(0xffffff);
+                viewer.setBackgroundColor(0x000000,0);
+    
+                //viewer.setBackgroundColor(0xffffffff);
+                var m = viewer.addModel();
+        
+                    a = data; 
+                    b = a.split("\n")
+                    total_n = parseInt(b.length/4) - 1
+                    for (let i = 0; i < total_n; i++) {
+                    
+                    var ox = b[4*i + 2].split(" ").filter(Boolean);
+                    var ox1 = 10*parseFloat(ox[3]);
+                    var ox2 = 10*parseFloat(ox[4]);
+                    var ox3 = 10*parseFloat(ox[5]);
+                    var hw1 = b[4*i + 3].split(" ").filter(Boolean);
+                    var hw1x = 10*parseFloat(hw1[3]);
+                    var hw1y = 10*parseFloat(hw1[4]);
+                    var hw1z = 10*parseFloat(hw1[5]);
+                    var hw2 = b[4*i + 4].split(" ").filter(Boolean);
+                    var hw2x = 10*parseFloat(hw2[3]);
+                    var hw2y = 10*parseFloat(hw2[4]);
+                    var hw2z = 10*parseFloat(hw2[5]);
+                    bond
+                    var atoms = getDetails(ox1,ox2,ox3,hw1x,hw1y,hw1z,hw2x,hw2y,hw2z)
+                    //console.log(atoms);
+                    m.addAtoms(atoms);}
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:-0.06,z:0.34},end:{x:8.313,y:-0.06,z:0.34}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:-0.06,z:0.34},end:{x:8.313,y:7.294,z:0.34}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:7.294,z:0.34},end:{x:0.49,y:7.294,z:0.34}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:7.294,z:0.34},end:{x:0.49,y:-0.06,z:0.34}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:-0.06,z:9.377},end:{x:0.49,y:7.294,z:9.377}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:7.294,z:9.377},end:{x:8.313,y:7.294,z:9.377}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:7.294,z:9.377},end:{x:8.313,y:-0.06,z:9.377}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:-0.06,z:9.377},end:{x:0.49,y:-0.06,z:9.377}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:-0.06,z:0.34},end:{x:0.49,y:-0.06,z:9.377}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:-0.06,z:0.34},end:{x:8.313,y:-0.06,z:9.377}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:8.313,y:7.294,z:0.34},end:{x:8.313,y:7.294,z:9.377}});
+                    viewer.addLine({dashed:false,linewidth :5.0,start:{x:0.49,y:7.294,z:0.34},end:{x:0.49,y:7.294,z:9.377}});
+    
+                    m.setStyle({},{stick:{},sphere:{radius:0.4}});
+                    viewer.zoomTo(0.1);
+                    viewer.zoom(2.4,1000);
+                    viewer.rotate(15, "vx");
+                    
+                    viewer.spin("vy",1)
+                    viewer.render();
+                    $(".someclass1").mouseleave(function() {viewer.spin("y",1)});
+                    $(".someclass1").mouseenter(function() {viewer.spin("y",0)});
+                    viewer.setProjection("orthographic");
+                            });
+                            
+    
+                (fetch('ice1c1.gro')
+                .then(response1 => response1.text())
+                .then(data1 => {
+                let element1 = $('#gldiv1')
+                viewer1 = $3Dmol.createViewer(element1, {
+                defaultcolors : $3Dmol.rasmolElementColors
+                });
+                
+                //viewer.setBackgroundColor(0xffffff);
+                viewer1.setBackgroundColor(0x000000,0);
+    
+                //viewer.setBackgroundColor(0xffffffff);
+                var m1 = viewer1.addModel();
+        
+                    a1 = data1; 
+                    b1 = a1.split("\n")
+                    total_n = parseInt(b1.length/4) - 1
+                    for (let i = 0; i < total_n; i++) {
+                    
+                    var ox = b1[4*i + 2].split(" ").filter(Boolean);
+                    var ox1 = 10*parseFloat(ox[3]);
+                    var ox2 = 10*parseFloat(ox[4]);
+                    var ox3 = 10*parseFloat(ox[5]);
+                    var hw1 = b1[4*i + 3].split(" ").filter(Boolean);
+                    var hw1x = 10*parseFloat(hw1[3]);
+                    var hw1y = 10*parseFloat(hw1[4]);
+                    var hw1z = 10*parseFloat(hw1[5]);
+                    var hw2 = b1[4*i + 4].split(" ").filter(Boolean);
+                    var hw2x = 10*parseFloat(hw2[3]);
+                    var hw2y = 10*parseFloat(hw2[4]);
+                    var hw2z = 10*parseFloat(hw2[5]);
+      
+                    var atoms1 = getDetails(ox1,ox2,ox3,hw1x,hw1y,hw1z,hw2x,hw2y,hw2z)
+                    //console.log(atoms);
+                    m1.addAtoms(atoms1);}
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:-0.54,y:-0.52,z:-0.54},end:{x:5.842,y:-0.52,z:-0.54}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:5.842,y:-0.52,z:-0.54},end:{x:5.842,y:5.862,z:-0.54}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:5.842,y:5.862,z:-0.54},end:{x:-0.54,y:5.862,z:-0.54}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:-0.54,y:5.862,z:-0.54},end:{x:-0.54,y:-0.52,z:-0.54}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:-0.54,y:-0.52,z:5.842},end:{x:-0.54,y:5.862,z:5.842}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:-0.54,y:5.862,z:5.842},end:{x:5.842,y:5.862,z:5.842}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:5.842,y:5.862,z:5.842},end:{x:5.842,y:-0.52,z:5.842}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:5.842,y:-0.52,z:5.842},end:{x:-0.54,y:-0.52,z:5.842}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:-0.54,y:-0.52,z:-0.54},end:{x:-0.54,y:-0.52,z:5.842}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:5.842,y:-0.52,z:-0.54},end:{x:5.842,y:-0.52,z:5.842}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:5.842,y:5.862,z:-0.54},end:{x:5.842,y:5.862,z:5.842}});
+                    viewer1.addLine({dashed:false,linewidth :5.0,start:{x:-0.54,y:5.862,z:-0.54},end:{x:-0.54,y:5.862,z:5.842}});
+    
+                    m1.setStyle({},{stick:{},sphere:{radius:0.4}});
+                    viewer1.zoomTo(0.1);
+                    viewer1.zoom(2.4,1000);
+                    viewer1.rotate(15, "vx");
+                    viewer1.spin("vy",1)
+                    viewer1.render();
+                    $(".someclass2").mouseleave(function() {viewer1.spin("y",1)});
+                    $(".someclass2").mouseenter(function() {viewer1.spin("y",0)});
+                    viewer1.setProjection("orthographic");
+                            })
+                            );   
+                            
+                (fetch('ice4.gro')
+                .then(response2 => response2.text())
+                .then(data2 => {
+                let element2 = $('#gldiv2')
+                viewer2 = $3Dmol.createViewer(element2, {
+                defaultcolors : $3Dmol.rasmolElementColors
+                });
+                
+                //viewer.setBackgroundColor(0xffffff);
+                viewer2.setBackgroundColor(0x000000,0);
+    
+                //viewer.setBackgroundColor(0xffffffff);
+                var m2 = viewer2.addModel();
+        
+                    a2 = data2; 
+                    b2 = a2.split("\n")
+                    total_n = parseInt(b2.length/4) - 1
+                    for (let i = 0; i < total_n; i++) {
+                    
+                    var ox = b2[4*i + 2].split(" ").filter(Boolean);
+                    var ox1 = 10*parseFloat(ox[3]);
+                    var ox2 = 10*parseFloat(ox[4]);
+                    var ox3 = 10*parseFloat(ox[5]);
+                    var hw1 = b2[4*i + 3].split(" ").filter(Boolean);
+                    var hw1x = 10*parseFloat(hw1[3]);
+                    var hw1y = 10*parseFloat(hw1[4]);
+                    var hw1z = 10*parseFloat(hw1[5]);
+                    var hw2 = b2[4*i + 4].split(" ").filter(Boolean);
+                    var hw2x = 10*parseFloat(hw2[3]);
+                    var hw2y = 10*parseFloat(hw2[4]);
+                    var hw2z = 10*parseFloat(hw2[5]);
+      
+                    var atoms2 = getDetails(ox1,ox2,ox3,hw1x,hw1y,hw1z,hw2x,hw2y,hw2z)
+                    //console.log(atoms);
+                    m2.addAtoms(atoms2);}
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:0.45,y:0.19,z:0.0},end:{x:15.52,y:0.19,z:0.0}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:15.52,y:0.19,z:0.0},end:{x:20.65,y:14.36,z:0.0}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:20.65,y:14.36,z:0.0},end:{x:5.58,y:14.36,z:0.0}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:5.58,y:14.36,z:0.0},end:{x:0.45,y:0.19,z:0.0}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:5.58,y:3.788,z:13.706},end:{x:10.709,y:17.959,z:13.706}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:10.709,y:17.959,z:13.706},end:{x:25.779,y:17.959,z:13.706}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:25.779,y:17.959,z:13.706},end:{x:20.65,y:3.788,z:13.706}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:20.65,y:3.788,z:13.706},end:{x:5.58,y:3.788,z:13.706}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:0.45,y:0.19,z:0.0},end:{x:5.58,y:3.788,z:13.706}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:15.52,y:0.19,z:0.0},end:{x:20.65,y:3.788,z:13.706}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:20.65,y:14.36,z:0.0},end:{x:25.779,y:17.959,z:13.706}});
+                viewer2.addLine({dashed:false,linewidth :5.0,start:{x:5.58,y:14.36,z:0.0},end:{x:10.709,y:17.959,z:13.706}});
+    
+                    m2.setStyle({},{stick:{},sphere:{radius:0.4}});
+                    viewer2.zoomTo(0.1);
+                    viewer2.zoom(2.4,1000);
+                    viewer2.rotate(15, "vx");
+                    viewer2.spin("vy",1)
+                    viewer2.render();
+                    var viewer3 = viewer2
+                    $(".someclass3").mouseleave(function() {viewer3.spin("y",1)});
+                    $(".someclass3").mouseenter(function() {viewer3.spin("y",0)});
+                    viewer2.setProjection("orthographic");
+                            })
+                            );   
+                
+                (fetch('ice12.gro')
+                .then(response2 => response2.text())
+                .then(data2 => {
+                let element2 = $('#gldiv3')
+                viewer2 = $3Dmol.createViewer(element2, {
+                defaultcolors : $3Dmol.rasmolElementColors
+                });
+                
+                //viewer.setBackgroundColor(0xffffff);
+                viewer2.setBackgroundColor(0x000000,0);
+    
+                //viewer.setBackgroundColor(0xffffffff);
+                var m2 = viewer2.addModel();
+        
+                    a2 = data2; 
+                    b2 = a2.split("\n")
+                    total_n = parseInt(b2.length/4) - 1
+                    for (let i = 0; i < total_n; i++) {
+                    
+                    var ox = b2[4*i + 2].split(" ").filter(Boolean);
+                    var ox1 = 10*parseFloat(ox[3]);
+                    var ox2 = 10*parseFloat(ox[4]);
+                    var ox3 = 10*parseFloat(ox[5]);
+                    var hw1 = b2[4*i + 3].split(" ").filter(Boolean);
+                    var hw1x = 10*parseFloat(hw1[3]);
+                    var hw1y = 10*parseFloat(hw1[4]);
+                    var hw1z = 10*parseFloat(hw1[5]);
+                    var hw2 = b2[4*i + 4].split(" ").filter(Boolean);
+                    var hw2x = 10*parseFloat(hw2[3]);
+                    var hw2y = 10*parseFloat(hw2[4]);
+                    var hw2z = 10*parseFloat(hw2[5]);
+      
+                    var atoms2 = getDetails(ox1,ox2,ox3,hw1x,hw1y,hw1z,hw2x,hw2y,hw2z)
+                    //console.log(atoms);
+                    m2.addAtoms(atoms2);}
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:-0.67,y:-0.39,z:-0.16},end:{x:7.326,y:-0.39,z:-0.16}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:7.326,y:-0.39,z:-0.16},end:{x:7.326,y:7.606,z:-0.16}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:7.326,y:7.606,z:-0.16},end:{x:-0.67,y:7.606,z:-0.16}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:-0.67,y:7.606,z:-0.16},end:{x:-0.67,y:-0.39,z:-0.16}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:-0.67,y:-0.39,z:7.634},end:{x:-0.67,y:7.606,z:7.634}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:-0.67,y:7.606,z:7.634},end:{x:7.326,y:7.606,z:7.634}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:7.326,y:7.606,z:7.634},end:{x:7.326,y:-0.39,z:7.634}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:7.326,y:-0.39,z:7.634},end:{x:-0.67,y:-0.39,z:7.634}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:-0.67,y:-0.39,z:-0.16},end:{x:-0.67,y:-0.39,z:7.634}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:7.326,y:-0.39,z:-0.16},end:{x:7.326,y:-0.39,z:7.634}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:7.326,y:7.606,z:-0.16},end:{x:7.326,y:7.606,z:7.634}});
+                    viewer2.addLine({dashed:false,linewidth :5.0,start:{x:-0.67,y:7.606,z:-0.16},end:{x:-0.67,y:7.606,z:7.634}});
+    
+                    m2.setStyle({},{stick:{},sphere:{radius:0.4}});
+                    viewer2.zoomTo(0.1);
+                    viewer2.zoom(2.4,1000);
+                    viewer2.rotate(15, "vx");
+                    viewer2.spin("vy",1)
+                    viewer2.render();
+                    var viewer4 = viewer2
+                    $(".someclass4").mouseleave(function() {viewer4.spin("y",1)});
+                    $(".someclass4").mouseenter(function() {viewer4.spin("y",0)});
+                    viewer2.setProjection("orthographic");
+                            })
+                            );   
+    
+    
+                    });
+    
+                
+    
+    
+    </script>
+
+<style>
+    ul {
+        list-style:circle;
+    }
+
+    ul li {
+        margin:5px 10px;
+        float:left;
+    }
+
+    .wp-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 30%;
+    text-align: center;
+    line-height: 35px;
+    vertical-align: middle;
+    color: #fff;
+    margin-left: 10px;
+    margin-bottom: 0px;
+    }
+
+    .fa-facebook-f {
+    background: #3B5998;
+    }
+
+    .fa-linkedin {
+    background: #0077B5;
+    }
+
+    .fa-twitter {
+    background: #1DA1F2;
+    }
+    .fa-instagram {
+    background: #d6249f;
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
+    box-shadow: 0px 3px 10px rgba(0,0,0,.25);
+    }
+    .fa-google-plus {
+    background: #D04338;
+    }
+    .fa-youtube {
+    background: #FF0000;
+    }
+
+    .fa-pinterest {
+    background: #BD081C;
+    }
+
+</style>
+
+</head>
+<body id="page-top" class="politics_version">
+
+    <!-- LOADER -->
+    <div id="preloader">
+        <div id="main-ld">
+			<div id="loader"></div>  
+		</div>
+    </div><!-- end loader -->
+    <!-- END LOADER -->
+	
+    <!-- Navigation -->
+    <nav class="navbar navbar-dark navbar-expand-lg relative" id="mainNav" style="background-color:#333333">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+			<img class="img-fluid" src="images/dmlogo1.png" alt="" />
+		</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav text-uppercase ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger active" href="index.html">Home</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+      <div class="section wb">
+        <div class="container">
+					<div class="post">
+
+						<h1 style="font-size:45px;"><a href="#">The polymorphism of ice : A review! </a></h1>
+						<p class="meta">Posted by <a href="#">Someone</a> on November 10, 2011
+							&nbsp;&bull;&nbsp; <a href="#" class="comments">Comments (64)</a> &nbsp;&bull;&nbsp; <a href="#" class="permalink">Full article</a></p>
+						<div class="entry">
+							<p><img src="v983-357.jpg" width="186" height="186" alt="" class="alignleft border" />
+								There are twenty or so three-dimensional crystalline phases [3500] (where the oxygen atoms are in 
+								fixed positions relative to each other, but the hydrogen atoms may or may not be disordered, and 
+								three amorphous (non-crystalline) phases (see [2145, 2349] for recent reviews of ice research). 
+								This large number is due to the open tetrahedrally arranged water molecular structure of hexagonal 
+								ice under normal atmospheric pressure and the large number of possible crystal
+								 structures that this ice can form as it is progressively crushed under high pressure.</p>
+							<p>All the crystalline phases of ice involve hydrogen-bonding water molecules with four neighboring 
+								water molecules (see left, and [1300] for a recent review). In most cases, the two hydrogen atoms 
+								are equivalent with hydrogen bonds of similar strength. The water molecules retain their symmetry 
+								obey the 'ice rules' j. For the most part, the ordering of the protons (in fixed positions with lower 
+								entropy) occurs at lower temperatures. In contrast, the pressure reduces the distances between second 
+								shell neighbors (lower volume and greater van der Waals effects). The H-O-H angle 
+								in the ice phases is expected to be a little less than tetrahedral (109.47°), at about 107°.</p>
+						</div>
+					</div>
+					<div class="post">
+						<h2 class="title"><a href="#">Hexagonal Ice (ice Ih)</a></h2>
+						<p class="meta">Posted by <a href="#">Someone</a> on November 8, 2011
+							&nbsp;&bull;&nbsp; <a href="#" class="comments">Comments (64)</a> &nbsp;&bull;&nbsp; <a href="#" class="permalink">Full article</a></p>
+
+						<div class="entry">
+						<div style="float:left">
+						<div  id="gldiv" class="someclass1" style="height: 300px; width: 300px; position: relative;">
+						</div> </div>
+					<p>Natural snow and ice on Earth occur as hexagonal ice (ice Ih), as evidenced in the six-fold symmetry in ice crystals grown from water vapor (that is, snowflakes).</p>
+					<p>There are four different naturally occurring morphological forms of hexagonal ice; snow, firn (multi-year snow), 
+						freshwater ice, and sea ice [3584]. Hexagonal ice ([1969], ice Ih i see Phase Diagram), is in Space group P63/mmc,
+						 k 194; symmetry D6h, Laue class symmetry 6/mmm; analogous to β-tridymite silica or lonsdaleite. 
+						 It possesses a relatively open low-density structure, where the packing efficiency is low (≈ 1/3) compared with simple cubic
+						  (≈ 1/2) or face-centered cubic 
+						(≈ 3/4) structures a (and in contrast to face-centered cubic close-packed solid hydrogen sulfide).</p>		
+				</div>
+					</div>
+					<div class="post">
+						<h2 class="title"><a href="#">Cubic Ice (Ice Ic)</a></h2>
+						<p class="meta">Posted by <a href="#">Someone</a> on November 8, 2011
+							&nbsp;&bull;&nbsp; <a href="#" class="comments">Comments (64)</a> &nbsp;&bull;&nbsp; <a href="#" class="permalink">Full article</a></p>
+
+						<div class="entry">
+							<div style="float:left">
+								<div  id="gldiv1" class="someclass2" style="height: 300px; width: 300px; position: relative;">
+								</div>
+							</div>
+							<p>Cubic ice (Ice Ic) is a metastable b ice crystal that can be formed (a) by condensation of water vapor 
+								at ambient pressure but at less than -80 °C, see Phase Diagram), (b) below about -38 °C in tiny droplets 
+								(≈ 6 μm diameter) [1013], and (c) by reducing the pressure on high-pressure ices at 77 K. Cubic ice 
+								is usually found as transitional states between hexagonal and cubic ice [1236c] depending on the
+								 conditions of its formation and history [1236]. Indeed, the structure of ice that crystallizes initially 
+								 from supercooled water is always stacking-disordered [1236e]. Ice crystals formed on homogeneous ice 
+								 nucleation in deeply supercooled water nanodrops (r ≈ 10 nm) at ∼225 K were only 78 % cubic ice with 22%
+								  hexagonal ice; effectively 44% stacking-disordered ice [3032]. It does not seem easy to
+								   prepare cubic ice crystals with a greater proportion of cubic ice structure. However, the term
+								    'cubic ice' has been historically used for these less-than-pure ice crystals. With increasing time,
+									 metastable cubic 
+								ice converts to hexagonal ice through the increasingly disordered stacking-disordered ice.</p>
+								<p>
+									 In contrast to ice Ih, however, water molecules have a staggered 
+									 hydrogen-bonding arrangement to all of their neighbors, rather than to 3/4
+									  of them. In contrast to the mirrored arrangement of the layers in hexagonal
+									   ice, the cubic ice crystal possesses identical layers placed on top of one another 
+									   but with displacements. The result is that the density is almost the same as ice Ih.
+
+								</p>	
+						</div>
+					</div>
+					<div class="post">
+						<h2 class="title"><a href="#">Ice-four (Ice IV)</a></h2>
+						<p class="meta">Posted by <a href="#">Someone</a> on November 8, 2011
+							&nbsp;&bull;&nbsp; <a href="#" class="comments">Comments (64)</a> &nbsp;&bull;&nbsp; <a href="#" class="permalink">Full article</a></p>
+
+						<div class="entry">
+							<div style="float:left">
+								<div  id="gldiv2" class="someclass3" style="height: 300px; width: 300px; position: relative;">
+								</div>
+							</div>
+							<p>Ice-four (ice IV) may be formed occasionally by the heating high-density amorphous ice at a slow 
+								(0.4 K ˣ min−1) rate from 145 K and at a constant pressure of 0.81 GPa [386] (a faster rate, for example, 
+								15 K ˣ min−1, preferably produces ice-twelve). Ice-four is metastable within the ice-three, ice-five, 
+								and ice-six phase space (see Phase Diagram). It forms a rhombohedral crystal (Space group, 167; Laue 
+								class symmetry -3m1) with cell dimensions 7.60 Å (a, b, c; 70.1°, 70.1°, 70.1°, 16 molecules) [387]. 
+								All water molecules are hydrogen-bonded to four others in the crystal,, two as donors and two as acceptors. 
+								The structure is formed from a single catenated interpenetrating network of both puckered and flattish 
+								hexamers 
+								(these allow the penetration) consisting of more strongly hydrogen bound water.</p>
+							<p>The penetrating hydrogen bond is longer (2.921 Å), but these water molecules also possess three shorter
+								 hydrogen bonds (2.783 Å). The hydrogen bonds forming the flattish rings are also somewhat extended 
+								 (2.876 Å). The networks are not entirely independent as three-quarters of the water molecules 
+								 have one weaker hydrogen bond to the other network (2.806 Å, 143°); the fourth type of hydrogen 
+								 bond present.
+								 Hence, molecules fall into two unequal classes experiencing different molecular environments.
+							</p>		
+						</div>
+					</div>
+					<div class="post">
+						<h2 class="title"><a href="#">Ice-twelve (Ice XII)</a></h2>
+						<p class="meta">Posted by <a href="#">Someone</a> on November 8, 2011
+							&nbsp;&bull;&nbsp; <a href="#" class="comments">Comments (64)</a> &nbsp;&bull;&nbsp; <a href="#" class="permalink">Full article</a></p>
+
+						<div class="entry">
+							<div style="float:left">
+								<div  id="gldiv3" class="someclass4" style="height: 300px; width: 300px; position: relative;">
+								</div>
+							</div>
+							<p> Ice-twelve (ice XII) may be formed by heating high-density amorphous ice at a constant pressure of 0.81 
+								GPa from 77 K to ≈ 183 K at a rate of ≥ 15 K min−1 and recovered at atmospheric pressure at 77 K [386];
+								 a slower rate (≤ 0.4 K min−1) preferably producing ice-four). Ice-twelve is metastable within the 
+								 ice-five and ice-six phase space (see Phase Diagram).
+								 It forms a tetragonal crystal (Space group, 122; Laue class symmetry 4/mmm).</p>
+							<p>In the crystal, all water molecules are hydrogen-bonded to four others, two as donor and two as acceptor.
+								 Ice-twelve contains a screw-type hydrogen-bonded arrangement (right-handed double helix) quite unlike
+								  that found in other crystalline forms of ice, with the smallest ring size consisting of seven molecules 
+								  ([390] not five as reported [82]; two seven-membered rings can be seen top-left and bottom right in the 
+								  opposite sub-structure). It has a density of 1.30 g cm−3 at 127 K and ambient pressure, somewhat greater 
+								  than ice-five (1.23 g cm−3). 
+								The hydrogen-bonding is disordered and continually changing as in hexagonal ice.
+							</p>		
+						</div>
+					</div>
+					<div class="rightaligned" style="float:right">
+
+					<a href="order_parameter.html"><button  class="adv-btn btn-hover-new">Next<i class="fa fa-arrow-right" aria-hidden="true" style="color:green"></i></button></a>	
+					</div>
+
+					<div style="clear: both;">&nbsp;</div>
+				</div>
+				<!--
+				<div id="sidebar">
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+					<ul>
+						<li>
+							<h2>KeyWords</h2>
+							<ul>
+								<li><a href="#">Aliquam libero</a></li>
+								<li><a href="#">Consectetuer adipiscing elit</a></li>
+								<li><a href="#">Metus aliquam pellentesque</a></li>
+								<li><a href="#">Suspendisse iaculis mauris</a></li>
+								<li><a href="#">Urnanet non molestie semper</a></li>
+								<li><a href="#">Proin gravida orci porttitor</a></li>
+							</ul>
+						</li>
+						
+						<li>
+							<h2>References</h2>
+							<ul>
+								<li><a href="#">Aliquam libero</a></li>
+								<li><a href="#">Consectetuer adipiscing elit</a></li>
+								<li><a href="#">Metus aliquam pellentesque</a></li>
+								<li><a href="#">Suspendisse iaculis mauris</a></li>
+								<li><a href="#">Urnanet non molestie semper</a></li>
+								<li><a href="#">Proin gravida orci porttitor</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			-->
+				<div style="clear: both;">&nbsp;</div>
+			</div>
+
+    <div class="copyrights">
+        <div class="container">
+            <div class="footer-distributed">
+                <div class="footer-left">
+                    
+                        <a href="#"><i class="fa wp-icon fa-facebook-f fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-linkedin fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-twitter fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-instagram fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-google-plus fa-lg"></i></a>
+                        <a href="#"><i class="fa wp-icon fa-youtube fa-lg"></i></a>
+        
+                    <p class="footer-company-name">All Rights Reserved. &copy; 2018 <a href="#">Dominic</a> Design By : 
+					<a href="https://html.design/">html design</a></p>
+                </div>
+            </div>
+        </div><!-- end container -->
+    </div><!-- end copyrights -->
+
+    <a href="#" id="scroll-to-top" class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+
+    <!-- ALL JS FILES -->
+    <script src="js/all.js"></script>
+	<!-- Camera Slider -->
+	<script src="js/jquery.mobile.customized.min.js"></script>
+	<script src="js/jquery.easing.1.3.js"></script> 
+	<script src="js/parallaxie.js"></script>
+	<script src="js/headline.js"></script>
+	<!-- Contact form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+    <!-- ALL PLUGINS -->
+    <script src="js/custom.js"></script>
+    <script src="js/jquery.vide.js"></script>
+
+</body>
+</html>
