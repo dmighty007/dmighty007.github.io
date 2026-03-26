@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dibyendu - Research Scholar</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta name="description" content="Academic portfolio of Dibyendu, Research Scholar specializing in Computational Chemistry and ML.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Preload Hero Image for LCP Optimization -->
+    <link rel="preload" as="image" href="assets/profile.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Nunito:wght@700;800;900&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Defer non-critical CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" media="print" onload="this.media='all'">
+
+    <link rel="stylesheet" href="css/styles.css?v=5">
+</head>
+<body id="page-top" data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="76">
+
+    <!-- Under Development Overlay -->
+    <div id="dev-overlay" style="
+        position: fixed; inset: 0; z-index: 99999;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        display: flex; align-items: center; justify-content: center; flex-direction: column;
+        font-family: 'Outfit', 'Inter', sans-serif; color: #fff;
+        transition: opacity 0.5s ease;
+    ">
+        <div style="text-align: center; max-width: 480px; padding: 2rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🚧</div>
+            <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 0.75rem; letter-spacing: -0.5px;">
+                Under Development
+            </h2>
+            <p style="font-size: 1rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 2rem;">
+                This site is currently being updated with new content and features. Feel free to look around — some things may be incomplete.
+            </p>
+            <button onclick="document.getElementById('dev-overlay').style.opacity='0'; setTimeout(()=>document.getElementById('dev-overlay').style.display='none', 500);"
+                style="
+                    background: linear-gradient(135deg, #4338ca, #0284c7);
+                    color: #fff; border: none; padding: 0.7rem 2.2rem;
+                    border-radius: 50px; font-size: 0.95rem; font-weight: 600;
+                    cursor: pointer; box-shadow: 0 4px 14px rgba(67,56,202,0.4);
+                    transition: transform 0.2s, box-shadow 0.2s;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(67,56,202,0.5)';"
+                   onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 14px rgba(67,56,202,0.4)';">
+                Continue to Site →
+            </button>
+        </div>
+    </div>
+
+    <div id="tsparticles"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand font-heading" href="#page-top"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu <i class="bi bi-list"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#research">Research</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#publications">Publications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#teaching">Skills</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#cv">CV</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+                <div class="theme-switch-wrapper ms-lg-3 mt-3 mt-lg-0 mb-3 mb-lg-0">
+                    <button id="theme-toggle-btn" class="theme-cycle-btn" aria-label="Cycle Theme" title="Switch Theme">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" id="home">
+        <div class="container text-center text-lg-start">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7" style="z-index: 2;">
+                    <h1 class="font-heading hero-title mb-3">Hello, I'm <span class="text-gradient">Dibyendu.</span></h1>
+                    <p class="lead hero-subtitle">"I do research at S.N.B.N.C.B.S.<br>Codes and molecules are the things that essentially entertain me."</p>
+                    <p class="lead" style="font-size: 1.1rem; opacity: 0.7;">Specializing in MD Simulations, Free Energy Calculations, and ML/DL Models.</p>
+                    <div class="hero-btn mt-5">
+                        <a href="#about" class="btn btn-gradient me-3 mb-3">About Me</a>
+                        <a href="#cv" class="btn btn-outline-glass mb-3">View CV</a>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center d-none d-lg-block" style="z-index: 2;">
+                    <div class="hero-photo-wrapper">
+                        <img src="assets/original.png" alt="Dibyendu Maity - Research Scholar" class="hero-photo" fetchpriority="high" decoding="async" loading="eager" />
+                        <div class="hero-photo-ring"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="bg-section-dark">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-11">
+                    <h2 class="section-heading font-heading">About Me</h2>
+                    <div class="row fade-in-scroll glass-panel p-5 rounded-4 mt-5">
+                        <div class="col-md-7 mb-4 mb-md-0 pe-md-5">
+                            <p>I'm a Senior Research Fellow at S.N. Bose National Centre for Basic Sciences (S.N.B.N.C.B.S.). Currently doing my Ph.D. under the supervision of Dr. Suman Chakrabarty in the Department of Chemical, Biological and Macro-Molecular Sciences.</p>
+                            <p>I've been pretty interested in advanced and enhanced simulation techniques to calculate free energy of reactions as well as various order parameters to capture structure ordering of mostly water molecules under different circumstances.</p>
+                            <div class="mt-4">
+                                <h4 class="h6 font-heading text-gradient mb-3">Research Interests</h4>
+                                <span class="badge badge-glass me-2 mb-2">MD Simulation</span>
+                                <span class="badge badge-glass me-2 mb-2">Free Energy Calculations</span>
+                                <span class="badge badge-glass me-2 mb-2">ML/DL Models</span>
+                                <span class="badge badge-glass mb-2">Water Molecule Structure</span>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <h3 class="h5 font-heading mb-4 text-gradient">Academic Journey</h3>
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-date">Present</div>
+                                    <h4 class="h6 font-heading mb-1">Ph.D. Research Scholar</h4>
+                                    <p class="text-muted-light small mb-0">S.N.B.N.C.B.S., Kolkata</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-date">2019 - 2021 </div>
+                                    <h4 class="h6 font-heading mb-1">Master of Science, Physics</h4>
+                                    <p class="text-muted-light small mb-0">S.N.B.N.C.B.S., Kolkata</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-date">2016 - 2019 </div>
+                                    <h4 class="h6 font-heading mb-1">Bachelor of Science, Physics</h4>
+                                    <p class="text-muted-light small mb-0">Midnapore College (Autonomous), Midnapore</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-date">2014 - 2016 </div>
+                                    <h4 class="h6 font-heading mb-1">Higher Secondary School</h4>
+                                    <p class="text-muted-light small mb-0">Ananda Nagar Srinath Vidyapith, Anikola</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="research" class="bg-section-darker">
+        <div class="container">
+            <h2 class="section-heading text-center font-heading">Research &amp; Projects</h2>
+
+            <div class="row mt-5 fade-in-scroll">
+
+            <div class="col-md-6 mb-4">
+                <div class="glass-card card-hover-lift h-100">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon-box-gradient me-3">
+                            <i class="bi bi-snow fs-4"></i>
+                        </div>
+                        <h3 class="h4 font-heading mb-0">Weighted Ensemble &amp; Path-Resolved Kinetics</h3>
+                    </div>
+                    <p class="text-muted-light mb-0">
+                        Developing path-resolved frameworks for <em>weighted ensemble (WE)</em> simulations to efficiently extract kinetic observables from rare-event dynamics.
+                    </p>
+                </div>
+            </div>
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card card-hover-lift h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box-gradient me-3">
+                                <i class="bi bi-snow fs-4"></i>
+                            </div>
+                            <h3 class="h4 font-heading mb-0">Nucleation &amp; Structural Ordering</h3>
+                        </div>
+                        <p class="text-muted-light mb-0">Studying nucleation kinetics and structural ordering in clathrate hydrates and ice. Investigating methane hydrate growth in the presence of alcohols and osmolytes using Steinhardt order parameters and enhanced sampling techniques.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card card-hover-lift h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box-gradient me-3">
+                                <i class="bi bi-cpu fs-4"></i>
+                            </div>
+                            <h3 class="h4 font-heading mb-0">IceCoder &mdash; ML for Phase Classification</h3>
+                        </div>
+                        <p class="text-muted-light mb-0">Developed <em>IceCoder</em>, a Variational Autoencoder framework for automated identification and classification of ice polymorphs directly from molecular simulation trajectories. Published in <em>J. Chem. Theory Comput.</em> (2025).</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card card-hover-lift h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box-gradient me-3">
+                                <i class="bi bi-lightning-charge fs-4"></i>
+                            </div>
+                            <h3 class="h4 font-heading mb-0">PathGennie &mdash; Enhanced Sampling</h3>
+                        </div>
+                        <p class="text-muted-light mb-0">Created <em>PathGennie</em>, a direction-guided adaptive sampling algorithm for rapid generation of rare-event pathways using ultrashort monitored trajectories. Published in <em>J. Chem. Theory Comput.</em> (2025).</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card card-hover-lift h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box-gradient me-3">
+                                <i class="bi bi-water fs-4"></i>
+                            </div>
+                            <h3 class="h4 font-heading mb-0">Solvation Free Energy Prediction</h3>
+                        </div>
+                        <p class="text-muted-light mb-0">Comparative analysis of molecular representations and machine learning methods for transferable prediction of solvation free energy. Investigating how to build accurate yet efficient implicit solvent models.</p>
+                    </div>
+                </div>
+                <!-- <div class="col-md-6 mb-4">
+                    <div class="glass-card card-hover-lift h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box-gradient me-3">
+                                <i class="bi bi-capsule fs-4"></i>
+                            </div>
+                            <h3 class="h4 font-heading mb-0">MTAN-ADMET</h3>
+                        </div>
+                        <p class="text-muted-light mb-0">Multi-Task Adaptive Neural Network for efficient and accurate prediction of ADMET (Absorption, Distribution, Metabolism, Excretion, Toxicity) properties of drug-like molecules. Preprint on <em>ChemRxiv</em> (2025).</p>
+                    </div>
+                </div> -->
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card card-hover-lift h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box-gradient me-3">
+                                <i class="bi bi-sun fs-4"></i>
+                            </div>
+                            <h3 class="h4 font-heading mb-0">Self-Assembled Luminescent Nanotubes</h3>
+                        </div>
+                        <p class="text-muted-light mb-0">Computational study of efficient light harvesting in self-assembled organic luminescent nanotubes, combining MD simulations with experimental characterization. Published in <em>Chemical Science</em> (2023).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="publications" class="bg-section-dark">
+        <div class="container">
+            <h2 class="section-heading font-heading">Publications</h2>
+            <p class="text-muted-light mb-2" style="font-size:0.95rem;">Total citations: 24 &bull; h-index: 3 &bull; <a href="https://scholar.google.com/citations?user=FkqKBRkAAAAJ&hl=en" target="_blank" class="text-decoration-none" style="color: var(--accent-glow);">Google Scholar <i class="bi bi-box-arrow-up-right" style="font-size:0.8rem;"></i></a></p>
+            <div class="row justify-content-center fade-in-scroll mt-4">
+                <div class="col-lg-10 d-flex flex-column gap-4">
+
+                    <div class="pub-item glass-card p-4">
+                        <span class="badge-gradient mb-3 d-inline-block">2025 &bull; JCTC</span>
+                        <h3 class="h5 font-heading mb-2"><a href="https://pubs.acs.org/doi/abs/10.1021/acs.jctc.5c01244" target="_blank" class="text-decoration-none" style="color: inherit;">PathGennie: Rapid Generation of Rare Event Pathways via Direction-Guided Adaptive Sampling Using Ultrashort Monitored Trajectories</a></h3>
+                        <p class="small text-muted-light mb-0"><strong>D Maity</strong>, S Shahid, S Chakrabarty &mdash; <em>J. Chem. Theory Comput.</em>, 2025</p>
+                    </div>
+
+                    <div class="pub-item glass-card p-4">
+                        <span class="badge-gradient mb-3 d-inline-block">2025 &bull; JCTC &bull; <i class="bi bi-chat-square-quote"></i> 4</span>
+                        <h3 class="h5 font-heading mb-2"><a href="https://pubs.acs.org/doi/abs/10.1021/acs.jctc.4c01298" target="_blank" class="text-decoration-none" style="color: inherit;">IceCoder: Identification of Ice Phases in Molecular Simulation Using Variational Autoencoder</a></h3>
+                        <p class="small text-muted-light mb-0"><strong>D Maity</strong>, S Chakrabarty &mdash; <em>J. Chem. Theory Comput.</em>, 2025</p>
+                    </div>
+
+                    <!-- <div class="pub-item glass-card p-4">
+                        <span class="badge-gradient mb-3 d-inline-block">2025 &bull; Preprint &bull; <i class="bi bi-chat-square-quote"></i> 1</span>
+                        <h3 class="h5 font-heading mb-2"><a href="https://chemrxiv.org/doi/10.26434/chemrxiv-2025-zhrsk" target="_blank" class="text-decoration-none" style="color: inherit;">MTAN-ADMET: A Multi-Task Adaptive Neural Network for Efficient and Accurate Prediction of ADMET Properties</a></h3>
+                        <p class="small text-muted-light mb-0">S Shahid, <strong>D Maity</strong>, S Chakrabarty &mdash; <em>ChemRxiv</em>, 2025</p>
+                    </div> -->
+
+                    <div class="pub-item glass-card p-4">
+                        <span class="badge-gradient mb-3 d-inline-block">2025 &bull; Preprint</span>
+                        <h3 class="h5 font-heading mb-2"><a href="https://assets-eu.researchsquare.com/files/rs-6727155/v1_covered_3258e928-7238-414f-9a68-98c4e3f1396f.pdf" target="_blank" class="text-decoration-none" style="color: inherit;">Challenges in Transferable Prediction of Solvation Free Energy: A Comparative Analysis of Molecular Representations and Machine Learning Methods</a></h3>
+                        <p class="small text-muted-light mb-0"><strong>D Maity</strong>, S Chakrabarty &mdash; <em>Research Square</em>, 2025</p>
+                    </div>
+
+                    <div class="pub-item glass-card p-4">
+                        <span class="badge-gradient mb-3 d-inline-block">2023 &bull; Chem. Sci. &bull; <i class="bi bi-chat-square-quote"></i> 16</span>
+                        <h3 class="h5 font-heading mb-2"><a href="https://pubs.rsc.org/en/content/articlehtml/2023/sc/d3sc00375b" target="_blank" class="text-decoration-none" style="color: inherit;">Efficient Light Harvesting in Self-Assembled Organic Luminescent Nanotubes</a></h3>
+                        <p class="small text-muted-light mb-0">SK Bhaumik, <strong>D Maity</strong>, I Basu, S Chakrabarty, S Banerjee &mdash; <em>Chemical Science</em>, 2023</p>
+                    </div>
+
+                    <div class="pub-item glass-card p-4">
+                        <span class="badge-gradient mb-3 d-inline-block">2022 &bull; Phys. Rev. E &bull; <i class="bi bi-chat-square-quote"></i> 3</span>
+                        <h3 class="h5 font-heading mb-2"><a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.106.044702" target="_blank" class="text-decoration-none" style="color: inherit;">Dimer-Parity-Dependent Odd-Even Effects in Photoinduced Transitions to Cholesteric and TGB Smectic-C* Mesophases</a></h3>
+                        <p class="small text-muted-light mb-0">R Sahoo, <strong>D Maity</strong>, DS Shankar Rao, S Chakrabarty, CV Yelamaggad, SK Prasad &mdash; <em>Physical Review E</em>, 2022</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="teaching" class="bg-section-darker">
+        <div class="container">
+            <h2 class="section-heading text-center font-heading">Skills &amp; Recognition</h2>
+            <div class="row mt-5 fade-in-scroll g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="glass-card card-hover-lift h-100 text-center">
+                        <div class="icon-box-gradient mx-auto mb-3">
+                            <i class="bi bi-box-seam fs-4"></i>
+                        </div>
+                        <h4 class="h6 font-heading mb-3">Simulation</h4>
+                        <p class="text-muted-light small mb-0">GROMACS &bull; OpenMM &bull; PLUMED &bull; Metadynamics &bull; FEP / TI / MBAR</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="glass-card card-hover-lift h-100 text-center">
+                        <div class="icon-box-gradient mx-auto mb-3">
+                            <i class="bi bi-cpu-fill fs-4"></i>
+                        </div>
+                        <h4 class="h6 font-heading mb-3">Machine Learning</h4>
+                        <p class="text-muted-light small mb-0">PyTorch &bull; PointNet &bull; Graph Neural Networks &bull; scikit-learn &bull; Phase classification</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="glass-card card-hover-lift h-100 text-center">
+                        <div class="icon-box-gradient mx-auto mb-3">
+                            <i class="bi bi-code-slash fs-4"></i>
+                        </div>
+                        <h4 class="h6 font-heading mb-3">Programming</h4>
+                        <p class="text-muted-light small mb-0">Python &bull; C/C++ &bull; Bash &bull; NumPy &bull; MDAnalysis &bull; SciPy &bull; SLURM / HPC</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="glass-card card-hover-lift h-100 text-center">
+                        <div class="icon-box-gradient mx-auto mb-3">
+                            <i class="bi bi-award-fill fs-4"></i>
+                        </div>
+                        <h4 class="h6 font-heading mb-3">Fellowships</h4>
+                        <p class="text-muted-light small mb-0">Senior Research Fellowship (SRF) &bull; Junior Research Fellowship (JRF), Govt. of India</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cv" class="bg-section-dark">
+        <div class="container">
+            <div class="row align-items-start g-5">
+                <div class="col-lg-4 fade-in-scroll">
+                    <h2 class="section-heading font-heading">Curriculum<br>Vitae</h2>
+                    <p class="text-muted-light mb-4 mt-2">A complete record of my academic background, research experience, publications, and technical skills as a Senior Research Fellow at S.N.B.N.C.B.S.</p>
+                    <div class="d-flex flex-column gap-3">
+                        <a href="#" id="download-cv-btn" class="btn btn-gradient d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-download"></i> Download PDF
+                        </a>
+                        <a href="assets/cv.html" target="_blank" class="btn btn-outline-glass d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-box-arrow-up-right"></i> Open Full Screen
+                        </a>
+                    </div>
+                    <div class="row g-3 mt-5">
+                        <div class="col-6">
+                            <div class="glass-card p-3 text-center">
+                                <div class="text-gradient font-heading" style="font-size:2rem;font-weight:800;">5+</div>
+                                <div class="small text-muted-light">Years Research</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="glass-card p-3 text-center">
+                                <div class="text-gradient font-heading" style="font-size:2rem;font-weight:800;">6</div>
+                                <div class="small text-muted-light">Publications</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="glass-card p-3 text-center">
+                                <div class="text-gradient font-heading" style="font-size:2rem;font-weight:800;">6</div>
+                                <div class="small text-muted-light">Projects</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="glass-card p-3 text-center">
+                                <div class="text-gradient font-heading" style="font-size:2rem;font-weight:800;">M.Sc.</div>
+                                <div class="small text-muted-light">Physics</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 fade-in-scroll cv-viewer-wrapper">
+                    <div class="cv-viewer-frame glass-card p-0 overflow-hidden">
+                        <div class="cv-viewer-toolbar d-flex align-items-center px-4 py-2 gap-3">
+                            <span class="cv-dot" style="background:#ff6058;"></span>
+                            <span class="cv-dot" style="background:#ffbd2e;"></span>
+                            <span class="cv-dot" style="background:#28c840;"></span>
+                            <span class="text-muted-light small ms-2" style="font-size:0.78rem; opacity:0.7;">Dibyendu_Maity_CV.html</span>
+                            <a href="assets/cv.html" target="_blank" class="ms-auto btn btn-sm btn-outline-glass py-1 px-3" style="font-size:0.75rem;"><i class="bi bi-arrows-fullscreen me-1"></i>Expand</a>
+                        </div>
+                        <iframe src="assets/cv.html" id="cv-iframe" class="cv-iframe" title="Dibyendu Maity Curriculum Vitae" aria-label="CV PDF Viewer">
+                            <div class="cv-fallback p-5 text-center">
+                                <i class="bi bi-file-earmark-pdf" style="font-size:3rem;color:var(--accent-glow);"></i>
+                                <p class="mt-3">Your browser does not support embedded PDFs.</p>
+                                <a href="assets/cv.html" class="btn btn-gradient mt-2" target="_blank">Open CV</a>
+                            </div>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
+                    <h3 class="h4 font-heading mb-3">Get in Touch</h3>
+                    <p class="mb-1"><i class="bi bi-envelope me-2"></i> Reach out via the form or social links!</p>
+                    <p class="mb-0"><i class="bi bi-geo-alt me-2"></i> S.N.B.N.C.B.S., Kolkata</p>
+                    <a href="https://formspree.io/f/xwkzeonq" class="btn btn-outline-glass btn-sm mt-3" target="_blank">Contact via Formspree</a>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="social-icons mb-3">
+                        <a href="https://github.com/dmighty007/" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                        <a href="https://www.linkedin.com/in/dibyendu-maity-a1909b174" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://twitter.com/MAITYDIBYENDU99" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="https://www.instagram.com/dibyendu_maity_/" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="https://www.youtube.com/channel/UCByWixzLUlCJWRrKSy__nKA" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                    </div>
+                    <p class="small mb-0 text-white-50">&copy; <span id="currentYear"></span> Dibyendu Maity. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js" defer></script>
+    <script src="js/script.js?v=5" defer></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
