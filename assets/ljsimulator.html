@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lennard-Jones MD Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #fdfdfd;
+    --sf: rgba(255, 255, 255, 0.9);
+    --sfh: #ffffff;
+    --bd: rgba(0, 0, 0, 0.12);
+    --tx: #020617;
+    --mu: #475569;
+    --cy: #0284c7;
+    --pu: #7c3aed;
+    --go: #ea580c;
+    --gn: #059669;
+    --rd: #dc2626;
+    --bl: #2563eb;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    background: var(--bg);
+    color: var(--tx);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 20% 10%, rgba(14, 165, 233, .07) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, .07) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+header { text-align: center; max-width: 820px; }
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 212, 255, .1);
+    border: 1px solid rgba(0, 212, 255, .2);
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--cy);
+    margin-bottom: 14px;
+    letter-spacing: .05em;
+}
+
+h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(22px, 3.5vw, 38px);
+    font-weight: 800;
+    color: var(--tx);
+    line-height: 1.2;
+    margin-bottom: 12px;
+}
+
+.sub { color: var(--mu); font-size: 14px; line-height: 1.7; max-width: 680px; margin: 0 auto; }
+
+.mrow {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1100px;
+}
+
+.mc {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: 12px;
+    padding: 12px 18px;
+    min-width: 150px;
+    flex: 1;
+}
+
+.ml {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--mu);
+    margin-bottom: 5px;
+    font-family: 'Inter', sans-serif;
+}
+
+.mv { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; }
+
+.ctrl {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 20px 28px;
+    width: 100%;
+    max-width: 1100px;
+    backdrop-filter: blur(10px);
+}
+
+.ctop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.clbl { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 13px; }
+
+.brow { display: flex; gap: 8px; align-items: center; }
+
+button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 16px;
+    border-radius: 7px;
+    border: 1px solid var(--bd);
+    background: var(--sf);
+    color: var(--tx);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+button:hover { background: var(--sfh); border-color: rgba(255, 255, 255, .2); }
+#playBtn { background: rgba(0, 212, 255, .12); border-color: rgba(0, 212, 255, .3); color: var(--cy); }
+#playBtn:hover { background: rgba(0, 212, 255, .2); }
+
+.grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 18px;
+    width: 100%;
+    max-width: 1100px;
+}
+
+.vp {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+canvas#simCanvas {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.cfg {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.cft {
+    padding: 11px 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    color: var(--mu);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cfb { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+.cfs { display: flex; flex-direction: column; gap: 7px; }
+.cfl { font-size: 11px; font-weight: 700; font-family: 'Inter', sans-serif; color: var(--mu); text-transform: uppercase; letter-spacing: .05em; }
+
+.bgrp { display: flex; flex-wrap: wrap; gap: 4px; }
+.cb {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--mu);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.cb.active { background: rgba(168, 85, 247, 0.18); border-color: rgba(168, 85, 247, 0.5); color: #c084fc; }
+
+input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px; background: rgba(0, 0, 0, 0.1);
+    border-radius: 100px; outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px;
+    background: var(--bl); border-radius: 50%; cursor: pointer;
+    box-shadow: 0 3px 8px rgba(37,99,235,0.3);
+    border: 2px solid #fff;
+}
+
+@media(max-width: 1100px) { 
+    .grid { grid-template-columns: 1fr; }
+    .mrow { grid-template-columns: 1fr; }
+}
+
+.preset-btn {
+    padding: 4px 10px;
+    background: #fff;
+    border: 1px solid var(--bd);
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.preset-btn:hover { background: var(--bl); color: #fff; border-color: var(--bl); }
+
+.velocity-panel {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+.stats-overlay { display: none; }
+.stat-pill { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <!-- Header and Main Contols -->
+    <div style="display:flex; width:100%; max-width:1100px; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap">
+        <header style="text-align:left; max-width:600px; margin:0">
+            <div class="badge" style="background:rgba(37,99,235,0.1); border-color:rgba(37,99,235,0.2); color:var(--bl)">✦ MD · Lennard-Jones · Velocity Verlet</div>
+            <h1 style="font-weight:800; letter-spacing:-0.02em">Molecular Dynamics</h1>
+        </header>
+        <div class="brow" style="margin-bottom:12px">
+            <button id="resetBtn" style="font-weight:600">↺ Reset</button>
+            <button id="playBtn" style="font-weight:600; background:var(--bl); color:white; border:none">▶ Play</button>
+        </div>
+    </div>
+
+    <div class="mrow" style="margin-bottom:10px">
+        <div class="mc" style="border-bottom: 3px solid var(--rd);"><div class="ml">Temperature</div><div class="mv" id="statTemp" style="color:var(--rd)">0.00</div></div>
+        <div class="mc" style="border-bottom: 3px solid var(--bl);"><div class="ml">Pressure</div><div class="mv" id="statPres" style="color:var(--bl)">0.00</div></div>
+        <div class="mc" style="border-bottom: 3px solid var(--gn);"><div class="ml">Total Energy</div><div class="mv" id="statTotal" style="color:var(--gn)">0.00</div></div>
+    </div>
+
+    <div class="grid">
+        <div class="vp">
+            <canvas id="simCanvas" width="600" height="600"></canvas>
+            <div style="width:100%; background:var(--sf); border-radius:14px; border:1px solid var(--bd); padding:20px; margin-top:14px; box-shadow:0 4px 15px rgba(0,0,0,0.03)">
+                <div class="cfl" style="margin-bottom:12px; font-weight:700; color:var(--tx)">Energy Evolution</div>
+                <canvas id="chartCanvas" width="1060" height="150" style="width:100%"></canvas>
+            </div>
+        </div>
+        <div class="cfg">
+            <div class="cft">
+                <div class="bgrp" style="gap:20px">
+                    <span id="tabPhys" class="active" onclick="setTab('Phys')" style="cursor:pointer">⚙ Physics</span>
+                    <span id="tabTherm" onclick="setTab('Therm')" style="cursor:pointer; opacity:0.5">⚡ Thermal</span>
+                    <span id="tabPart" onclick="setTab('Part')" style="cursor:pointer; opacity:0.5">⚛ Particles</span>
+                </div>
+            </div>
+            <div class="cfb" id="panelPhys">
+                <div class="cfs">
+                    <div class="cfl">Ensemble</div>
+                    <div class="bgrp" id="ensGrp">
+                        <button class="cb active" onclick="setEns('NVT', this)">NVT</button>
+                        <button class="cb" onclick="setEns('NPT', this)">NPT</button>
+                    </div>
+                </div>
+                <div class="cfs">
+                    <div class="cfl">Simulation Speed: <span id="valSpeed">1.0</span>x</div>
+                    <input type="range" id="inputSpeed" min="0.2" max="3.0" step="0.1" value="1.0" oninput="updateVal('Speed', this.value)">
+                </div>
+                <div class="cfs">
+                    <div class="cfl">Presets</div>
+                    <div class="bgrp">
+                        <button class="preset-btn" onclick="applyPreset(0.4, 0.7)">Solid</button>
+                        <button class="preset-btn" onclick="applyPreset(0.8, 0.5)">Liquid</button>
+                        <button class="preset-btn" onclick="applyPreset(1.5, 0.1)">Gas</button>
+                        <button class="preset-btn" onclick="applyPreset(2.0, 0.4)">Supercritical</button>
+                    </div>
+                </div>
+                <div class="cfs">
+                    <div class="cfl">Target Temp: <span id="valTemp">1.00</span></div>
+                    <input type="range" id="inputTemp" min="0.1" max="2.5" step="0.1" value="1.0" oninput="updateVal('Temp', this.value)">
+                </div>
+                <div id="presRow" class="cfs" style="display:none">
+                    <div class="cfl">Target Pres: <span id="valPres">1.00</span></div>
+                    <input type="range" id="inputPres" min="0.1" max="5.0" step="0.1" value="1.0" oninput="updateVal('Pres', this.value)">
+                </div>
+                <div class="cfs">
+                    <div class="cfl">Density: <span id="valDens">0.30</span></div>
+                    <input type="range" id="inputDens" min="0.01" max="1.10" step="0.01" value="0.30" oninput="updateVal('Dens', this.value); resetSim()">
+                </div>
+                <div class="cfs">
+                    <div class="cfl">Force Cutoff: <span id="valCut">2.50</span> σ</div>
+                    <input type="range" id="inputCut" min="1.5" max="4.0" step="0.1" value="2.5" oninput="updateVal('Cut', this.value)">
+                </div>
+                <div class="cfs" style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+                    <div>
+                        <div class="cfl">Box Lx: <span id="valLx">20.0</span></div>
+                        <input type="range" id="inputLx" min="5" max="60" step="0.5" value="20" oninput="updateVal('Lx', this.value); resetSim()">
+                    </div>
+                    <div>
+                        <div class="cfl">Box Ly: <span id="valLy">20.0</span></div>
+                        <input type="range" id="inputLy" min="5" max="60" step="0.5" value="20" oninput="updateVal('Ly', this.value); resetSim()">
+                    </div>
+                </div>
+                <div class="cfs" style="display:flex; flex-direction:column; gap:8px">
+                    <label style="display:flex; align-items:center; gap:8px; font-size:11px; cursor:pointer">
+                        <input type="checkbox" id="checkThermo" checked> Thermostat active
+                    </label>
+                    <label style="display:flex; align-items:center; gap:8px; font-size:11px; cursor:pointer">
+                        <input type="checkbox" id="checkHeatmap" onchange="params.heatmap = this.checked"> Velocity Heatmap
+                    </label>
+                </div>
+            </div>
+            <div class="cfb" id="panelTherm" style="display:none">
+                <div class="cfs">
+                    <label style="display:flex; align-items:center; gap:8px; font-size:11px; cursor:pointer; font-weight:700; color:var(--mu); text-transform:uppercase">
+                        <input type="checkbox" id="checkRamp" onchange="params.rampActive = this.checked"> Active Protocol
+                    </label>
+                </div>
+                <div class="cfs">
+                    <div class="cfl">Goal Temperature: <span id="valRampGoal">1.50</span></div>
+                    <input type="range" id="inputRampGoal" min="0.1" max="4.0" step="0.1" value="1.50" oninput="updateVal('RampGoal', this.value)">
+                </div>
+                <div class="cfs">
+                    <div class="cfl">Cooling/Heating Rate: <span id="valRampRate">0.050</span> T/ps</div>
+                    <input type="range" id="inputRampRate" min="0.001" max="0.2" step="0.001" value="0.050" oninput="updateVal('RampRate', this.value)">
+                </div>
+                <div style="font-size:10px; color:var(--mu); line-height:1.4">
+                    The system will smoothly adjust the Target Temperature towards the Goal at the specified rate. Useful for simulated annealing or quenching.
+                </div>
+                <div class="velocity-panel" style="margin-top:15px; padding:12px">
+                    <div style="font-weight:700; color:var(--tx); margin-bottom:10px; font-size:12px">Thermodynamics over Time</div>
+                    
+                    <div class="cfl" style="margin-bottom:6px">Temperature</div>
+                    <canvas id="tempCanvas" width="400" height="70" style="width:100%; height:70px; display:block"></canvas>
+                    
+                    <div class="cfl" style="margin-bottom:6px; margin-top:12px">Pressure</div>
+                    <canvas id="presCanvas" width="400" height="70" style="width:100%; height:70px; display:block"></canvas>
+                    
+                    <div class="cfl" style="margin-bottom:6px; margin-top:12px">Density</div>
+                    <canvas id="densCanvas" width="400" height="70" style="width:100%; height:70px; display:block"></canvas>
+                </div>
+            </div>
+            <div class="cfb" id="panelPart" style="display:none">
+                <div id="typeList" style="display:flex; flex-direction:column; gap:12px; max-height:300px; overflow-y:auto; padding-right:5px"></div>
+                <button class="cb" onclick="addType()" style="margin-top:10px; width:100%; justify-content:center">+ Add Particle Type</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// --- GLOBAL STATE ---
+let particles = [];
+let params = {
+    boxW: 20, boxH: 20, dt: 0.01, speed: 1.0, cutoff: 2.5,
+    temp: 1.0, density: 0.3, ensemble: 'NVT', targetP: 1.0,
+    thermo: true, heatmap: false,
+    rampActive: false, rampGoal: 1.5, rampRate: 0.05,
+    types: [
+        { sigma: 1.0, epsilon: 1.0, ratio: 0.5, color: '#00d4ff' },
+        { sigma: 1.2, epsilon: 0.5, ratio: 0.5, color: '#f59e0b' }
+    ]
+};
+let mouse = { active: false, x: 0, y: 0 };
+let engine = null;
+let history = [];
+let isPlaying = false;
+
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+const chartCanvas = document.getElementById('chartCanvas');
+const cctx = chartCanvas.getContext('2d');
+const tempCanvas = document.getElementById('tempCanvas');
+const presCanvas = document.getElementById('presCanvas');
+const densCanvas = document.getElementById('densCanvas');
+const tTemp = tempCanvas.getContext('2d');
+const tPres = presCanvas.getContext('2d');
+const tDens = densCanvas.getContext('2d');
+
+// --- MD ENGINE ---
+class MDEngine {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        const area = params.boxW * params.boxH;
+        const N = Math.floor(params.density * area);
+        this.N = N;
+        particles = [];
+        
+        const totalRatio = params.types.reduce((acc, t) => acc + t.ratio, 0);
+        let currentRatioSum = 0;
+        const cumulativeRatios = params.types.map(t => {
+            currentRatioSum += t.ratio / totalRatio;
+            return currentRatioSum;
+        });
+
+        const maxAttempts = 100;
+        for(let i=0; i<N; i++) {
+            const rand = Math.random();
+            let type = 0;
+            for(let k=0; k<cumulativeRatios.length; k++) {
+                if(rand < cumulativeRatios[k]) { type = k; break; }
+            }
+
+            const sigma = params.types[type].sigma;
+            let placed = false;
+            for(let attempt=0; attempt<maxAttempts; attempt++) {
+                const x = Math.random() * params.boxW;
+                const y = Math.random() * params.boxH;
+                let overlap = false;
+                for(const p of particles) {
+                    let dx = x - p.x, dy = y - p.y;
+                    if(dx > params.boxW/2) dx -= params.boxW; if(dx < -params.boxW/2) dx += params.boxW;
+                    if(dy > params.boxH/2) dy -= params.boxH; if(dy < -params.boxH/2) dy += params.boxH;
+                    const r2 = dx*dx + dy*dy;
+                    if(r2 < (sigma + params.types[p.type].sigma)**2 * 0.2) { overlap = true; break; }
+                }
+                if(!overlap) {
+                    particles.push({ x, y, vx:(Math.random()-0.5), vy:(Math.random()-0.5), ax:0, ay:0, type });
+                    placed = true; break;
+                }
+            }
+            if(!placed) particles.push({ x:Math.random()*params.boxW, y:Math.random()*params.boxH, vx:0, vy:0, ax:0, ay:0, type });
+        }
+
+        this.zeroMomentum();
+        this.minimizeEnergy(100);
+        this.computeForces();
+    }
+
+    minimizeEnergy(steps) {
+        const alpha = 0.0005;
+        for(let s=0; s<steps; s++) {
+            this.computeForces();
+            particles.forEach(p => {
+                const dx = Math.max(-0.1, Math.min(0.1, p.ax * alpha));
+                const dy = Math.max(-0.1, Math.min(0.1, p.ay * alpha));
+                p.x += dx; p.y += dy;
+                if(p.x < 0) p.x += params.boxW; if(p.x > params.boxW) p.x -= params.boxW;
+                if(p.y < 0) p.y += params.boxH; if(p.y > params.boxH) p.y -= params.boxH;
+            });
+        }
+    }
+
+    zeroMomentum() {
+        let svx=0, svy=0;
+        particles.forEach(p => { svx += p.vx; svy += p.vy; });
+        particles.forEach(p => { p.vx -= svx/this.N; p.vy -= svy/this.N; });
+    }
+
+    computeForces() {
+        this.pot = 0; this.virial = 0;
+        particles.forEach(p => { p.ax = 0; p.ay = 0; });
+
+        const rcSq = params.cutoff * params.cutoff;
+
+        for(let i=0; i<this.N; i++) {
+            const p = particles[i];
+            
+            // Mouse Interaction
+            if(mouse.active) {
+                let mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+                if(mdx > params.boxW/2) mdx -= params.boxW; if(mdx < -params.boxW/2) mdx += params.boxW;
+                if(mdy > params.boxH/2) mdy -= params.boxH; if(mdy < -params.boxH/2) mdy += params.boxH;
+                const mr2 = mdx*mdx + mdy*mdy;
+                if(mr2 < 16) { // 4 sigma range
+                    const f = 50 * (1 - Math.sqrt(mr2)/4);
+                    p.ax -= f * mdx; p.ay -= f * mdy;
+                }
+            }
+
+            for(let j=i+1; j<this.N; j++) {
+                const p1 = particles[i], p2 = particles[j];
+                let dx = p1.x - p2.x, dy = p1.y - p2.y;
+                if(dx > params.boxW/2) dx -= params.boxW; if(dx < -params.boxW/2) dx += params.boxW;
+                if(dy > params.boxH/2) dy -= params.boxH; if(dy < -params.boxH/2) dy += params.boxH;
+
+                const r2 = dx*dx + dy*dy;
+                if(r2 < rcSq) {
+                    const t1 = params.types[p1.type], t2 = params.types[p2.type];
+                    const sigma = (t1.sigma + t2.sigma) / 2;
+                    const epsilon = Math.sqrt(t1.epsilon * t2.epsilon);
+                    const s2 = (sigma * sigma) / r2;
+                    const s6 = s2 * s2 * s2;
+                    const s12 = s6 * s6;
+
+                    // Shift potential: V(rc) = 4 * eps * ((sig/rc)^12 - (sig/rc)^6)
+                    const s2_rc = (sigma * sigma) / rcSq;
+                    const s6_rc = s2_rc * s2_rc * s2_rc;
+                    const v_rc = 4 * epsilon * (s6_rc * s6_rc - s6_rc);
+
+                    let force = 48 * epsilon * s12 * (s12 - 0.5) / r2;
+                    // Force capping for stability
+                    if(force > 2000) force = 2000;
+                    
+                    p1.ax += force * dx; p1.ay += force * dy;
+                    p2.ax -= force * dx; p2.ay -= force * dy;
+
+                    this.pot += 4 * epsilon * (s12 - s6) - v_rc;
+                    this.virial += force * r2;
+                }
+            }
+        }
+    }
+
+    step() {
+        const dt = params.dt;
+        particles.forEach(p => {
+            p.x += p.vx * dt + 0.5 * p.ax * dt * dt;
+            p.y += p.vy * dt + 0.5 * p.ay * dt * dt;
+            if(p.x < 0) p.x += params.boxW; if(p.x > params.boxW) p.x -= params.boxW;
+            if(p.y < 0) p.y += params.boxH; if(p.y > params.boxH) p.y -= params.boxH;
+            p.vx += 0.5 * p.ax * dt; p.vy += 0.5 * p.ay * dt;
+        });
+
+        this.computeForces();
+
+        this.kin = 0;
+        particles.forEach(p => {
+            p.vx += 0.5 * p.ax * dt; p.vy += 0.5 * p.ay * dt;
+            this.kin += 0.5 * (p.vx*p.vx + p.vy*p.vy);
+        });
+
+        this.temp = this.kin / this.N; // 2D: T = KE/N (kb=1)
+        this.pres = (this.N * this.temp + 0.5 * this.virial) / (params.boxW * params.boxH);
+    }
+
+    applyThermostat() {
+        if(!params.thermo || this.temp < 1e-6) return;
+        const factor = Math.sqrt(params.temp / this.temp);
+        particles.forEach(p => { p.vx *= factor; p.vy *= factor; });
+    }
+
+    applyBarostat() {
+        if(params.ensemble !== 'NPT') return;
+        const scale = Math.sqrt(1 - 0.5 * (params.dt / 1.0) * (params.targetP - this.pres));
+        const clamped = Math.max(0.95, Math.min(1.05, scale));
+        params.boxW *= clamped; params.boxH *= clamped;
+        particles.forEach(p => { p.x *= clamped; p.y *= clamped; });
+    }
+}
+
+// --- UI HELPERS ---
+function setEns(e, btn) {
+    params.ensemble = e;
+    document.querySelectorAll('#ensGrp button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('presRow').style.display = e === 'NPT' ? 'flex' : 'none';
+}
+
+function updateVal(id, v) {
+    const val = parseFloat(v);
+    document.getElementById('val' + id).textContent = val.toFixed(2);
+    if(id === 'Temp') params.temp = val;
+    if(id === 'Pres') params.targetP = val;
+    if(id === 'Dens') params.density = val;
+    if(id === 'Cut') params.cutoff = val;
+    if(id === 'Lx') params.boxW = val;
+    if(id === 'Ly') params.boxH = val;
+    if(id === 'Speed') params.speed = val;
+    if(id === 'RampGoal') params.rampGoal = val;
+    if(id === 'RampRate') params.rampRate = val;
+}
+
+function resetSim() {
+    engine = new MDEngine();
+    history = [];
+    updateStats();
+    draw();
+}
+
+function updateStats() {
+    document.getElementById('statTemp').textContent = engine.temp.toFixed(2);
+    document.getElementById('statPres').textContent = engine.pres.toFixed(2);
+    document.getElementById('statTotal').textContent = ((engine.pot + engine.kin)/engine.N).toFixed(2);
+    
+    // Sync UI with NPT state
+    let dens = params.density;
+    if(params.ensemble === 'NPT') {
+        dens = engine.N / (params.boxW * params.boxH);
+        params.density = dens;
+        ['Lx', 'Ly', 'Dens'].forEach(id => {
+            const el = document.getElementById('input' + id);
+            const val = id === 'Dens' ? dens : (id === 'Lx' ? params.boxW : params.boxH);
+            if (document.activeElement !== el) {
+                el.value = val;
+                document.getElementById('val' + id).textContent = val.toFixed(2);
+            }
+        });
+    }
+
+    history.push({ 
+        p: engine.pot/engine.N, k: engine.kin/engine.N, t: (engine.pot+engine.kin)/engine.N,
+        temp: engine.temp, pres: engine.pres, dens: dens
+    });
+    // Cap memory but keep a long history for "fixed start" compression
+    if(history.length > 20000) history.shift();
+}
+
+function draw() {
+    ctx.clearRect(0,0,600,600);
+    const scale = Math.min(580/params.boxW, 580/params.boxH);
+    const ox = (600 - params.boxW*scale)/2, oy = (600 - params.boxH*scale)/2;
+
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(ox, oy, params.boxW*scale, params.boxH*scale);
+
+    // Box dimensions labels
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.font = 'bold 10px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${params.boxW.toFixed(1)}σ`, ox + (params.boxW*scale)/2, oy - 8);
+    ctx.save();
+    ctx.translate(ox - 8, oy + (params.boxH*scale)/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText(`${params.boxH.toFixed(1)}σ`, 0, 0);
+    ctx.restore();
+
+    particles.forEach(p => {
+        const type = params.types[p.type];
+        let baseColor = type.color;
+        if(params.heatmap) {
+            const v2 = p.vx*p.vx + p.vy*p.vy;
+            const t = Math.min(v2 / (4 * params.temp), 1);
+            baseColor = `hsl(${200 - t*200}, 80%, 50%)`;
+        }
+
+        const cx = ox + p.x*scale;
+        const cy = oy + p.y*scale;
+        const rad = 0.48 * type.sigma * scale;
+
+        // Metallic Gradient
+        const grad = ctx.createRadialGradient(cx - rad*0.35, cy - rad*0.35, rad*0.05, cx, cy, rad);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.3, baseColor);
+        grad.addColorStop(0.8, baseColor);
+        grad.addColorStop(1, '#000'); 
+
+        ctx.fillStyle = grad;
+        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetY = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, rad, 0, 7);
+        ctx.fill();
+    });
+    ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+
+    drawChart();
+}
+
+function drawChart() {
+    cctx.clearRect(0,0,1060,150);
+    if(history.length < 2) return;
+    const w = 1060, h = 150;
+    // Scale full history if possible
+    const n = Math.max(history.length, 250);
+    const dx = w / n;
+
+    // Find min/max for scaling
+    let minV = Infinity, maxV = -Infinity;
+    history.forEach(d => {
+        minV = Math.min(minV, d.p, d.k, d.t);
+        maxV = Math.max(maxV, d.p, d.k, d.t);
+    });
+    const range = (maxV - minV) || 1;
+    const pad = range * 0.1;
+
+    const drawLine = (key, color) => {
+        cctx.beginPath();
+        cctx.strokeStyle = color;
+        cctx.lineWidth = 1.5;
+        history.forEach((d, i) => {
+            const x = i * dx;
+            const y = h - 10 - ((d[key] - (minV - pad)) / (range + 2*pad)) * (h - 20);
+            i === 0 ? cctx.moveTo(x, y) : cctx.lineTo(x, y);
+        });
+        cctx.stroke();
+    };
+
+    drawLine('p', '#a855f7');
+    drawLine('k', '#f59e0b');
+    drawLine('t', '#10b981');
+
+    // Legend
+    cctx.font = '9px JetBrains Mono';
+    cctx.textAlign = 'left';
+    const items = [{l:'Potential', c:'#a855f7'}, {l:'Kinetic', c:'#f59e0b'}, {l:'Total', c:'#10b981'}];
+    items.forEach((it, i) => {
+        cctx.fillStyle = it.c;
+        cctx.fillRect(10, 10 + i*13, 8, 8);
+        cctx.fillStyle = 'rgba(15, 23, 42, 0.7)';
+        cctx.fillText(it.l, 25, 17 + i*13);
+    });
+}
+
+function drawThermo() {
+    tTemp.clearRect(0,0,400,70);
+    tPres.clearRect(0,0,400,70);
+    tDens.clearRect(0,0,400,70);
+    if(history.length < 2) return;
+    const w = 400, h = 70;
+    const n = Math.max(history.length, 250);
+    const dx = w / n;
+
+    const drawVar = (ctxObj, key, color) => {
+        let minV = Infinity, maxV = -Infinity;
+        history.forEach(d => { minV = Math.min(minV, d[key]); maxV = Math.max(maxV, d[key]); });
+        // Add padding
+        const pad = (maxV - minV) * 0.1 || 0.1;
+        minV -= pad; maxV += pad;
+        const range = maxV - minV;
+
+        ctxObj.beginPath();
+        ctxObj.strokeStyle = color;
+        ctxObj.lineWidth = 1.5;
+        history.forEach((d, i) => {
+            const x = i * dx;
+            const y = h - 5 - ((d[key] - minV) / range) * (h - 10);
+            i === 0 ? ctxObj.moveTo(x, y) : ctxObj.lineTo(x, y);
+        });
+        ctxObj.stroke();
+    };
+
+    drawVar(tTemp, 'temp', '#ef4444');
+    drawVar(tPres, 'pres', '#3b82f6');
+    drawVar(tDens, 'dens', '#10b981');
+}
+
+function loop() {
+    if(!isPlaying) return;
+
+    // Thermal Protocol Ramp
+    if(params.rampActive) {
+        const diff = params.rampGoal - params.temp;
+        const totalTime = params.dt * Math.ceil(params.speed * 2);
+        const deltaT = params.rampRate * totalTime;
+        if(Math.abs(diff) <= deltaT) {
+            params.temp = params.rampGoal;
+            params.rampActive = false;
+            document.getElementById('checkRamp').checked = false;
+        } else {
+            params.temp += Math.sign(diff) * deltaT;
+        }
+        // Update sync
+        document.getElementById('inputTemp').value = params.temp;
+        document.getElementById('valTemp').textContent = params.temp.toFixed(2);
+    }
+
+    // Decouple speed from dt
+    const steps = Math.ceil(params.speed * 2); // default speed 1.0 = 2 steps of 0.01
+    for(let i=0; i<steps; i++) {
+        engine.step();
+        engine.applyThermostat();
+        engine.applyBarostat();
+    }
+    updateStats();
+    draw();
+    drawThermo();
+    requestAnimationFrame(loop);
+}
+
+// --- TAB CONTROL ---
+function setTab(t) {
+    document.getElementById('panelPhys').style.display = t === 'Phys' ? 'flex' : 'none';
+    document.getElementById('panelTherm').style.display = t === 'Therm' ? 'flex' : 'none';
+    document.getElementById('panelPart').style.display = t === 'Part' ? 'flex' : 'none';
+    document.getElementById('tabPhys').style.opacity = t === 'Phys' ? '1' : '0.5';
+    document.getElementById('tabTherm').style.opacity = t === 'Therm' ? '1' : '0.5';
+    document.getElementById('tabPart').style.opacity = t === 'Part' ? '1' : '0.5';
+    if(t === 'Part') renderTypeList();
+}
+
+function applyPreset(t, d) {
+    params.temp = t;
+    params.density = d;
+    document.getElementById('inputTemp').value = t;
+    document.getElementById('valTemp').textContent = t.toFixed(2);
+    document.getElementById('inputDens').value = d;
+    document.getElementById('valDens').textContent = d.toFixed(2);
+    resetSim();
+}
+
+function renderTypeList() {
+    const list = document.getElementById('typeList');
+    list.innerHTML = '';
+    params.types.forEach((t, i) => {
+        const div = document.createElement('div');
+        div.style = 'background:rgba(255,255,255,0.03); padding:10px; border-radius:8px; border:1px solid var(--bd); position:relative';
+        div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px">
+                <span style="font-size:10px; color:var(--mu); font-family:'JetBrains Mono'">TYPE ${i+1}</span>
+                ${params.types.length > 1 ? `<span onclick="removeType(${i})" style="cursor:pointer; color:var(--rd); font-size:10px">✕ REMOVE</span>` : ''}
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+                <div class="cfs"><div class="cfl">SIGMA</div><input type="number" step="0.1" value="${t.sigma}" onchange="updateType(${i}, 'sigma', this.value)" style="background:var(--bg); border:1px solid var(--bd); color:var(--tx); padding:2px 5px; border-radius:4px; font-size:11px"></div>
+                <div class="cfs"><div class="cfl">EPSILON</div><input type="number" step="0.1" value="${t.epsilon}" onchange="updateType(${i}, 'epsilon', this.value)" style="background:var(--bg); border:1px solid var(--bd); color:var(--tx); padding:2px 5px; border-radius:4px; font-size:11px"></div>
+                <div class="cfs"><div class="cfl">RATIO</div><input type="number" step="0.1" value="${t.ratio}" onchange="updateType(${i}, 'ratio', this.value)" style="background:var(--bg); border:1px solid var(--bd); color:var(--tx); padding:2px 5px; border-radius:4px; font-size:11px"></div>
+                <div class="cfs"><div class="cfl">COLOR</div><input type="color" value="${t.color}" onchange="updateType(${i}, 'color', this.value)" style="background:none; border:none; width:100%; height:20px; cursor:pointer"></div>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+function updateType(i, key, val) {
+    params.types[i][key] = key === 'color' ? val : parseFloat(val);
+}
+
+function addType() {
+    if(params.types.length >= 6) return;
+    const colors = ['#00d4ff', '#f59e0b', '#ef4444', '#10b981', '#a855f7', '#ec4899'];
+    params.types.push({ sigma: 1.0, epsilon: 1.0, ratio: 0.5, color: colors[params.types.length] });
+    renderTypeList();
+}
+
+function removeType(i) {
+    params.types.splice(i, 1);
+    renderTypeList();
+}
+
+document.getElementById('playBtn').onclick = () => {
+    isPlaying = !isPlaying;
+    document.getElementById('playBtn').innerHTML = isPlaying ? '⏸ Pause' : '▶ Play';
+    if(isPlaying) loop();
+};
+
+document.getElementById('resetBtn').onclick = resetSim;
+document.getElementById('checkThermo').onchange = (e) => params.thermo = e.target.checked;
+
+canvas.onmousedown = (e) => { mouse.active = true; updateMouse(e); };
+window.onmousemove = (e) => { if(mouse.active) updateMouse(e); };
+window.onmouseup = () => mouse.active = false;
+
+function updateMouse(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scale = Math.min(580/params.boxW, 580/params.boxH);
+    const ox = (600 - params.boxW*scale)/2, oy = (600 - params.boxH*scale)/2;
+    mouse.x = (e.clientX - rect.left - ox) / scale;
+    mouse.y = (e.clientY - rect.top - oy) / scale;
+}
+
+resetSim();
+</script>
+</body>
+</html>

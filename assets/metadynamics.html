@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metadynamics & OPES Explorer</title>
+    <!-- MathJax Configuration & Load -->
+    <script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        startup: {
+            ready: () => {
+                MathJax.startup.defaultReady();
+                MathJax.startup.promise.then(() => {
+                    // Re-typeset after DOM is ready
+                    MathJax.typesetPromise();
+                });
+            }
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Nunito:wght@700;800;900&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #0f172a;
+            --tx: #0f172a;
+            --tx-dim: #475569;
+            --ac: #2563eb;
+            --ac-glow: transparent;
+            --gradient: linear-gradient(135deg, #1e40af, #3b82f6);
+            --orange: #d97706;
+            --danger: #be123c;
+            --green: #047857;
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            color: var(--tx);
+            font-family: var(--font-main);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        header {
+            padding: 1rem 5%;
+            background: #ffffff;
+            border-bottom: 2px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo h1 {
+            font-family: var(--font-heading);
+            font-size: 1.75rem; font-weight: 900;
+            background: var(--gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .logo p { font-size: 0.75rem; color: var(--tx-dim); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; opacity: 0.8; }
+
+        .container {
+            max-width: 1400px; margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid; grid-template-columns: 1fr 340px; gap: 2rem;
+            grid-template-areas: "main controls" "subs controls";
+        }
+        .main-col { grid-area: main; display: flex; flex-direction: column; gap: 24px; }
+        .subs-col { grid-area: subs; margin-top: -12px; }
+        .controls-col { grid-area: controls; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 2.5px solid var(--border);
+            padding: 0; border-radius: 14px;
+            box-shadow: 8px 8px 0px var(--border);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-2px); }
+        .card-header {
+            padding: 1.1rem 1.7rem;
+            border-bottom: 2px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(241, 245, 249, 0.9);
+        }
+        .card-title { font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: var(--tx); text-transform: uppercase; letter-spacing: 1.2px; }
+
+        .vis-container {
+            position: relative; width: 100%; aspect-ratio: 16/10; background: #ffffff;
+            background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1.5px, transparent 1.5px);
+            background-size: 30px 30px;
+        }
+        canvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
+
+        .controls { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        .control-group { display: flex; flex-direction: column; gap: 0.65rem; }
+        .control-header { display: flex; justify-content: space-between; align-items: center; }
+        .control-label { font-size: 0.75rem; color: var(--tx-dim); font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
+        .control-val { font-family: 'Outfit', monospace; font-size: 0.9rem; color: var(--tx); font-weight: 800; padding: 2px 8px; background: #f1f5f9; border-radius: 4px; }
+
+        .btn-group { display: flex; gap: 12px; width: 100%; }
+        .btn {
+            background: #ffffff;
+            color: var(--tx);
+            padding: 12px 20px; border-radius: 10px;
+            font-size: 0.8rem; font-family: var(--font-heading); font-weight: 900;
+            cursor: pointer; flex: 1;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 3px solid var(--border);
+            box-shadow: 4.5px 4.5px 0px var(--border);
+            text-transform: uppercase; letter-spacing: 0.8px;
+        }
+        .btn:hover { background: #f8fafc; transform: translate(-3px, -3px); box-shadow: 7.5px 7.5px 0px var(--border); }
+        .btn:active { transform: translate(1px, 1px); box-shadow: 2px 2px 0px var(--border); }
+        .btn.primary { background: var(--ac); color: white; border-color: var(--border); }
+        .btn.primary:hover { background: #1e40af; }
+        .btn.danger { color: #ffffff; background: var(--danger); border-color: var(--border); }
+
+        .tabs {
+            display: flex; background: rgba(203, 213, 225, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 5px; border-radius: 14px; border: 3px solid var(--border);
+            gap: 6px;
+        }
+        .tab {
+            flex: 1; padding: 10px 18px; text-align: center;
+            font-size: 0.75rem; font-weight: 900; font-family: var(--font-heading);
+            text-transform: uppercase; color: var(--tx-dim);
+            cursor: pointer; border-radius: 10px; transition: all 0.25s;
+        }
+        .tab.active { background: #ffffff; color: var(--tx); box-shadow: 4px 4px 0px var(--border); border: 2.5px solid var(--border); }
+        .tab-secondary.active { background: var(--ac); color: white; border: 2.5px solid var(--border); }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1px; background: var(--border); border: 2.5px solid var(--border);
+            border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+            overflow: hidden;
+        }
+        .stat-box {
+            display: flex; flex-direction: column; gap: 8px; padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            transition: background 0.2s;
+        }
+        .stat-box:hover { background: #f8fafc; }
+        .stat-label { font-size: 0.65rem; color: var(--tx-dim); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 900; }
+        .stat-val { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--ac); }
+
+
+        input[type=range] {
+            -webkit-appearance: none; appearance: none; width: 100%; background: transparent; cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px;
+            border: 1px solid var(--border);
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 18px; width: 18px; border-radius: 4px;
+            background: #ffffff; cursor: pointer; margin-top: -7px;
+            border: 2px solid var(--border);
+            box-shadow: 2px 2px 0px var(--border);
+        }
+
+        .theory-card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 2rem; margin-top: 2rem; }
+        .theory-title { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; }
+        .theory-content { font-size: 0.85rem; color: var(--tx-dim); line-height: 1.7; display: flex; flex-direction: column; gap: 1.5rem; }
+        .theory-box { padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); }
+
+        .traj-panel {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem; display: flex; flex-direction: column; gap: 12px;
+            box-shadow: 6px 6px 0px var(--border);
+        }
+
+
+        .conv-panel { margin-top: 1rem; padding: 1.25rem; background: #f8fafc; border-radius: 8px; border: 2px solid var(--border); }
+        .conv-title { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1rem; color: var(--tx); letter-spacing: 1px; }
+        .conv-chart { height: 80px; width: 100%; margin: 12px 0; background: #ffffff; border-radius: 4px; border: 2px solid var(--border); overflow: hidden; position: relative; }
+        .conv-chart svg { display: block; }
+
+        .switch { position: relative; display: inline-block; width: 32px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 20px; border: 1px solid var(--border); }
+        .slider:before { position: absolute; content: ""; height: 10px; width: 10px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; border: 1px solid var(--border); }
+        input:checked + .slider { background: var(--ac); }
+        input:checked + .slider:before { transform: translateX(14px); }
+
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--tx-dim); }
+        .legend-color { width: 8px; height: 8px; border-radius: 2px; }
+        .status-badge {
+            font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;
+            padding: 4px 8px; border-radius: 6px; display: inline-block;
+        }
+
+        /* Animations */
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); text-shadow: 0 0 5px rgba(249,115,22,0.8); }
+            70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); text-shadow: none; }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+        }
+        @keyframes pulse-danger {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .status-exploring { color: white; background: var(--green); border: 2px solid var(--border); }
+        .status-escaping { color: white; background: var(--orange); border: 2px solid var(--border); }
+        .status-trapped { color: white; background: var(--danger); border: 2px solid var(--border); }
+        .status-stuck { color: var(--tx-dim); border: 1px solid var(--border); background: #f1f5f9; }
+
+        .well-label { position: absolute; font-family: var(--font-heading); font-size: 10px; font-weight: 800; color: rgba(255,255,255,0.5); pointer-events: none; }
+    </style>
+
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Sampling Explorer</h1>
+        <p>Interactive Enhanced Sampling </p>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <div class="tabs" id="samplingTabs">
+            <div class="tab" data-method="Unbiased">Unbiased</div>
+            <div class="tab active" data-method="MetaD">Metadynamics</div>
+            <div class="tab" data-method="OPES">OPES</div>
+        </div>
+        <div class="tabs" id="modeTabs">
+            <div class="tab tab-secondary active" data-mode="2D">2D Mode</div>
+            <div class="tab tab-secondary" data-mode="1D">1D Mode</div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <!-- Main Channel -->
+    <div class="main-col">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Free Energy Surface (FES) • Educational Schematic View</div>
+                <div style="display:flex; gap:16px;">
+                    <div class="legend-item"><div class="legend-color" style="background:#0f172a; border:1px solid #000"></div> Target PMF</div>
+                    <div class="legend-item" id="legBias"><div class="legend-color" style="background:rgba(37, 99, 235, 0.2); border:1px solid #2563eb"></div> Bias V(s)</div>
+                    <div class="legend-item" id="legTotal"><div class="legend-color" style="background:var(--danger)"></div> Estimated FES</div>
+                    <div class="legend-item"><div class="legend-color" style="background:var(--orange); border: 2px solid var(--border); border-radius:50%;"></div> Particle</div>
+                </div>
+            </div>
+            <div class="vis-container">
+                <canvas id="simCanvas"></canvas>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">CV 1 ($s_1$)</div>
+                    <div class="stat-val" id="valPosX">0.000</div>
+                </div>
+                <div class="stat-box" id="boxPosY">
+                    <div class="stat-label">CV 2 ($s_2$)</div>
+                    <div class="stat-val" id="valPosY">0.000</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Force Mag</div>
+                    <div class="stat-val" id="valForce">0.000</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Gaussians</div>
+                    <div class="stat-val" id="valGaussians">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">System Status</div>
+                    <div class="stat-val status-badge" id="valStatus" style="font-size: 14px; margin-top: 8px;">TRAPPED</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="traj-panel">
+            <div class="conv-title">Trajectory Trace & Basin Crossings</div>
+            <div class="conv-chart" id="trajChart" style="height:120px; width:100%; filter:none;"></div>
+        </div>
+    </div>
+
+    <!-- Controls Channel -->
+    <div class="controls-col">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Controls</div>
+            </div>
+            <div class="controls">
+                <div class="btn-group">
+                    <button class="btn primary" id="btnPlay">▶ Play</button>
+                    <button class="btn" onclick="offscreen.width=0; engine.resetPotential(); draw();">↺ Reset</button>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-header">
+                        <div class="control-label">Hill Height ($W_0$)</div>
+                        <div class="control-val" id="dispHeight">0.20</div>
+                    </div>
+                    <input type="range" id="inputHeight" min="0.01" max="1.0" step="0.01" value="0.2">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-header">
+                        <div class="control-label">Hill Width ($\sigma$)</div>
+                        <div class="control-val" id="dispSigma">0.10</div>
+                    </div>
+                    <input type="range" id="inputSigma" min="0.05" max="0.3" step="0.01" value="0.1">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-header">
+                        <div class="control-label">Pace ($\tau_{\text{dep}}$)</div>
+                        <div class="control-val" id="dispFreq">100</div>
+                    </div>
+                    <input type="range" id="inputFreq" min="10" max="500" step="10" value="100">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-header">
+                        <div class="control-label">Temperature ($k_B T$)</div>
+                        <div class="control-val" id="dispTemp">0.50</div>
+                    </div>
+                    <input type="range" id="inputTemp" min="0.1" max="2.0" step="0.05" value="0.5">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-header">
+                        <div class="control-label">Sim Speed</div>
+                        <div class="control-val" id="dispSpeed">1x</div>
+                    </div>
+                    <input type="range" id="inputSpeed" min="1" max="20" step="1" value="1">
+                </div>
+
+                <div style="border-top: 1px solid rgba(20,20,20,0.1); margin: 4px 0;"></div>
+
+                <div id="metaControls">
+                    <label class="toggle-row">
+                        <span class="control-label">Well-Tempered</span>
+                        <label class="switch">
+                            <input type="checkbox" id="checkWT" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                    <div class="control-group" id="rowBiasFactor" style="margin-top: 16px;">
+                        <div class="control-header">
+                            <div class="control-label">Bias Factor (γ)</div>
+                            <div class="control-val" id="dispBF">10.0</div>
+                        </div>
+                        <input type="range" id="inputBF" min="1.1" max="50" step="0.1" value="10.0">
+                    </div>
+                </div>
+
+                <div id="opesControls" style="display: none;">
+                    <div class="control-group">
+                        <div class="control-header">
+                            <div class="control-label">OPES Barrier</div>
+                            <div class="control-val" id="dispOB">5.0</div>
+                        </div>
+                        <input type="range" id="inputOB" min="1.0" max="20" step="0.5" value="5.0">
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid rgba(20,20,20,0.1); margin: 4px 0;"></div>
+
+                <div class="control-group">
+                    <label class="toggle-row">
+                        <span class="control-label">Show Bias</span>
+                        <label class="switch">
+                            <input type="checkbox" id="checkShowBias" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                    <label class="toggle-row" id="rowShowTotal">
+                        <span class="control-label">Show Total</span>
+                        <label class="switch">
+                            <input type="checkbox" id="checkShowTotal" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+
+                <button class="btn danger" onclick="engine.resetBias(); histogram=new Array(100).fill(0); path=[]; draw();">Clear Bias Only</button>
+                <div class="conv-panel">
+                    <div class="conv-title" id="convTitle">PMF vs Est. FES Similarity</div>
+                    <div id="convContainer" style="display:flex; flex-direction:column; gap:8px;">
+                        <div class="conv-chart" id="convChart"></div>
+                        <div class="conv-chart" id="convChart2" style="display:none;"></div>
+                    </div>
+                    <div class="stat-box" style="padding: 10px 0 0; background:none;" id="statBoxRMSD">
+                        <div class="stat-label" id="labelRMSD">RMSE (FES Accuracy)</div>
+                        <div class="stat-val" id="valRMSD" style="font-size:0.9rem;">0.000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="theory-card">
+        <div class="theory-title">Theoretical Background</div>
+        <div class="theory-content">
+            <div class="theory-box">
+                <strong>Collective Variables (CVs):</strong>
+                Enhanced sampling requires mapping the high-dimensional configuration space $\mathbf{R}$ to a set of low-dimensional descriptors $s(\mathbf{R})$. In this explorer, $s_1$ and $s_2$ represent the spatial coordinates.
+            </div>
+
+            <div class="theory-box">
+                <strong>Metadynamics (MetaD):</strong>
+                A history-dependent bias potential $V(s, t)$ is constructed by depositing Gaussians at the current CV position $\mathbf{s}_t$:
+                $$V(s, t) = \sum_{t' < t} W_0 \exp\left(-\frac{|\mathbf{s} - \mathbf{s}_{t'}|^2}{2\sigma^2}\right)$$
+                In <em>Well-Tempered</em> Metadynamics, the hill height is scaled: $W = W_0 \exp\left(-\frac{V(s,t)}{k_B \Delta T}\right)$.
+            </div>
+
+            <div class="theory-box">
+                <strong>On-the-fly Probability Enhanced Sampling (OPES):</strong>
+                OPES targets a specific distribution by adaptively estimating the bias. The probability $P(s)$ is refined as:
+                $$V(s, t) = (1 - 1/\gamma) k_B T \ln\left(\frac{P(s, t)}{Z} + \epsilon\right)$$
+            </div>
+
+            <div class="theory-box">
+                <strong>Free Energy Surface (FES):</strong>
+                The goal is to conduct reweighting to obtain the FES, $G(s) = -k_B T \ln P(s)$. As $t \to \infty$, $G(s) \approx -V(s, t) \frac{\gamma}{\gamma - 1}$.
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+// --- METADYNAMICS ENGINE ---
+const SamplingMethod = {
+    UNBIASED: 'Unbiased',
+    METAD: 'MetaD',
+    OPES: 'OPES'
+};
+
+class MetadynamicsEngine {
+    constructor() {
+        // Muller-Brown parameters
+        this.MB_A = [-200, -100, -170, 15];
+        this.MB_a = [-1, -1, -6.5, 0.7];
+        this.MB_b = [0, 0, 11, 0.6];
+        this.MB_c = [-10, -10, -6.5, 0.7];
+        this.MB_x0 = [1, 0, -0.5, -1];
+        this.MB_y0 = [0, 0.5, 1.5, 1];
+
+        this.x = 0; this.y = 0;
+        this.biasGaussians = [];
+        this.is2D = true;
+
+        this.temp = 0.5; this.friction = 1.0; this.dt = 0.01;
+        this.gHeight = 0.2; this.gSigma = 0.1; this.depFreq = 100;
+        this.stepCount = 0;
+        this.isWT = true; this.biasFactor = 10.0;
+
+        // OPES & Reweighting
+        this.samplingMethod = SamplingMethod.METAD;
+        this.opesBarrier = 5.0;
+        this.rmsdHistory = [];
+
+        this.resetPotential();
+    }
+
+    resetBias() {
+        this.biasGaussians = [];
+        this.stepCount = 0;
+    }
+
+    resetPotential() {
+        if(this.is2D) {
+            this.x = -0.5; this.y = 1.5;
+        } else {
+            this.x = -1.5;
+        }
+        this.resetBias();
+        this.rmsdHistory = [];
+        if(typeof path !== 'undefined') path = [];
+        if(typeof histogram !== 'undefined') histogram = new Array(100).fill(0);
+    }
+
+    // Get the effective bias factor (gamma) for the current method
+    getEffectiveGamma() {
+        if (this.samplingMethod === SamplingMethod.OPES) {
+            // OPES: gamma is derived from the barrier estimate
+            // gamma = exp(barrier / kT), clamped to avoid overflow
+            const beta = 1 / this.temp;
+            return Math.min(1e6, Math.exp(this.opesBarrier * beta));
+        }
+        return this.biasFactor;
+    }
+
+    getWTHeight(currentBias) {
+        if (this.samplingMethod === SamplingMethod.OPES) {
+            // OPES uses well-tempered scaling with a gamma derived from the barrier
+            const gamma = this.getEffectiveGamma();
+            const deltaT = this.temp * (gamma - 1);
+            if (deltaT <= 0) return this.gHeight;
+            return this.gHeight * Math.exp(-currentBias / deltaT);
+        }
+
+        if(!this.isWT) return this.gHeight;
+        const deltaT = this.temp * (this.biasFactor - 1);
+        if(deltaT <= 0) return this.gHeight;
+        return this.gHeight * Math.exp(-currentBias / deltaT);
+    }
+
+    getOrig1D(x) {
+        // Rugged Multi-well: Base wells + Ripples + Significant Bump
+        // Boundaries are made steeper (0.4x^2) and center bump reduced (1.2) for pedagogical clarity
+        let base = 4 * (Math.cos(x*2.2) + Math.cos(x*1.4) + 0.4*x*x) + 0.2*x;
+        let ripples = 0.3 * Math.cos(x * 20);
+        let bump = 1.2 * Math.exp(-Math.pow(x - 0.8, 2) / 0.05);
+        return base + ripples + bump;
+    }
+    getGrad1D(x) {
+        const h = 0.001;
+        return (this.getOrig1D(x+h) - this.getOrig1D(x-h)) / (2*h);
+    }
+
+    getBias1D(x) {
+        if(this.samplingMethod === SamplingMethod.UNBIASED) return 0;
+        let b = 0, sig2 = 2 * this.gSigma * this.gSigma;
+        for(let g of this.biasGaussians) {
+            let dx = x - g.x;
+            b += g.height * Math.exp(-(dx*dx) / sig2);
+        }
+        return b;
+    }
+    getBiasGrad1D(x) {
+        if(this.samplingMethod === SamplingMethod.UNBIASED) return 0;
+        let grad = 0, sig2 = this.gSigma * this.gSigma, sig2_2 = 2 * sig2;
+        for(let g of this.biasGaussians) {
+            let dx = x - g.x;
+            grad += g.height * Math.exp(-(dx*dx) / sig2_2) * (-dx / sig2);
+        }
+        return grad;
+    }
+
+    step1D() {
+        let gradV = this.getGrad1D(this.x);
+        let gradB = this.getBiasGrad1D(this.x);
+
+        // Force clamping for stability
+        let f = gradV + gradB;
+        if (Math.abs(f) > 500) f = Math.sign(f) * 500;
+
+        const noise = Math.sqrt((2 * this.temp * this.dt) / this.friction) * (Math.random()*2 - 1);
+        this.x += -(f / this.friction) * this.dt + noise;
+
+        if(isNaN(this.x)) this.x = 0;
+        if(this.x > 2.5) this.x = 2.5;
+        if(this.x < -2.5) this.x = -2.5;
+
+        this.stepCount++;
+        if(this.samplingMethod !== SamplingMethod.UNBIASED && this.stepCount % this.depFreq === 0) {
+            this.biasGaussians.push({
+                x: this.x, height: this.getWTHeight(this.getBias1D(this.x)), sigma: this.gSigma
+            });
+        }
+    }
+
+    getOrig2D(x, y) {
+        let val = 0;
+        for (let i = 0; i < 4; i++) {
+            let dx = x - this.MB_x0[i], dy = y - this.MB_y0[i];
+            val += this.MB_A[i] * Math.exp(this.MB_a[i]*dx*dx + this.MB_b[i]*dx*dy + this.MB_c[i]*dy*dy);
+        }
+        return val * 0.05 + 5;
+    }
+
+    getBias2D(x, y) {
+        if(this.samplingMethod === SamplingMethod.UNBIASED) return 0;
+        let b = 0, sig2 = 2 * this.gSigma * this.gSigma;
+        for(let g of this.biasGaussians) {
+            let dx = x - g.x, dy = y - (g.y||0);
+            b += g.height * Math.exp(-(dx*dx + dy*dy)/sig2);
+        }
+        return b;
+    }
+
+    step2D() {
+        let gx=0, gy=0;
+        for(let i=0; i<4; i++) {
+            let dx = this.x - this.MB_x0[i], dy = this.y - this.MB_y0[i];
+            let expV = this.MB_A[i] * Math.exp(this.MB_a[i]*dx*dx + this.MB_b[i]*dx*dy + this.MB_c[i]*dy*dy);
+            gx += expV * (2*this.MB_a[i]*dx + this.MB_b[i]*dy);
+            gy += expV * (this.MB_b[i]*dx + 2*this.MB_c[i]*dy);
+        }
+        gx *= 0.05; gy *= 0.05;
+
+        let bgx=0, bgy=0, sigSq = this.gSigma*this.gSigma, sigSq2_2 = 2 * sigSq;
+        if(this.samplingMethod !== SamplingMethod.UNBIASED) {
+            for(let g of this.biasGaussians) {
+                let dx = this.x - g.x, dy = this.y - (g.y||0);
+                let val = g.height * Math.exp(-(dx*dx + dy*dy)/sigSq2_2);
+                bgx += val * dx * (-1/sigSq);
+                bgy += val * dy * (-1/sigSq);
+            }
+        }
+
+        let fx = gx + bgx, fy = gy + bgy;
+        if (Math.abs(fx) > 1000) fx = Math.sign(fx) * 1000;
+        if (Math.abs(fy) > 1000) fy = Math.sign(fy) * 1000;
+
+        const noiseX = Math.sqrt((2 * this.temp * this.dt) / this.friction) * (Math.random()*2 - 1);
+        const noiseY = Math.sqrt((2 * this.temp * this.dt) / this.friction) * (Math.random()*2 - 1);
+
+        this.x += -(fx / this.friction) * this.dt + noiseX;
+        this.y += -(fy / this.friction) * this.dt + noiseY;
+
+        if(isNaN(this.x)) this.x = 0; if(isNaN(this.y)) this.y = 0;
+        if(this.x > 1.5) this.x = 1.5; if(this.x < -1.5) this.x = -1.5;
+        if(this.y > 2.0) this.y = 2.0; if(this.y < -0.5) this.y = -0.5;
+
+        this.stepCount++;
+        if(this.samplingMethod !== SamplingMethod.UNBIASED && this.stepCount % this.depFreq === 0) {
+            this.biasGaussians.push({
+                x: this.x, y: this.y, height: this.getWTHeight(this.getBias2D(this.x, this.y)), sigma: this.gSigma
+            });
+        }
+    }
+
+    updateConvergence() {
+        if(!this.is2D) {
+            let count = 100;
+            let ests = [], truths = [];
+
+            if (this.samplingMethod === SamplingMethod.UNBIASED) {
+                // Histogram-based FES: G(s) = -kT ln P(s)
+                let total = histogram.reduce((a,b)=>a+b, 0) || 1;
+                for(let i=0; i<=count; i++) {
+                    let sx = -2.5 + (i/count)*5.0;
+                    truths.push(this.getOrig1D(sx));
+                    let bin = Math.floor((i/count)*(count-1));
+                    let p = (histogram[bin] || 1e-10) / total;
+                    ests.push(-this.temp * Math.log(p));
+                }
+            } else {
+                // MetaD/OPES: F(s) ~= - factor * V(s)
+                let gamma = this.getEffectiveGamma();
+                let factor = gamma / (gamma - 1);
+                for(let i=0; i<=count; i++) {
+                    let sx = -2.5 + (i/count)*5.0;
+                    truths.push(this.getOrig1D(sx));
+                    ests.push(-factor * this.getBias1D(sx));
+                }
+            }
+
+            let tMin = Math.min(...truths);
+            let eMin = Math.min(...ests);
+            let shift = tMin - eMin;
+            let shiftedEsts = ests.map(e => e + shift);
+
+            // RMSE Calculation
+            let sumSq = 0;
+            for(let i=0; i<=count; i++) sumSq += Math.pow(truths[i] - shiftedEsts[i], 2);
+            document.getElementById('valRMSD').textContent = Math.sqrt(sumSq/(count+1)).toFixed(4);
+
+            this.drawConvergence('convChart', truths, shiftedEsts, "CV S");
+        } else {
+            // 2D Marginalization
+            const res = 40;
+            const beta = 1 / this.temp;
+            let p_target_x = new Array(res).fill(0), p_target_y = new Array(res).fill(0);
+            let p_est_x = new Array(res).fill(0), p_est_y = new Array(res).fill(0);
+
+            const gamma = this.getEffectiveGamma();
+            const factor = gamma / (gamma - 1);
+
+            for(let i=0; i<res; i++) {
+                let x = -1.5 + (i/(res-1))*3.0;
+                for(let j=0; j<res; j++) {
+                    let y = -0.5 + (j/(res-1))*2.5;
+                    p_target_x[i] += Math.exp(-beta * this.getOrig2D(x, y));
+                    p_target_y[j] += Math.exp(-beta * this.getOrig2D(x, y));
+
+                    if (this.samplingMethod === SamplingMethod.UNBIASED) {
+                        // For 2D unbiased, we'd need a 2D histogram.
+                        // To keep it efficient, if unbiased we just show flat line or log warning
+                        p_est_x[i] = 1; p_est_y[j] = 1;
+                    } else {
+                        // MetaD/OPES honest estimate: e^(-beta * F(s)) approx e^(beta * factor * B(s))
+                        let w_est = Math.exp(beta * factor * this.getBias2D(x, y));
+                        p_est_x[i] += w_est; p_est_y[j] += w_est;
+                    }
+                }
+            }
+
+            let getFES = (probs) => probs.map(p => -this.temp * Math.log(p || 1e-10));
+            let truths_x = getFES(p_target_x), ests_x = getFES(p_est_x);
+            let truths_y = getFES(p_target_y), ests_y = getFES(p_est_y);
+
+            let align = (t, e) => {
+                let shift = Math.min(...t) - Math.min(...e);
+                return e.map(v => v + shift);
+            };
+
+            this.drawConvergence('convChart', truths_x, align(truths_x, ests_x), "CV X");
+            this.drawConvergence('convChart2', truths_y, align(truths_y, ests_y), "CV Y");
+        }
+    }
+
+    drawTrajectory() {
+        const c = document.getElementById('trajChart');
+        if(!c || path.length < 2) return;
+        const rect = c.getBoundingClientRect();
+        if(c.innerHTML==='' || c.dataset.w != rect.width) {
+            c.dataset.w = rect.width;
+        }
+
+        let h = 120, w = rect.width;
+        // Trailing Moving Average (Zero Lag - Pins head to current point)
+        let windowSize = 6;
+        let smoothedPath = path.map((p, i) => {
+            if (i === path.length - 1) return {x: engine.x, y: engine.y}; // Pin head exactly
+            let start = Math.max(0, i - windowSize + 1);
+            let sumX = 0, count = 0;
+            for(let j=start; j<=i; j++) { sumX += path[j].x; count++; }
+            return {x: sumX/count, y: p.y};
+        });
+
+        let vals = smoothedPath.map(p => p.x);
+        let minV = this.is2D ? -1.5 : -2.5;
+        let maxV = this.is2D ? 1.5 : 2.5;
+        let rng = maxV - minV;
+
+        let pts = vals.map((v, i) => {
+            let px = (i/(path.length-1))*w;
+            let py = h - ((v-minV)/rng)*(h-30)-15;
+            return `${px},${py}`;
+        }).join(' ');
+
+        c.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" style="display:block;">
+            <polyline points="${pts}" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <text x="10" y="20" fill="var(--green)" font-size="10" font-family="var(--font-heading)" font-weight="900" style="opacity:0.8">SMOOTHED TRAJECTORY (s_1)</text>
+        </svg>`;
+    }
+
+    drawConvergence(chartId, truths, ests, label) {
+        const c = document.getElementById(chartId);
+        if(!c || !truths) return;
+        let h = 80, w = c.clientWidth;
+
+        let allVals = [...truths, ...ests];
+        let minV = Math.min(...allVals);
+        let maxV = Math.max(...allVals);
+        let rng = (maxV - minV) || 1;
+
+        let mapPts = (arr) => arr.map((v, i) => `${(i/(arr.length-1))*w},${h - ((v-minV)/rng)*(h-10)-5}`).join(' ');
+
+        let ptsTruth = mapPts(truths);
+        let ptsEst = mapPts(ests);
+
+        c.innerHTML = `<svg width="100%" height="100%" preserveAspectRatio="none">
+            <polyline points="${ptsTruth}" fill="none" stroke="var(--border)" stroke-width="2" />
+            <polyline points="${ptsEst}" fill="none" stroke="var(--danger)" stroke-width="2" stroke-dasharray="4,2" />
+            <text x="5" y="12" fill="var(--tx-dim)" font-size="8" font-family="monospace">${label}</text>
+        </svg>`;
+    }
+}
+// --- STATE ---
+let isPlaying = false;
+let simSpeed = 1;
+let showBias = true, showTotal = true, showHist = false;
+let path = [];
+let histogram = new Array(100).fill(0);
+let lastConvergenceTime = 0;
+
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+const offscreen = document.createElement('canvas');
+
+function setupCanvas(c) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = c.parentElement.getBoundingClientRect();
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+    c.style.width = rect.width + 'px';
+    c.style.height = rect.height + 'px';
+    c.getContext('2d').scale(dpr, dpr);
+}
+setupCanvas(canvas);
+window.addEventListener('resize', () => setupCanvas(canvas));
+
+const engine = new MetadynamicsEngine();
+
+// --- UI SYNC ---
+function updateTabs(containerId, activeValue) {
+    const tabs = document.querySelectorAll(`#${containerId} .tab`);
+    tabs.forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.method === activeValue || tab.dataset.mode === activeValue);
+    });
+}
+
+document.getElementById('samplingTabs').addEventListener('click', e => {
+    const method = e.target.dataset.method;
+    if (!method) return;
+    engine.samplingMethod = method;
+    updateTabs('samplingTabs', method);
+
+    document.getElementById('metaControls').style.display = (method === SamplingMethod.METAD) ? "block" : "none";
+    document.getElementById('opesControls').style.display = (method === SamplingMethod.OPES) ? "block" : "none";
+
+    if(method === SamplingMethod.UNBIASED) {
+        document.getElementById('metaControls').style.display = "none";
+        document.getElementById('opesControls').style.display = "none";
+    }
+    draw();
+});
+
+document.getElementById('modeTabs').addEventListener('click', e => {
+    const mode = e.target.dataset.mode;
+    if (!mode) return;
+    setMode(mode === '2D');
+});
+
+function setMode(is2D) {
+    engine.is2D = is2D;
+    updateTabs('modeTabs', is2D ? '2D' : '1D');
+
+    document.getElementById('boxPosY').style.display = is2D ? "block" : "none";
+    document.getElementById('convChart2').style.display = is2D ? "block" : "none";
+    document.getElementById('convTitle').textContent = is2D ? "Multi-Axis Similarity" : "PMF vs Est. FES Similarity";
+    document.getElementById('statBoxRMSD').style.display = is2D ? "none" : "block";
+
+    // Show Total toggle & legends only in 1D
+    document.getElementById('rowShowTotal').style.display = is2D ? "none" : "flex";
+    const overlays = is2D ? "none" : "flex";
+    document.getElementById('legBias').style.display = overlays;
+    document.getElementById('legTotal').style.display = overlays;
+
+    offscreen.width = 0; // invalidate cache
+    engine.resetPotential();
+    draw();
+}
+
+function bindInput(id, objKey, dispId, formatter) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', e => {
+        let v = parseFloat(e.target.value);
+        engine[objKey] = v;
+        document.getElementById(dispId).textContent = formatter ? formatter(v) : v.toFixed(2);
+    });
+}
+bindInput('inputHeight', 'gHeight', 'dispHeight');
+bindInput('inputSigma', 'gSigma', 'dispSigma');
+bindInput('inputFreq', 'depFreq', 'dispFreq', v => Math.round(v).toString());
+bindInput('inputTemp', 'temp', 'dispTemp');
+bindInput('inputBF', 'biasFactor', 'dispBF', v => v.toFixed(1));
+bindInput('inputOB', 'opesBarrier', 'dispOB', v => v.toFixed(1));
+
+document.getElementById('inputSpeed').addEventListener('input', e => {
+    simSpeed = parseInt(e.target.value);
+    document.getElementById('dispSpeed').textContent = simSpeed + 'x';
+});
+
+document.getElementById('checkWT').addEventListener('change', e => {
+    engine.isWT = e.target.checked;
+    document.getElementById('rowBiasFactor').style.opacity = engine.isWT ? "1" : "0.3";
+    document.getElementById('inputBF').disabled = !engine.isWT;
+});
+
+document.getElementById('checkShowBias').addEventListener('change', e => { showBias = e.target.checked; draw(); });
+document.getElementById('checkShowTotal').addEventListener('change', e => { showTotal = e.target.checked; draw(); });
+const checkShowHistEl = document.getElementById('checkShowHist');
+if(checkShowHistEl) checkShowHistEl.addEventListener('change', e => { showHist = e.target.checked; draw(); });
+
+document.getElementById('btnPlay').addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    const b = document.getElementById('btnPlay');
+    if(isPlaying) {
+        b.innerHTML = '⏸ Pause';
+        b.classList.add('danger');
+        loop();
+    } else {
+        b.innerHTML = '▶ Play';
+        b.classList.remove('danger');
+    }
+});
+
+// --- RENDER HELPERS ---
+function getSpectral(t) {
+    if(!Number.isFinite(t)) t = 0;
+    // Spectral colormap: Purple (Low) -> Blue -> Green -> Yellow -> Red (High)
+    const colors = [
+        [94, 79, 162], [50, 136, 189], [171, 221, 164],
+        [254, 224, 139], [244, 109, 67], [158, 1, 66]
+    ];
+    let idx = Math.max(0, Math.min(1, t)) * (colors.length - 1);
+    let i = Math.floor(idx);
+    let f = idx - i;
+    if (i >= colors.length - 1) return `rgb(${colors[colors.length-1].join(',')})`;
+    let c1 = colors[i], c2 = colors[i+1];
+    return `rgb(${Math.round(c1[0]+(c2[0]-c1[0])*f)},${Math.round(c1[1]+(c2[1]-c1[1])*f)},${Math.round(c1[2]+(c2[2]-c1[2])*f)})`;
+}
+
+function draw1D(w, h) {
+    const p = 60, pw = w-p*2, ph = h-p*2;
+    const xPx = x => p + ((x+2.5)/5)*pw;
+
+    let yV = [];
+    for(let i=0; i<=100; i++) {
+        let x = -2.5 + (i/100)*5;
+        yV.push(engine.getOrig1D(x));
+    }
+    const minV = Math.min(...yV) - 2, maxV = Math.max(...yV) + 2, rng = maxV-minV;
+    const yPx = y => h-p - ((y-minV)/rng)*ph;
+
+    // Detect minima for markers
+    const minima = [];
+    for(let i=1; i<99; i++) {
+        let x = -2.5 + (i/100)*5;
+        let v = engine.getOrig1D(x);
+        if(v < engine.getOrig1D(x-0.05) && v < engine.getOrig1D(x+0.05)) minima.push(x);
+    }
+
+    // Minima Markers
+    ctx.setLineDash([4, 4]); ctx.strokeStyle='rgba(15, 23, 42, 0.5)'; ctx.lineWidth=1;
+    minima.forEach((m, idx) => {
+        let mx = xPx(m);
+        ctx.beginPath(); ctx.moveTo(mx, p); ctx.lineTo(mx, h-p); ctx.stroke();
+        ctx.fillStyle='var(--tx)'; ctx.font='900 11px var(--font-heading)'; ctx.textAlign='center';
+        // Draw slightly above the bottom to avoid clipping
+        ctx.fillText(`BASIN ${String.fromCharCode(65+idx)}`, mx, h-p-10);
+    });
+    ctx.setLineDash([]);
+
+    // RUGGED Annotation
+    ctx.fillStyle='var(--orange)'; ctx.font='900 11px var(--font-heading)'; ctx.textAlign='right';
+    ctx.fillText("RUGGED PMF LANDSCAPE", w-p, p-12);
+
+    // Axis Labels
+    ctx.fillStyle='var(--border)'; ctx.font='900 14px var(--font-heading)'; ctx.textAlign='center';
+    ctx.fillText("COLLECTIVE VARIABLE (s₁)", w/2, h-25);
+
+    // 1. Basin Filling (Gradient)
+    if(showBias && engine.samplingMethod !== SamplingMethod.UNBIASED) {
+        ctx.fillStyle = 'rgba(37, 99, 235, 0.1)';
+        ctx.beginPath();
+        for(let i=0; i<=100; i++) {
+            let x = -2.5 + (i/100)*5;
+            let yo = yPx(engine.getOrig1D(x));
+            i===0 ? ctx.moveTo(xPx(x), yo) : ctx.lineTo(xPx(x), yo);
+        }
+        for(let i=100; i>=0; i--) {
+            let x = -2.5 + (i/100)*5;
+            let yt = yPx(engine.getOrig1D(x) + engine.getBias1D(x));
+            ctx.lineTo(xPx(x), yt);
+        }
+        ctx.fill();
+    }
+
+
+    // Trajectory Path
+    if(path.length > 1) {
+        ctx.strokeStyle = 'var(--green)'; ctx.lineWidth = 2; ctx.beginPath();
+        for(let i=0; i<path.length; i++) {
+            let x = path[i].x;
+            let y = engine.getOrig1D(x) + engine.getBias1D(x);
+            i===0 ? ctx.moveTo(xPx(x), yPx(y)) : ctx.lineTo(xPx(x), yPx(y));
+        }
+        ctx.stroke();
+    }
+
+    // Potential Lines (Schematic Thicker)
+    ctx.lineWidth=4; ctx.strokeStyle='var(--border)'; ctx.lineCap='round'; ctx.beginPath();
+    for(let i=0; i<=100; i++) {
+        let x = -2.5 + (i/100)*5;
+        i===0 ? ctx.moveTo(xPx(x), yPx(engine.getOrig1D(x))) : ctx.lineTo(xPx(x), yPx(engine.getOrig1D(x)));
+    }
+    ctx.stroke();
+
+    if(showTotal) {
+        ctx.lineWidth=3; ctx.strokeStyle='var(--danger)'; ctx.setLineDash([12, 6]); ctx.beginPath();
+        for(let i=0; i<=100; i++) {
+            let x = -2.5 + (i/100)*5;
+            let b = engine.getBias1D(x);
+            i===0 ? ctx.moveTo(xPx(x), yPx(engine.getOrig1D(x)+b)) : ctx.lineTo(xPx(x), yPx(engine.getOrig1D(x)+b));
+        }
+        ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    // Particle - Smaller & More Highlighted
+    drawParticle(xPx(engine.x), yPx(engine.getOrig1D(engine.x) + engine.getBias1D(engine.x)), 10);
+}
+
+function draw2D(w, h) {
+    const pxToX = px => -1.5 + (px/w)*3.0;
+    const pyToY = py => 2.0 - (py/h)*2.5;
+    const xToPx = x => ((x+1.5)/3.0)*w;
+    const yToPx = y => h - ((y+0.5)/2.5)*h;
+
+    const res = 70;
+    const cw = Math.ceil(w/res), ch = Math.ceil(h/res);
+
+    if(!offscreen.width || offscreen.dataset.lastW != w) {
+        const dpr = window.devicePixelRatio || 1;
+        offscreen.width = w * dpr; offscreen.height = h * dpr;
+        offscreen.dataset.lastW = w;
+        const octx = offscreen.getContext('2d');
+        octx.scale(dpr, dpr);
+
+        for(let i=0; i<res; i++) {
+            for(let j=0; j<res; j++) {
+                let v = engine.getOrig2D(pxToX(i*cw), pyToY((j+1)*ch));
+                let int = Math.max(0, Math.min(1, (v+5)/25));
+                octx.fillStyle = getSpectral(int);
+                octx.fillRect(i*cw, j*ch, cw+1, ch+1);
+            }
+        }
+        // Stylish Continuous Contour Lines
+        octx.strokeStyle = 'rgba(0,0,0,0.15)'; octx.lineWidth = 0.8;
+        for(let l of [-5, -2, 0, 3, 7, 12, 18, 25]) {
+            octx.beginPath();
+            for(let i=0;i<res-1;i++)for(let j=0;j<res-1;j++){
+                let x1=pxToX(i*cw), y1=pyToY(j*ch), x2=pxToX((i+1)*cw), y2=pyToY((j+1)*ch);
+                let v00=engine.getOrig2D(x1,y1), v10=engine.getOrig2D(x2,y1), v01=engine.getOrig2D(x1,y2), v11=engine.getOrig2D(x2,y2);
+                // Linear interpolation for contours
+                if((v00>l)!==(v10>l)) { let t=(l-v00)/(v10-v00); octx.moveTo((i+t)*cw,j*ch); octx.lineTo((i+t)*cw,j*ch+1); }
+                if((v00>l)!==(v01>l)) { let t=(l-v00)/(v01-v00); octx.moveTo(i*cw,(j+t)*ch); octx.lineTo(i*cw+1,(j+t)*ch); }
+            }
+            octx.stroke();
+        }
+    }
+    ctx.drawImage(offscreen, 0, 0, w, h);
+
+    // Axis Annotations
+    ctx.fillStyle='var(--border)'; ctx.font='900 16px var(--font-heading)'; ctx.textAlign='left';
+    ctx.fillText("s₂", 20, 30);
+    ctx.textAlign='right';
+    ctx.fillText("s₁", w-20, h-20);
+
+    if(showBias) {
+        const sRes=60, scw=w/sRes, sch=h/sRes;
+        for(let i=0;i<sRes;i++)for(let j=0;j<sRes;j++){
+            let b = engine.getBias2D(pxToX(i*scw), pyToY((j+1)*sch));
+            if(b>0.1) {
+                let int = Math.min(1,b/8), alp = 0.2+int*0.3;
+                ctx.fillStyle = `rgba(217, 119, 6, ${alp})`;
+                ctx.fillRect(i*scw, j*sch, scw+1, sch+1);
+            }
+        }
+    }
+
+    // Basin Labels
+    ctx.fillStyle='var(--border)'; ctx.font='800 13px var(--font-heading)'; ctx.textAlign='center';
+    ctx.fillText("BASIN A", xToPx(1.0), yToPx(0.0));
+    ctx.fillText("BASIN B", xToPx(0.0), yToPx(0.5));
+    ctx.fillText("BASIN C", xToPx(-0.5), yToPx(1.5));
+
+    // Trajectory History (Glowing Comet Trail)
+    if(path.length > 1) {
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        for (let i = 1; i < path.length; i++) {
+            const p0 = path[i - 1]; const p1 = path[i];
+            const progress = i / path.length;
+            ctx.beginPath();
+            ctx.moveTo(xToPx(p0.x), yToPx(p0.y));
+            ctx.lineTo(xToPx(p1.x), yToPx(p1.y));
+            ctx.strokeStyle = `rgba(56, 189, 248, ${progress * 0.8})`;
+            ctx.strokeStyle = `rgba(4, 120, 87, ${progress})`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+    }
+
+    drawParticle(xToPx(engine.x), yToPx(engine.y), 10);
+
+}
+
+function drawParticle(px, py, r) {
+    if(!Number.isFinite(px) || !Number.isFinite(py)) return;
+    ctx.save();
+    // 3D Metallic/Glossy Particle from LJ Simulator
+    const grad = ctx.createRadialGradient(px - r*0.35, py - r*0.35, r*0.05, px, py, r);
+    grad.addColorStop(0, '#fff');
+    grad.addColorStop(0.3, '#d97706'); // Hardcoded --orange
+    grad.addColorStop(0.8, '#d97706');
+    grad.addColorStop(1, '#000');
+
+    ctx.fillStyle = grad;
+    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 4;
+
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.fill();
+
+    ctx.strokeStyle = 'var(--border)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.stroke();
+    ctx.restore();
+}
+
+function draw() {
+    const rect = canvas.getBoundingClientRect();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,rect.width,rect.height);
+    engine.is2D ? draw2D(rect.width,rect.height) : draw1D(rect.width,rect.height);
+
+    // Update stats using global engine instance
+    document.getElementById('valPosX').textContent = (engine.x || 0).toFixed(3);
+    document.getElementById('valPosY').textContent = (engine.y || 0).toFixed(3);
+    document.getElementById('valGaussians').textContent = (engine.biasGaussians || []).length;
+
+    let force = 0;
+    try {
+        if (!engine.is2D) {
+            const gradV = engine.getGrad1D(engine.x);
+            const gradB = engine.getBiasGrad1D(engine.x);
+            force = Math.abs(gradV + gradB);
+        } else {
+            let gx=0, gy=0;
+            for(let i=0; i<4; i++) {
+                let dx = engine.x - engine.MB_x0[i], dy = engine.y - engine.MB_y0[i];
+                let expV = engine.MB_A[i] * Math.exp(engine.MB_a[i]*dx*dx + engine.MB_b[i]*dx*dy + engine.MB_c[i]*dy*dy);
+                gx += expV * (2*engine.MB_a[i]*dx + engine.MB_b[i]*dy);
+                gy += expV * (engine.MB_b[i]*dx + 2*engine.MB_c[i]*dy);
+            }
+            gx *= 0.05; gy *= 0.05;
+            let bgx=0, bgy=0, sigSq = engine.gSigma*engine.gSigma, sigSq2 = 2*sigSq;
+            if(engine.samplingMethod !== SamplingMethod.UNBIASED) {
+                for(let g of engine.biasGaussians) {
+                    let dx = engine.x - g.x, dy = engine.y - (g.y||0);
+                    let val = g.height * Math.exp(-(dx*dx + dy*dy)/sigSq2);
+                    bgx += val * dx * (-1/sigSq);
+                    bgy += val * dy * (-1/sigSq);
+                }
+            }
+            force = Math.sqrt((gx+bgx)**2 + (gy+bgy)**2);
+        }
+    } catch(e) { force = 0; }
+
+    document.getElementById('valForce').textContent = (force || 0).toFixed(3);
+
+    let b=engine.is2D ? engine.getBias2D(engine.x, engine.y) : engine.getBias1D(engine.x);
+    let el = document.getElementById('valStatus');
+    el.className = 'stat-val status-badge'; // Reset
+    if(engine.samplingMethod === SamplingMethod.UNBIASED) {
+        el.textContent='STUCK'; el.classList.add('status-stuck');
+    } else if(b < 1) {
+        el.textContent='TRAPPED'; el.classList.add('status-trapped');
+    } else if(b > 3) {
+        el.textContent='ESCAPING'; el.classList.add('status-escaping');
+    } else {
+        el.textContent='EXPLORING'; el.classList.add('status-exploring');
+    }
+
+    requestAnimationFrame(draw);
+}
+
+
+function loop() {
+    if(!isPlaying) return;
+    let steps = Math.min(50, 5 * simSpeed);
+    for(let i=0; i<steps; i++) {
+        engine.is2D ? engine.step2D() : engine.step1D();
+        if(i%2===0) {
+            path.push({x:engine.x, y:engine.y});
+            if(path.length>300) path.shift();
+        }
+        if(!engine.is2D && i%5===0) {
+            let bin = Math.floor(((engine.x+2.5)/5)*100);
+            if(bin>=0 && bin<100) histogram[bin]++;
+        }
+    }
+
+    // Throttled convergence update (every 500ms)
+    let now = Date.now();
+    if (now - lastConvergenceTime > 500) {
+        engine.updateConvergence();
+        lastConvergenceTime = now;
+    }
+
+    engine.drawTrajectory();
+    requestAnimationFrame(loop);
+}
+
+// init — defer first draw until layout is complete
+setMode(true);
+requestAnimationFrame(() => {
+    setupCanvas(canvas);
+    offscreen.width = 0; // force re-render of 2D heatmap
+    draw();
+});
+
+</script>
+</body>
+</html>
