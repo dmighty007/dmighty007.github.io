@@ -1,0 +1,44 @@
+@media print {
+    .site-header,
+    .scroll-progress,
+    .cv-toolbar,
+    .desktop-nav,
+    .mobile-menu,
+    .menu-toggle {
+        display: none !important;
+    }
+
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11pt;
+    }
+
+    .site-main {
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .cv-paper {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    a {
+        text-decoration: none !important;
+        color: #000000 !important;
+    }
+
+    .cv-header {
+        border-bottom-color: #000000 !important;
+    }
+
+    .page-section {
+        display: none !important;
+    }
+
+    .page-section[data-section="cv"] {
+        display: block !important;
+    }
+}

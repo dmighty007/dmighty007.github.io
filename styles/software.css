@@ -1,0 +1,120 @@
+.software-tab-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.software-tab-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.software-tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-align: left;
+    transition: all var(--transition);
+}
+
+.software-tab-btn.is-active,
+.software-tab-btn:hover {
+    background: var(--navy);
+    border-color: var(--navy);
+}
+
+.software-tab-btn.is-active .soft-name,
+.software-tab-btn:hover .soft-name {
+    color: #ffffff;
+}
+
+.software-tab-btn.is-active .soft-lang,
+.software-tab-btn:hover .soft-lang {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.soft-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--navy);
+}
+
+.soft-lang {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.software-detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-header h2 {
+    margin-bottom: 0.25rem;
+}
+
+.tagline {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+
+}
+
+.capabilities-list {
+    padding-left: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.capabilities-list li {
+    margin-bottom: 0.4rem;
+}
+
+.code-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.copy-code-btn {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+
+}
+
+.code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    overflow-x: auto;
+
+}

@@ -1,0 +1,101 @@
+.primary-button,
+.secondary-button,
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition),
+        background var(--transition), color var(--transition), border-color var(--transition);
+    border: 1px solid transparent;
+}
+
+.primary-button {
+    background: var(--navy);
+    color: #ffffff;
+
+}
+
+.primary-button:hover {
+    background: var(--navy-hover);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(30, 53, 82, 0.28), 0 0 0 1px rgba(60, 122, 118, 0.3);
+}
+
+.secondary-button {
+    background: var(--surface);
+    color: var(--navy);
+    border-color: var(--border-strong);
+
+}
+
+.secondary-button:hover {
+    background: var(--surface-muted);
+    color: var(--navy);
+    border-color: var(--navy);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.action-btn {
+    background: var(--surface-muted);
+    color: var(--navy);
+    border-color: var(--border);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.85rem;
+}
+
+.action-btn:hover {
+    background: var(--surface);
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+}
+
+:where(.primary-button, .secondary-button, .action-btn, a, button, input, select):focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.badge-primary {
+    background: var(--navy);
+    color: #ffffff;
+}
+
+.badge-success {
+    background: #e6f4ea;
+    color: #137333;
+    border: 1px solid #ceead6;
+}
+
+.badge-warning {
+    background: #fef7e0;
+    color: #b06000;
+    border: 1px solid #feefc3;
+}
+
+.badge-info {
+    background: #e8f0fe;
+    color: #1a73e8;
+    border: 1px solid #d2e3fc;
+}
+
+.badge-subtle {
+    background: var(--surface-muted);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}

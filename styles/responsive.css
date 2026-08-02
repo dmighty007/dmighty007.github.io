@@ -1,0 +1,68 @@
+@media (max-width: 900px) {
+    .home-hero {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .case-study-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .software-tab-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .software-tab-nav {
+        flex-direction: row;
+        overflow-x: auto;
+
+        padding-bottom: 0.5rem;
+    }
+
+    .software-tab-btn {
+        min-width: 180px;
+    }
+}
+
+@media (max-width: 700px) {
+    .desktop-nav {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .site-main {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    .cv-paper {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .hero-visual {
+        min-height: 280px;
+    }
+
+    .research-graphic-3d {
+        height: 280px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

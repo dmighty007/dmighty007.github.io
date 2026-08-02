@@ -1,0 +1,24 @@
+{
+  "name": "dibyendumaity-portfolio",
+  "version": "1.0.0",
+  "description": "Academic & Research Portfolio of Dibyendu Maity",
+  "type": "module",
+  "scripts": {
+    "test:validate": "python3 tools/validate.py",
+    "test:check": "node --check src/main.js",
+    "test:e2e": "playwright test",
+    "serve": "python3 -m http.server 8899"
+  },
+  "keywords": [
+    "portfolio",
+    "academic",
+    "computational-chemistry",
+    "molecular-dynamics",
+    "machine-learning"
+  ],
+  "author": "Dibyendu Maity",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

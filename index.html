@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Academic portfolio of Dibyendu Maity, computational molecular scientist working on molecular simulation, machine learning, rare-event sampling, and molecular kinetics."
+        />
+        <title>Dibyendu Maity | Computational Molecular Scientist</title>
+
+        <link rel="canonical" href="https://dibyendumaity.dev/" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap"
+            rel="stylesheet"
+        />
+
+        <meta property="og:type" content="profile" />
+        <meta property="og:site_name" content="Dibyendu Maity" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:title" content="Dibyendu Maity | Computational Molecular Scientist" />
+        <meta
+            property="og:description"
+            content="Machine-learning methods for molecular states, rare events, and kinetics. Ph.D. Thesis submitted."
+        />
+        <meta property="og:url" content="https://dibyendumaity.dev/" />
+        <meta property="og:image" content="https://dibyendumaity.dev/assets/portfolio-preview.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Dibyendu Maity | Computational Molecular Scientist" />
+        <meta name="twitter:description" content="Machine-learning methods for molecular states, rare events, and kinetics." />
+        <meta name="twitter:image" content="https://dibyendumaity.dev/assets/portfolio-preview.png" />
+        <meta name="author" content="Dibyendu Maity" />
+        <meta name="robots" content="index, follow" />
+        <meta name="theme-color" content="#1e3552" />
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>DM</text></svg>"
+        />
+
+        <link rel="prefetch" href="./js/vendor/three.min.js" as="script" />
+        <link rel="prefetch" href="./js/vendor/3Dmol-min.js" as="script" />
+        <link rel="prefetch" href="./js/vendor/1ubq.pdb" as="fetch" crossorigin="anonymous" />
+
+        <link rel="stylesheet" href="./styles/tokens.css" />
+        <link rel="stylesheet" href="./styles/reset.css" />
+        <link rel="stylesheet" href="./styles/typography.css" />
+        <link rel="stylesheet" href="./styles/layout.css" />
+        <link rel="stylesheet" href="./styles/navigation.css" />
+        <link rel="stylesheet" href="./styles/buttons.css" />
+        <link rel="stylesheet" href="./styles/hero.css" />
+        <link rel="stylesheet" href="./styles/publications.css" />
+        <link rel="stylesheet" href="./styles/research.css" />
+        <link rel="stylesheet" href="./styles/software.css" />
+        <link rel="stylesheet" href="./styles/cv.css" />
+        <link rel="stylesheet" href="./styles/responsive.css" />
+        <link rel="stylesheet" href="./styles/about-contact.css" />
+        <link rel="stylesheet" href="./styles/print.css" />
+        <link rel="stylesheet" href="./styles.css" />
+
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "Person",
+                        "@id": "https://dibyendumaity.dev/#person",
+                        "name": "Dibyendu Maity",
+                        "givenName": "Dibyendu",
+                        "familyName": "Maity",
+                        "jobTitle": "Computational Molecular Scientist",
+                        "worksFor": {
+                            "@type": "Organization",
+                            "name": "S. N. Bose National Centre for Basic Sciences",
+                            "location": "Kolkata, West Bengal, India"
+                        },
+                        "alumniOf": [
+                            { "@type": "Organization", "name": "University of Calcutta" },
+                            { "@type": "Organization", "name": "S. N. Bose National Centre for Basic Sciences" },
+                            { "@type": "Organization", "name": "Midnapore College" }
+                        ],
+                        "sameAs": [
+                            "https://orcid.org/0000-0002-6266-0923",
+                            "https://scholar.google.com/citations?user=FkqKBRkAAAAJ",
+                            "https://github.com/dmighty007",
+                            "https://github.com/TeamSuman"
+                        ],
+                        "description": "Computational molecular scientist developing machine learning, enhanced sampling, and molecular dynamics methods for rare events and structural phase transitions."
+                    },
+                    {
+                        "@type": "WebSite",
+                        "@id": "https://dibyendumaity.dev/#website",
+                        "url": "https://dibyendumaity.dev/",
+                        "name": "Dibyendu Maity Portfolio",
+                        "author": { "@id": "https://dibyendumaity.dev/#person" }
+                    },
+                    {
+                        "@type": "SoftwareSourceCode",
+                        "name": "TRAILS-MD",
+                        "codeRepository": "https://github.com/TeamSuman/Trails-MD",
+                        "programmingLanguage": "Python",
+                        "description": "Lightweight, engine-agnostic framework for lineage-aware adaptive molecular dynamics sampling."
+                    },
+                    {
+                        "@type": "SoftwareSourceCode",
+                        "name": "PathGennie",
+                        "codeRepository": "https://github.com/dmighty007/PathGennie",
+                        "programmingLanguage": "Python",
+                        "description": "Direction-guided adaptive-sampling framework for rapidly generating rare-event transition pathways."
+                    },
+                    {
+                        "@type": "SoftwareSourceCode",
+                        "name": "IceCoder",
+                        "codeRepository": "https://github.com/dmighty007/IceCoder",
+                        "programmingLanguage": "Python",
+                        "description": "Unsupervised representation-learning framework (SOAP-VAE) for ice polymorph and liquid environment classification."
+                    }
+                ]
+            }
+        </script>
+    </head>
+    <body>
+        <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+        <a class="skip-link" href="#main">Skip to content</a>
+
+        <header class="site-header" role="banner">
+            <div class="header-inner">
+                <a href="#home" class="brand" data-section-link="home" aria-label="Go to home">
+                    <span class="brand-mark" aria-hidden="true">DM</span>
+                    <span class="brand-copy">
+                        <span class="brand-name">Dibyendu Maity</span>
+                        <span class="brand-role">Computational Molecular Scientist</span>
+                    </span>
+                </a>
+
+                <nav class="desktop-nav" aria-label="Primary navigation">
+                    <a href="#research" data-section-link="research">Research</a>
+                    <a href="#publications" data-section-link="publications">Publications</a>
+                    <a href="#software" data-section-link="software">Software</a>
+                    <a href="#about" data-section-link="about">About</a>
+                    <a href="#contact" data-section-link="contact">Contact</a>
+                    <a href="#cv" class="cv-chip" data-section-link="cv">CV</a>
+                </nav>
+
+                <button
+                    class="menu-toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="mobile-menu"
+                    aria-label="Open navigation menu"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        aria-hidden="true"
+                    >
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div
+            class="mobile-menu"
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
+            aria-hidden="true"
+        >
+            <nav aria-label="Mobile navigation">
+                <a href="#research" data-section-link="research">Research</a>
+                <a href="#publications" data-section-link="publications">Publications</a>
+                <a href="#software" data-section-link="software">Software</a>
+                <a href="#about" data-section-link="about">About</a>
+                <a href="#contact" data-section-link="contact">Contact</a>
+                <a href="#cv" data-section-link="cv">View CV</a>
+            </nav>
+        </div>
+
+        <main class="site-main" id="main">
+            <p id="live-status" class="sr-only" aria-live="polite"></p>
+
+            <!-- Home Section -->
+            <section class="page-section is-active" data-section="home">
+                <div class="home-hero">
+                    <div class="hero-content">
+                        <p class="eyebrow">Computational Molecular Science</p>
+                        <h1>Machine-learning methods for molecular states, rare events, and kinetics.</h1>
+                        <p class="hero-description">
+                            I develop interpretable simulation and data-driven methods for identifying molecular states,
+                            generating transition pathways, and estimating kinetics from molecular dynamics.
+                        </p>
+                        <div class="hero-actions">
+                            <a href="#research" class="primary-button" data-section-link="research">Explore Research</a>
+                            <a href="./assets/dibyendumaity-cv.pdf" download="Dibyendu_Maity_CV.pdf" class="secondary-button">Download CV</a>
+                        </div>
+                        <div class="availability-badge">
+                            <span class="status-dot" aria-hidden="true"></span>
+                            Ph.D. Thesis Submitted · Available for Postdoctoral Positions from Late 2026
+                        </div>
+                    </div>
+
+                    <div class="hero-visual">
+                        <!-- Static Image Fallback Poster -->
+                        <picture class="hero-poster" id="hero-poster">
+                            <source srcset="assets/portfolio-preview.avif" type="image/avif" />
+                            <source srcset="assets/portfolio-preview.webp" type="image/webp" />
+                            <img
+                                src="assets/portfolio-preview.png"
+                                alt="Free-energy landscape showing metastable basins and rare-event transition pathway"
+                                width="960"
+                                height="720"
+                                loading="lazy"
+                            />
+                        </picture>
+
+                        <div
+                            class="research-graphic research-graphic-3d"
+                            aria-label="Interactive 3D visualization showing free-energy surface landscape and protein cartoon structure"
+                        >
+                            <canvas id="hero-scene" aria-hidden="true"></canvas>
+                            <div id="protein-3dmol-container" aria-hidden="true"></div>
+
+                            <!-- WAI-ARIA Tab Controls -->
+                            <div class="hero-controls-pill" role="region" aria-label="Hero visual view controls">
+                                <div class="hero-carousel-tabs" role="tablist" aria-label="Visual view options">
+                                    <button
+                                        class="hero-tab-btn is-active"
+                                        id="hero-tab-fes"
+                                        role="tab"
+                                        aria-selected="true"
+                                        aria-controls="hero-scene"
+                                        tabindex="0"
+                                    >
+                                        <span>FES Landscape</span>
+                                    </button>
+                                    <button
+                                        class="hero-tab-btn"
+                                        id="hero-tab-protein"
+                                        role="tab"
+                                        aria-selected="false"
+                                        aria-controls="protein-3dmol-container"
+                                        tabindex="-1"
+                                    >
+                                        <span>Protein Cartoon</span>
+                                    </button>
+                                </div>
+                                <span class="hero-ctrl-divider" aria-hidden="true"></span>
+                                <button
+                                    class="hero-ctrl-btn"
+                                    id="hero-toggle-anim"
+                                    aria-label="Pause animation"
+                                    title="Pause / Play animation"
+                                >
+                                    <svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                                    <svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="featured-research reveal" aria-label="Featured research">
+                    <div class="section-header">
+                        <h2>Featured Research</h2>
+                        <a href="#research" data-section-link="research" class="section-link">All case studies →</a>
+                    </div>
+                    <div class="research-cards" id="featured-research-cards"></div>
+                </section>
+
+                <section class="selected-publications-section reveal" aria-label="Selected publications">
+                    <div class="section-header">
+                        <h2>Selected Publications</h2>
+                        <a href="#publications" data-section-link="publications" class="section-link">View all 10 papers →</a>
+                    </div>
+                    <div id="selected-publications" class="publication-list-compact"></div>
+                </section>
+
+                <section class="news-section reveal" aria-label="Recent updates">
+                    <div class="section-header">
+                        <h2>News & Updates</h2>
+                    </div>
+                    <ul class="news-list">
+                        <li>
+                            <time datetime="2026-07">Jul 2026</time>
+                            <span>Ph.D. thesis submitted to the University of Calcutta. Available for postdoctoral positions.</span>
+                        </li>
+                        <li>
+                            <time datetime="2026-06">Jun 2026</time>
+                            <span>Paper on pathway-controlled phase separation published in <em>Angewandte Chemie International Edition</em>.</span>
+                        </li>
+                        <li>
+                            <time datetime="2026-01">Jan 2026</time>
+                            <span>CoWERA paper on temporal coherence guided binless resampling accepted in <em>The Journal of Chemical Physics</em>.</span>
+                        </li>
+                        <li>
+                            <time datetime="2025-12">Dec 2025</time>
+                            <span>IceCoder talk presented at the National Conference on Molecular Simulation (NCMS), IIT India.</span>
+                        </li>
+                        <li>
+                            <time datetime="2025-10">Oct 2025</time>
+                            <span>PathGennie and IceCoder papers published in <em>Journal of Chemical Theory and Computation</em>.</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="contact-cta reveal" aria-label="Contact CTA">
+                    <div class="cta-inner">
+                        <h2>Interested in collaboration or postdoctoral research?</h2>
+                        <p>Ph.D. thesis submitted. Available for postdoctoral positions from Late 2026.</p>
+                        <div class="cta-actions">
+                            <a
+                                href="mailto:dibyendumaity1999@gmail.com?subject=Postdoctoral%20research%20enquiry"
+                                class="primary-button"
+                            >
+                                Email Enquiry
+                            </a>
+                            <a
+                                href="https://scholar.google.com/citations?user=FkqKBRkAAAAJ"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="secondary-button"
+                            >
+                                Google Scholar Profile (33 Citations)
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Research Section -->
+            <section class="page-section" data-section="research">
+                <div class="section-header">
+                    <h2>Research Case Studies</h2>
+                </div>
+                <div id="detailed-research-list"></div>
+
+                <div class="research-fit-section">
+                    <div class="section-header">
+                        <h2>Postdoctoral Research Fit & Future Directions</h2>
+                    </div>
+                    <p class="fit-intro">Focusing on three core computational programmes connecting previous Ph.D. foundations to future host laboratory directions:</p>
+                    <div id="research-fit-container"></div>
+                </div>
+            </section>
+
+            <!-- Publications Section -->
+            <section class="page-section" data-section="publications">
+                <div class="section-header">
+                    <h2>Publications & Preprints</h2>
+                </div>
+                <div class="publications-header-controls">
+                    <div class="search-wrapper">
+                        <input
+                            type="search"
+                            id="publication-search"
+                            class="search-input"
+                            placeholder="Search by title, author, journal, or tag..."
+                            aria-label="Search publications"
+                        />
+                    </div>
+                    <div class="publication-filters" role="group" aria-label="Filter publications by status">
+                        <button class="filter-btn is-active" data-filter="all" aria-pressed="true">All (10)</button>
+                        <button class="filter-btn" data-filter="peer-reviewed" aria-pressed="false">Peer-Reviewed (7)</button>
+                        <button class="filter-btn" data-filter="preprint" aria-pressed="false">Preprints (2)</button>
+                        <button class="filter-btn" data-filter="submitted" aria-pressed="false">Submitted (1)</button>
+                    </div>
+                    <div class="sort-wrapper">
+                        <label for="publication-sort" class="sr-only">Sort by</label>
+                        <select id="publication-sort" class="search-input">
+                            <option value="newest">Sort by Newest</option>
+                            <option value="oldest">Sort by Oldest</option>
+                            <option value="citations">Sort by Citations (Google Scholar)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="publications-list" class="publications-list"></div>
+            </section>
+
+            <!-- Software Section -->
+            <section class="page-section" data-section="software">
+                <div class="section-header">
+                    <h2>Scientific Software</h2>
+                </div>
+                <div class="software-tab-layout">
+                    <div id="software-tab-nav" class="software-tab-nav" role="tablist" aria-label="Software project tabs"></div>
+                    <div id="software-detail-container" class="software-detail-view"></div>
+                </div>
+            </section>
+
+            <!-- About Section (Expanded) -->
+            <section class="page-section" data-section="about">
+                <div class="section-header">
+                    <h2>About & Academic Background</h2>
+                </div>
+
+                <div class="about-hero-layout">
+                    <div class="about-identity">
+                        <div class="about-headshot-frame" aria-label="Photograph of Dibyendu Maity">
+                            <div class="headshot-placeholder" id="about-headshot">
+                                <span class="headshot-initials">DM</span>
+                            </div>
+                        </div>
+                        <h3 class="about-name">Dibyendu Maity</h3>
+                        <p class="about-title">Computational Molecular Scientist</p>
+                        <p class="about-affiliation">S. N. Bose National Centre for Basic Sciences, Kolkata</p>
+                    </div>
+
+                    <div class="about-narrative">
+                        <h3>Research Statement</h3>
+                        <p>
+                            I develop interpretable, physics-grounded computational methods at the intersection of <strong>molecular dynamics</strong>,
+                            <strong>enhanced sampling</strong>, and <strong>machine learning</strong>. My work addresses a recurring bottleneck
+                            in molecular simulation: bridging the gap between the femtosecond timestep of atomic forces and the micro- to millisecond
+                            timescales at which biologically and chemically relevant events — conformational changes, nucleation, ligand binding — actually occur.
+                        </p>
+                        <p>
+                            During my Ph.D., I built methods that accelerate this process from both ends: <em>representation learning</em>
+                            to identify reaction coordinates and structural phases directly from trajectory data (IceCoder),
+                            <em>adaptive sampling</em> to steer short parallel simulations toward rare transition pathways (PathGennie, TRAILS-MD),
+                            and <em>kinetics estimation</em> through weighted-ensemble resampling with temporal coherence (CoWERA).
+                        </p>
+                        <p>
+                            I am motivated by problems where data-driven models must respect physical symmetries, conservation laws, and
+                            thermodynamic consistency — not just minimise loss functions. My postdoctoral research vision focuses on
+                            physics-aware molecular representation learning, scalable adaptive sampling for drug discovery,
+                            and trajectory-resolved kinetics for complex biomolecular systems.
+                        </p>
+
+                        <h3>Research Interests</h3>
+                        <div class="interest-tags" aria-label="Research interest keywords">
+                            <span class="interest-tag">Molecular Dynamics</span>
+                            <span class="interest-tag">Enhanced Sampling</span>
+                            <span class="interest-tag">Rare-Event Methods</span>
+                            <span class="interest-tag">Machine Learning for Chemistry</span>
+                            <span class="interest-tag">Graph Neural Networks</span>
+                            <span class="interest-tag">Variational Autoencoders</span>
+                            <span class="interest-tag">Structural Phase Identification</span>
+                            <span class="interest-tag">Weighted-Ensemble Methods</span>
+                            <span class="interest-tag">Free-Energy Calculations</span>
+                            <span class="interest-tag">SOAP Descriptors</span>
+                            <span class="interest-tag">Reaction Coordinates</span>
+                            <span class="interest-tag">Protein Folding</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-education-section">
+                    <h3 class="about-section-heading">Education</h3>
+                    <div class="education-timeline">
+                        <div class="edu-card">
+                            <div class="edu-period">2021 – 2026</div>
+                            <div class="edu-content">
+                                <h4>Ph.D. in Physics (Theoretical)</h4>
+                                <p class="edu-institution">University of Calcutta / S. N. Bose National Centre for Basic Sciences, Kolkata</p>
+                                <p class="edu-thesis"><strong>Thesis:</strong> <em>Development and Application of Machine Learning Approaches for Prediction, Identification and Sampling Problems in the Field of Molecular Modeling and Simulation</em></p>
+                                <p class="edu-advisor"><strong>Advisor:</strong> Prof. Suman Chakrabarty</p>
+                                <span class="edu-status-badge">Thesis Submitted</span>
+                            </div>
+                        </div>
+                        <div class="edu-card">
+                            <div class="edu-period">2019 – 2021</div>
+                            <div class="edu-content">
+                                <h4>M.Sc. in Physical Sciences</h4>
+                                <p class="edu-institution">University of Calcutta / S. N. Bose National Centre for Basic Sciences, Kolkata</p>
+                                <p class="edu-detail">Integrated Ph.D. Programme · First Class (79.80%)</p>
+                            </div>
+                        </div>
+                        <div class="edu-card">
+                            <div class="edu-period">2016 – 2019</div>
+                            <div class="edu-content">
+                                <h4>B.Sc. in Physics (Honours)</h4>
+                                <p class="edu-institution">Midnapore College (Autonomous), West Bengal</p>
+                                <p class="edu-detail">First Class Honours in Physics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section (Redesigned with icon cards) -->
+            <section class="page-section" data-section="contact">
+                <div class="section-header">
+                    <h2>Contact & Collaboration</h2>
+                </div>
+
+                <div class="contact-intro">
+                    <p>I am actively seeking postdoctoral positions in computational molecular science, molecular simulation, and machine learning for chemistry. Please reach out for research discussions, collaboration, or opportunities.</p>
+                </div>
+
+                <div class="contact-grid">
+                    <a href="mailto:dibyendumaity1999@gmail.com" class="contact-icon-card">
+                        <div class="contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        </div>
+                        <h3>Email</h3>
+                        <p>dibyendumaity1999@gmail.com</p>
+                    </a>
+
+                    <a href="https://scholar.google.com/citations?user=FkqKBRkAAAAJ" target="_blank" rel="noopener noreferrer" class="contact-icon-card">
+                        <div class="contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M10 2v8l3-2 3 2V2"/></svg>
+                        </div>
+                        <h3>Google Scholar</h3>
+                        <p>33 Citations · h-index 4</p>
+                    </a>
+
+                    <a href="https://github.com/dmighty007" target="_blank" rel="noopener noreferrer" class="contact-icon-card">
+                        <div class="contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                        </div>
+                        <h3>GitHub</h3>
+                        <p>dmighty007 · TeamSuman</p>
+                    </a>
+
+                    <a href="https://orcid.org/0000-0002-XXXX-XXXX" target="_blank" rel="noopener noreferrer" class="contact-icon-card">
+                        <div class="contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+                        </div>
+                        <h3>ORCID</h3>
+                        <p>0000-0002-XXXX-XXXX</p>
+                    </a>
+                </div>
+
+                <div class="contact-affiliation-card">
+                    <h3>Institutional Affiliation</h3>
+                    <p><strong>Department of Chemical and Biological Sciences</strong></p>
+                    <p>S. N. Bose National Centre for Basic Sciences</p>
+                    <p>Block JD, Sector III, Salt Lake, Kolkata 700106, West Bengal, India</p>
+                </div>
+            </section>
+
+            <!-- CV Section -->
+            <section class="page-section" data-section="cv">
+                <div id="cv-container"></div>
+            </section>
+        </main>
+
+        <!-- Site Footer -->
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-left">
+                    <p>© 2026 Dibyendu Maity · Computational Molecular Scientist</p>
+                    <p class="footer-updated">Last updated July 2026</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:dibyendumaity1999@gmail.com" aria-label="Email">Email</a>
+                    <span class="footer-divider" aria-hidden="true">·</span>
+                    <a href="https://scholar.google.com/citations?user=FkqKBRkAAAAJ" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar">Scholar</a>
+                    <span class="footer-divider" aria-hidden="true">·</span>
+                    <a href="https://github.com/dmighty007" target="_blank" rel="noopener noreferrer" aria-label="GitHub">GitHub</a>
+                    <span class="footer-divider" aria-hidden="true">·</span>
+                    <a href="#cv" data-section-link="cv">CV</a>
+                </div>
+            </div>
+        </footer>
+
+        <script type="module" src="./src/main.js"></script>
+    </body>
+</html>

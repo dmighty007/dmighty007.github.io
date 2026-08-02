@@ -1,0 +1,192 @@
+.research-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.research-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.research-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-glow);
+    border-color: rgba(60, 122, 118, 0.4);
+}
+
+.card-status {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--teal);
+    letter-spacing: 0.05em;
+}
+
+.research-case-study {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.25rem;
+    margin-bottom: 2.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.case-study-header {
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.25rem;
+}
+
+.case-study-schematic {
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #f2ebd9;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.case-study-schematic:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.case-study-schematic svg {
+    display: block;
+}
+
+.case-study-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.case-study-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.case-study-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.75rem;
+}
+
+.case-study-block {
+    background: var(--surface-muted);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+}
+
+.highlight-block {
+    background: rgba(60, 122, 118, 0.06);
+    border: 1px solid rgba(60, 122, 118, 0.2);
+}
+
+.case-study-block h4 {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--navy);
+}
+
+.case-study-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Research Fit Section */
+.research-fit-section {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 2px stroke var(--border);
+}
+
+.fit-programme-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.fit-programme-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.fit-index {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--teal);
+    font-family: "Source Serif 4", serif;
+}
+
+.fit-tagline {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.fit-flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+
+.fit-step {
+    background: var(--surface-muted);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+}
+
+.step-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--rust);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+}
+
+/* Section header accent kicker */
+.section-header h2 {
+    position: relative;
+    padding-bottom: 0.35rem;
+}
+
+.section-header h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 48px;
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--gold));
+}
+
+.research-card h3,
+.case-study-header h3 {
+    transition: color var(--transition);
+}
+
+.research-card:hover h3,
+.case-study-header:hover h3 {
+    color: var(--teal);
+}
