@@ -164,4 +164,4 @@ When deploying to hosting platforms (e.g. Netlify, Cloudflare Pages, GitHub Page
 
 ## Updating identity assets
 
-The About page intentionally uses `assets/headshot-placeholder.svg` until a professional portrait is available. Replace that file with a portrait of Dibyendu Maity (preferably a square or near-square image) and update the image `alt` text in `index.html` to “Portrait of Dibyendu Maity”. No stock or generated portrait is used.
+The About page uses `assets/dmighty_profile.jpg`, a portrait of Dibyendu Maity. The CSS frame supports portrait and near-square replacements; retain the `alt` text “Portrait of Dibyendu Maity” when updating the image.

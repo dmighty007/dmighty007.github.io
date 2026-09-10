@@ -15,6 +15,13 @@
     margin-bottom: 0.75rem;
 }
 
+.hero-identity {
+    margin: -0.25rem 0 0.9rem;
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
 .hero-description {
     font-size: 1.15rem;
     color: var(--text-secondary);
@@ -371,6 +378,16 @@
 .snapshot-grid div { min-width: 0; }
 .snapshot-grid dt { color: var(--navy); font-family: "Source Serif 4", Georgia, serif; font-size: 1.35rem; font-weight: 650; line-height: 1.15; }
 .snapshot-grid dd { margin: 0.3rem 0 0; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.45; }
+
+.no-script-evidence {
+    margin: 0 0 3rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.no-script-evidence h2 { font-size: 1.35rem; }
+.no-script-evidence p:last-child { margin-bottom: 0; }
 
 @media (max-width: 900px) {
     .research-snapshot { grid-template-columns: 1fr; gap: 0.9rem; }

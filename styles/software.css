@@ -59,6 +59,21 @@
     box-shadow: var(--shadow-sm);
 }
 
+.static-software-list {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+}
+
+.static-software-list div {
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.static-software-list div:last-child { padding-bottom: 0; border-bottom: 0; }
+.static-software-list dt { margin-bottom: 0.3rem; font-weight: 700; }
+.static-software-list dd { margin: 0; color: var(--text-secondary); line-height: 1.55; }
+
 .detail-header {
     display: flex;
     justify-content: space-between;

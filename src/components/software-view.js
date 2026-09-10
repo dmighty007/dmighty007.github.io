@@ -40,6 +40,9 @@ function renderSoftwareTabs() {
   const navContainer = $("#software-tab-nav");
   if (!navContainer) return;
 
+  navContainer.setAttribute("role", "tablist");
+  navContainer.setAttribute("aria-label", "Software project tabs");
+
   navContainer.innerHTML = softwareProjects.map((item) => `
     <button
       class="software-tab-btn ${item.id === activeSoftwareId ? "is-active" : ""}"

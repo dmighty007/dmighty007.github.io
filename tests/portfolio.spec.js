@@ -169,5 +169,8 @@ test.describe("Portfolio E2E & Accessibility Test Suite", () => {
     const pdfBtn = cvContainer.locator('a[download="Dibyendu_Maity_CV.pdf"]');
     await expect(pdfBtn).toBeVisible();
     await expect(pdfBtn).toHaveAttribute("href", "./assets/dibyendumaity-cv.pdf");
+
+    const thesisBtn = cvContainer.getByRole("link", { name: "View Ph.D. Thesis" });
+    await expect(thesisBtn).toHaveAttribute("href", "./assets/dibyendu-maity-phd-thesis.pdf");
   });
 });
