@@ -1,6 +1,6 @@
 /**
- * Software view component: renders 5 scientific software projects (TRAILS-MD, PathGennie,
- * IceCoder, SolOrder, we-trajectory-lineage) with interactive subtab navigation and verification status badges.
+ * Software view component: renders four scientific software projects with
+ * progressively enhanced controls and verification status badges.
  */
 import { softwareProjects } from "../data/software.js";
 import { escapeHTML } from "../utils/escape-html.js";
@@ -40,15 +40,14 @@ function renderSoftwareTabs() {
   const navContainer = $("#software-tab-nav");
   if (!navContainer) return;
 
-  navContainer.setAttribute("role", "tablist");
+  navContainer.setAttribute("role", "group");
   navContainer.setAttribute("aria-label", "Software project tabs");
 
   navContainer.innerHTML = softwareProjects.map((item) => `
     <button
       class="software-tab-btn ${item.id === activeSoftwareId ? "is-active" : ""}"
       data-software-id="${escapeHTML(item.id)}"
-      role="tab"
-      aria-selected="${item.id === activeSoftwareId ? "true" : "false"}"
+      aria-pressed="${item.id === activeSoftwareId ? "true" : "false"}"
     >
       <span class="soft-name">${escapeHTML(item.name)}</span>
       <span class="soft-lang">${escapeHTML(item.language)}</span>
@@ -60,10 +59,10 @@ function renderSoftwareTabs() {
       activeSoftwareId = btn.getAttribute("data-software-id");
       $$("[data-software-id]", navContainer).forEach((b) => {
         b.classList.remove("is-active");
-        b.setAttribute("aria-selected", "false");
+        b.setAttribute("aria-pressed", "false");
       });
       btn.classList.add("is-active");
-      btn.setAttribute("aria-selected", "true");
+      btn.setAttribute("aria-pressed", "true");
       renderActiveSoftwareDetail();
       setLiveStatus(`Showing ${activeSoftwareId} software details.`);
     });

@@ -85,13 +85,16 @@ test.describe("Portfolio E2E & Accessibility Test Suite", () => {
     await expect(page.locator("#landscape-panel")).toHaveClass(/is-active/);
   });
 
-  test("Hero fallback, news order, and mobile publication controls remain robust", async ({ page }) => {
+  test("Hero fallback, conference details, and mobile publication controls remain robust", async ({ page }) => {
     await expect(page.locator("#hero-poster img")).toHaveAttribute("src", "assets/fes-landscape.svg");
     await expect(page.locator("#hero-poster img")).toHaveAttribute("loading", "eager");
     await expect(page.locator("#stat-publications")).toHaveText("8");
 
-    const dates = await page.locator("#news-list time").evaluateAll((items) => items.map((item) => item.getAttribute("datetime")));
-    expect(dates).toEqual([...dates].sort().reverse());
+    await page.goto("http://localhost:8899/#about");
+    await expect(page.locator(".about-conferences-section")).toContainText("CDAM 2026");
+    await expect(page.locator(".about-conferences-section")).toContainText("Best Poster Award");
+    await expect(page.locator(".about-awards-section")).toContainText("INSPIRE Scholarship");
+    await expect(page.locator(".about-awards-section")).toContainText("All India Rank 177");
 
     for (const width of [320, 360, 375, 390, 412, 430]) {
       await page.setViewportSize({ width, height: 844 });

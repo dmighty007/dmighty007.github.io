@@ -10,7 +10,6 @@ import { initPublicationsView, renderPublications, renderSelectedPublicationsHom
 import { renderResearchView, renderFeaturedCardsHome } from "./components/research-view.js";
 import { initSoftwareView } from "./components/software-view.js";
 import { renderCVView } from "./components/cv-view.js";
-import { renderNews } from "./components/news-view.js";
 import { publications } from "./data/publications.js";
 import { softwareProjects } from "./data/software.js";
 
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initPublicationsView();
   initSoftwareView();
   renderCVView();
-  renderNews();
 
   // Initialize Hero Scene & Controller
   initHeroController();

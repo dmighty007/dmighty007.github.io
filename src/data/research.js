@@ -10,7 +10,7 @@ export const researchThemes = [
     subtitle: "How can rare transition pathways be generated efficiently without getting trapped in deep metastable basins?",
     problem: "Rare molecular transitions (e.g. conformational changes, nucleation, ligand binding) face high free-energy barriers, requiring micro- to millisecond timescales inaccessible to standard MD.",
     methodology: "Formulated PathGennie, an adaptive framework that spawns short parallel molecular dynamics segments and steers exploration along progress coordinates through real-time directional decisions.",
-    result: "Constructed complete transition pathways using monitored ultrashort MD segments (50-100 ps). Accelerated pathway discovery by 10- to 100-fold on monitored benchmark systems without altering the physical potential.",
+    result: "Constructed complete transition pathways using monitored ultrashort MD segments (50-100 ps) and demonstrated faster pathway discovery on monitored benchmark systems without altering the physical potential.",
     contributionStatement: "Conceptualized and designed the direction-guided adaptive-sampling strategy, authored the Python package, and conducted validation on model systems.",
     codeUrl: "https://github.com/dmighty007/PathGennie",
     pubUrl: "https://pubs.acs.org/doi/10.1021/acs.jctc.5c01244"

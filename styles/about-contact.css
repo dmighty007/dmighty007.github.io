@@ -130,6 +130,58 @@
     gap: 1.25rem;
 }
 
+.about-conferences-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.conference-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--text-primary);
+}
+
+.conference-list li {
+    padding: 0.7rem 0 0.7rem 0.35rem;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.55;
+}
+
+.conference-list li:last-child {
+    border-bottom: 0;
+}
+
+.conference-list strong {
+    color: var(--navy);
+}
+
+.about-awards-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.award-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--text-primary);
+}
+
+.award-list li {
+    padding: 0.7rem 0 0.7rem 0.35rem;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.55;
+}
+
+.award-list li:last-child {
+    border-bottom: 0;
+}
+
+.award-list strong {
+    color: var(--navy);
+}
+
 .edu-card {
     display: grid;
     grid-template-columns: 120px 1fr;
