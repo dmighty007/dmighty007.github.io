@@ -185,6 +185,37 @@
     margin-top: 0.5rem;
 }
 
+.about-conferences-section,
+.about-awards-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.conference-list,
+.award-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--text-primary);
+}
+
+.conference-list li,
+.award-list li {
+    padding: 0.7rem 0 0.7rem 0.35rem;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.55;
+}
+
+.conference-list li:last-child,
+.award-list li:last-child {
+    border-bottom: 0;
+}
+
+.conference-list strong,
+.award-list strong {
+    color: var(--navy);
+}
+
 /* ============================================================
    Contact Page — Icon Cards Grid
    ============================================================ */

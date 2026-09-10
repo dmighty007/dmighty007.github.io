@@ -8,7 +8,7 @@ import { escapeHTML } from "../utils/escape-html.js";
 
 const $ = (sel, root = document) => root.querySelector(sel);
 
-function getSchematicDiagram(id) {
+function getLegacySchematicDiagram(id) {
   if (id === "pathgennie") {
     return `
       <div class="case-study-schematic" aria-label="PathGennie Direction-Guided Adaptive Sampling Schematic">
@@ -184,6 +184,26 @@ function getSchematicDiagram(id) {
   return "";
 }
 
+function getPaperToc(item) {
+  if (!item.toc) return "";
+  return `
+    <figure class="paper-toc" aria-label="${escapeHTML(item.toc.label)} for ${escapeHTML(item.title)}">
+      <div class="paper-toc-heading">
+        <span>${escapeHTML(item.toc.label)}</span>
+        <span class="paper-toc-rule" aria-hidden="true"></span>
+      </div>
+      <div class="paper-toc-flow">
+        <div class="paper-toc-step"><span class="paper-toc-index">01</span><strong>Input</strong><span>${escapeHTML(item.toc.input)}</span></div>
+        <span class="paper-toc-arrow" aria-hidden="true">→</span>
+        <div class="paper-toc-step paper-toc-step-method"><span class="paper-toc-index">02</span><strong>Method</strong><span>${escapeHTML(item.toc.method)}</span></div>
+        <span class="paper-toc-arrow" aria-hidden="true">→</span>
+        <div class="paper-toc-step paper-toc-step-output"><span class="paper-toc-index">03</span><strong>Result</strong><span>${escapeHTML(item.toc.output)}</span></div>
+      </div>
+      <figcaption>${escapeHTML(item.toc.caption)}</figcaption>
+    </figure>
+  `;
+}
+
 export function renderResearchView() {
   renderFeaturedCardsHome();
   renderDetailedResearchCards();
@@ -226,7 +246,7 @@ function renderDetailedResearchCards() {
         <p class="case-study-subtitle">${escapeHTML(item.subtitle)}</p>
       </div>
 
-      ${getSchematicDiagram(item.id)}
+      ${getPaperToc(item)}
 
       <div class="case-study-grid">
         <div class="case-study-block">
