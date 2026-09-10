@@ -1,0 +1,375 @@
+% !TeX program = xelatex
+% ============================================================
+% Academic CV — Dibyendu Maity
+% Compile with: xelatex cv.tex  (or lualatex cv.tex)
+% (XeLaTeX and LuaLaTeX are both supported via fontspec; XeLaTeX is set
+%  as the default engine above since it has no external dependency on
+%  luaotfload, which is not installed on every LuaTeX distribution.)
+% ============================================================
+\documentclass[10pt,a4paper]{article}
+
+% ---------- Page geometry ----------
+\usepackage[a4paper,top=1.45cm,bottom=1.65cm,left=1.85cm,right=1.85cm,footskip=0.95cm]{geometry}
+
+% ---------- Fonts ----------
+\usepackage{fontspec}
+\setmainfont[
+  Path=/usr/share/texmf-dist/fonts/opentype/public/tex-gyre/,
+  UprightFont=texgyrepagella-regular.otf,
+  BoldFont=texgyrepagella-bold.otf,
+  ItalicFont=texgyrepagella-italic.otf,
+  BoldItalicFont=texgyrepagella-bolditalic.otf
+]{TeX Gyre Pagella}
+\newfontfamily\headingfont[
+  Path=/usr/share/texmf-dist/fonts/opentype/public/tex-gyre/,
+  UprightFont=texgyreheros-regular.otf,
+  BoldFont=texgyreheros-bold.otf,
+  ItalicFont=texgyreheros-italic.otf,
+  BoldItalicFont=texgyreheros-bolditalic.otf
+]{TeX Gyre Heros}
+
+% ---------- Typography helpers ----------
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{microtype}
+\usepackage{ragged2e}
+\usepackage{lastpage}
+
+% ---------- Colour ----------
+\usepackage{xcolor}
+\definecolor{navy}{RGB}{27,42,66}
+\definecolor{accent}{RGB}{39,92,131}
+\definecolor{charcoal}{RGB}{51,51,51}
+\definecolor{muted}{RGB}{110,110,110}
+\definecolor{rulegrey}{RGB}{190,190,190}
+
+% ---------- Lists / spacing ----------
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.1em, itemsep=2pt, topsep=3pt, parsep=0pt}
+\setlist[description]{style=multiline,leftmargin=0pt,labelindent=0pt,itemsep=2pt}
+
+% ---------- Links ----------
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=navy,
+  urlcolor=navy,
+  citecolor=navy,
+  pdftitle={Dibyendu Maity - Academic CV},
+  pdfauthor={Dibyendu Maity},
+  pdfsubject={Academic CV},
+  breaklinks=true
+}
+\urlstyle{same}
+\hypersetup{pdfcreator={XeLaTeX}}
+
+% ---------- Headers / footers ----------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\footnotesize\color{muted}Dibyendu Maity}
+\fancyfoot[R]{\footnotesize\color{muted}Academic CV · \thepage\ of \pageref{LastPage}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2.5pt}
+\setlength{\headheight}{13pt}
+
+% ---------- Justification tolerance (microtype substitute) ----------
+% Not every LuaTeX/XeTeX distribution ships a working luaotfload/microtype
+% combination; these settings reduce overfull hboxes without it.
+\sloppy
+\setlength{\emergencystretch}{3em}
+\tolerance=1000
+\hbadness=2000
+
+% ---------- Section styling ----------
+\usepackage{titlesec}
+\titleformat{\section}
+  {\headingfont\large\bfseries\color{navy}}
+  {}{0em}{}
+  [\vspace{0.08em}{\color{accent}\titlerule[0.7pt]}]
+\titlespacing*{\section}{0pt}{1.0em}{0.45em}
+
+\titleformat{\subsection}
+  {\headingfont\normalsize\bfseries\color{charcoal}}
+  {}{0em}{}
+\titlespacing*{\subsection}{0pt}{0.6em}{0.15em}
+
+% ---------- Custom commands ----------
+
+% Publication entry with hanging indent
+\newcommand{\pubentry}[1]{%
+  \par\noindent\hangindent=1.1em\hangafter=1 #1\par\vspace{5pt}%
+}
+
+% Bold the CV owner's name wherever it appears in author lists
+\newcommand{\me}{\textbf{Dibyendu Maity}}
+
+% Two-column education row: left = degree/institution, right = dates/status
+\newcommand{\eduentry}[4]{%
+  \noindent
+  \begin{minipage}[t]{0.76\textwidth}
+    {\headingfont\bfseries\color{charcoal}#1}\\[-1pt]
+    {\small\color{charcoal}#2}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.20\textwidth}
+    \raggedleft\headingfont\small\color{muted}#3
+  \end{minipage}\par
+  {\small\color{muted}#4}\par\vspace{6pt}
+}
+
+% Software entry
+\newcommand{\softwareentry}[4]{%
+  \par\noindent{\headingfont\bfseries\color{charcoal}#1} {\small\textit{(#2)}}: #3\\
+  {\footnotesize\color{muted}\href{#4}{#4}}\par\vspace{5pt}%
+}
+
+% Conference entry with hanging indent
+\newcommand{\confentry}[1]{%
+  \par\noindent\hangindent=1.1em\hangafter=1 #1\par\vspace{5pt}%
+}
+
+% Small caps-ish label for keyword section
+\newcommand{\keywordsline}[1]{%
+  \par\noindent\small #1\par
+}
+
+\newcommand{\contactsep}{\hspace{0.55em}{\color{rulegrey}\textbullet}\hspace{0.55em}}
+
+% ============================================================
+\begin{document}
+\thispagestyle{fancy}
+\RaggedRight
+
+% ---------------- Header ----------------
+\noindent
+\begin{minipage}[t]{0.60\textwidth}
+  {\headingfont\fontsize{28}{31}\selectfont\bfseries\color{navy}Dibyendu Maity}\\[3pt]
+  {\headingfont\normalsize\color{accent}Ph.D.\ in Physics (Theoretical) · Computational Biophysics}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.36\textwidth}
+  \raggedleft\small\color{muted}
+  Anikola, Dantan, Paschim Medinipur\\
+  West Bengal 721457\\[3pt]
+  \href{phone:8158055918}{phone:8158055918}\\
+  \href{mailto:dibyendumaity1999@gmail.com}{dibyendumaity1999@gmail.com}\\
+  \href{mailto:dibyendumaity1999@bose.res.in}{dibyendumaity1999@bose.res.in}\\
+  % \href{https://dmighty007.github.io/}{Homepage}\contactsep
+  % \href{https://scholar.google.com}{Google Scholar}\contactsep
+  % \href{https://github.com/dmighty007}{GitHub}
+\end{minipage}
+
+\vspace{0.5em}
+{\color{accent}\hrule height 1.1pt}
+\vspace{0.65em}
+
+% ---------------- Research Profile ----------------
+\section{Research Profile}
+
+My research develops and applies machine-learning-guided methods for sampling and characterising rare
+events in molecular systems, with emphasis on adaptive and weighted-ensemble sampling strategies for
+transition-path discovery and pathway-resolved kinetics. I use representation learning and statistical
+mechanics to construct data-driven collective variables and to map complex free-energy landscapes,
+and I build open-source scientific software that makes these methods accessible for molecular
+dynamics and materials-simulation workflows.
+
+% ---------------- Current Status ----------------
+% \section{Current Status}
+Ph.D.\ thesis submitted, University of Calcutta.
+Available for postdoctoral research positions from late 2026.
+
+% ---------------- Education ----------------
+\section{Education}
+
+\eduentry{Ph.D.\ in Physics (Theoretical)}
+{University of Calcutta / S.\,N.\ Bose National Centre for Basic Sciences, Kolkata\\
+  Thesis Title: \textit{Development and Application of Machine Learning Approaches for Prediction,
+    Identification and Sampling Problems in the Field of Molecular Modeling and Simulation}\\
+  Advisor: Prof.\ Suman Chakrabarty}
+{2021--2026}
+{Thesis submitted}
+
+\eduentry{M.Sc.\ in Physical Sciences}
+{University of Calcutta / S.\,N.\ Bose National Centre for Basic Sciences, Kolkata}
+{2019--2021}
+{Marks: 79.80\%}
+
+\eduentry{B.Sc.\ in Physics (Honours)}
+{Midnapore College, West Bengal}
+{2016--2019}
+{Marks: 81.25\%}
+
+{\small
+  \color{muted}
+  \eduentry{Higher Secondary (WBCHSE)}
+  {Ananda Nagar Srinath Vidyapith, Anandanagar}
+  {2016}
+  {Marks: 94.0\%}
+
+  \eduentry{Secondary (WBBSE)}
+  {Ananda Nagar Srinath Vidyapith, Anandanagar}
+  {2014}
+  {Marks: 94.43\%}
+}
+
+% ---------------- Selected Publications ----------------
+\section{Selected Publications}
+\smallskip
+% {\small\color{muted}Peer-reviewed journal articles; \me\ is bolded in author lists.}
+
+\pubentry{S.\ Shahid, \me, Suman Chakrabarty. ``CoWERA: A Temporal Coherence Guided Binless
+  Resampling Algorithm for Weighted-Ensemble Based Estimation of Rare-Event Kinetics.''
+  \textit{The Journal of Chemical Physics} 2026, \textit{164}, 134111.
+  DOI: \href{https://doi.org/10.1063/5.0320586}{10.1063/5.0320586}.}
+
+\pubentry{S.\ Pal, \me, J.\ Chakraborty, S.\ Jha, K.\ Sarma, N.\ Koner, S.\ Chakrabarty, D.\ Das.
+  ``Pathway Controlled Phase Separation of Minimal Building Blocks Utilizing a Dissociative
+  Chemical Transformation.'' \textit{Angewandte Chemie International Edition} 2026, e1914460.
+  DOI: \href{https://doi.org/10.1002/anie.1914460}{10.1002/anie.1914460}.}
+
+\pubentry{S.\ Sarkar, R.\ Saha, A.\ Dutta, R.\ Chattopadhyay, \me, I.\ Biswas, A.\ Mondal,
+  A.\ Ghosh, R.\ Ganguly, A.\,K.\ Santra, U.\ Garain, D.\ Mitra, S.\ Chakrabarty.
+  ``Microwave-Assisted Thermal Profiling of Blood: A Potential Biomarker for Differentiating
+  Cancer and Non-Cancer States.'' \textit{Journal of Medical Engineering \& Technology} 2026,
+  1--16. DOI: \href{https://doi.org/10.1080/03091902.2026.2698512}{10.1080/03091902.2026.2698512}.}
+
+\pubentry{\me, Shaheerah Shahid, Suman Chakrabarty. ``PathGennie: Rapid Generation of Rare Event
+  Pathways via Direction-Guided Adaptive Sampling Using Ultrashort Monitored Trajectories.''
+  \textit{Journal of Chemical Theory and Computation} 2025, \textit{21}, 11377--11389.
+  DOI: \href{https://doi.org/10.1021/acs.jctc.5c01244}{10.1021/acs.jctc.5c01244}.}
+
+\pubentry{\me, Suman Chakrabarty. ``IceCoder: Identification of Ice Phases in Molecular
+  Simulation Using Variational Autoencoder.'' \textit{Journal of Chemical Theory and Computation}
+  2025, \textit{21}, 1916--1928.
+  DOI: \href{https://doi.org/10.1021/acs.jctc.4c01298}{10.1021/acs.jctc.4c01298}.}
+
+\pubentry{S.\,K.\ Bhaumik, \me, I.\ Basu, S.\ Chakrabarty, S.\ Banerjee. ``Efficient Light
+  Harvesting in Self-Assembled Organic Luminescent Nanotubes.'' \textit{Chemical Science} 2023,
+  \textit{14}, 4363--4374.
+  DOI: \href{https://doi.org/10.1039/D3SC00375B}{10.1039/D3SC00375B}.}
+
+\pubentry{R.\ Sahoo, \me, D.\,S.\,S.\ Rao, S.\ Chakrabarty, C.\,V.\ Yelamaggad, S.\,K.\ Prasad.
+  ``Dimer-Parity-Dependent Odd-Even Effects in Photoinduced Transitions to Cholesteric and TGB
+  Smectic-C* Mesophases: Experiments and Simulations.'' \textit{Physical Review E} 2022,
+  \textit{106}, 044702.
+  DOI: \href{https://doi.org/10.1103/PhysRevE.106.044702}{10.1103/PhysRevE.106.044702}.}
+
+% ---------------- Preprints & Manuscripts ----------------
+% \section{Preprints \& Manuscripts}
+
+\pubentry{\me, Shaheerah Shahid, S.\ Bhattacharya, R.\ Majumdar, Suman Chakrabarty.
+  ``Quantitative Pathway-Resolved Kinetics from Neural Network-Guided Weighted Ensemble
+  Simulations.'' \textit{ChemRxiv} 2026.
+  DOI: \href{https://doi.org/10.26434/chemrxiv.15005553/v1}{10.26434/chemrxiv.15005553/v1}.}
+
+% \pubentry{\me, R.\ Majumdar, Suman Chakrabarty. ``TRAILS-MD: Mapping Complex Conformational
+%   Landscapes and Transition Pathways via Lightweight Lineage-Aware Adaptive Sampling.''
+%   Submitted 2026.}
+
+% \pubentry{\me, Suman Chakrabarty. ``Challenges in Transferable Prediction of Solvation Free
+%   Energy: A Comparative Analysis of Molecular Representations and Machine Learning Methods.''
+%   \textit{Research Square} 2025.
+%   DOI: \href{https://doi.org/10.21203/rs.3.rs-6727155/v1}{10.21203/rs.3.rs-6727155/v1}.}
+
+% ---------------- Scientific Software ----------------
+\section{Scientific Software}
+
+\softwareentry{TRAILS-MD}{Python}{Lightweight, engine-agnostic framework for lineage-aware
+  adaptive molecular dynamics sampling.}{https://github.com/TeamSuman/Trails-MD}
+
+\softwareentry{PathGennie}{Python}{Direction-guided adaptive-sampling framework for rapidly
+  generating rare-event transition pathways.}{https://github.com/dmighty007/PathGennie}
+
+\softwareentry{IceCoder}{Python / PyTorch}{Unsupervised representation-learning framework for
+  ice polymorph and liquid environment classification.}{https://github.com/dmighty007/IceCoder}
+
+\softwareentry{SolOrder}{Python / C++}{Local solvation and structural order parameter analysis
+  utilities for molecular simulations.}{https://github.com/dmighty007/SolOrder}
+
+% ---------------- Conference Presentations ----------------
+\section{Conference Presentations \& Invited Talks}
+
+\confentry{Poster presentation, Computational and Data-Driven Advanced Materials (CDAM 2026),
+  CSIR--Central Glass and Ceramic Research Institute, Kolkata, India, 7--8 April 2026.
+  \textbf{Poster Award}.}
+
+\confentry{Poster presentation and lightning talk, Workshop on Machine Learning, Enhanced
+  Sampling, and Dynamical Surrogate Models for Glassy and Adaptable Materials, University of
+  Chicago Center in Delhi, New Delhi, India, 30 March--1 April 2026.}
+
+\confentry{Poster presentation, Biophysics Today, S.\,N.\ Bose National Centre for Basic
+  Sciences, Kolkata, India, 2--4 December 2025.}
+
+\confentry{Poster presentation, Recent Advances in Modeling Rare Events (RARE 2025): Methods
+  and Applications, Khajuraho, Madhya Pradesh, India, 9--12 March 2025.}
+
+\confentry{Invited lecture, Supramolecular Chemistry Discussion 2024, IISER Kolkata, Kolkata,
+  India, 8 December 2024.}
+
+\confentry{Poster presentation and lightning talk, CHEMDOJO 3.0, 1--4 October 2024.}
+
+\confentry{Poster presentation, JNCASR--CECAM Conference: MD@60, Jawaharlal Nehru Centre for
+  Advanced Scientific Research, Bengaluru, India, 26--29 February 2024. \textbf{Best Poster
+    Award}.}
+
+\confentry{Poster presentation, Lightning Talk, and Hackathon, 2nd Discussion Meeting on
+  Machine Learning for Molecular Sciences 2024 (ML4MS2024), Gokulam Grand,
+  Thiruvananthapuram, Kerala, India, 1--4 February 2024.}
+
+\confentry{Poster presentation, ``Identification/Classification of Ice Phases in Molecular
+  Simulation using Variational Autoencoder,'' Theoretical Chemistry Symposium 2023 (TCS-2023),
+  Department of Chemistry, Indian Institute of Technology Madras, Chennai, India,
+  7--10 December 2023.}
+
+\confentry{Poster presentation, Physical Chemistry Symposium 2023 (SoPhyC-2023), inaugural
+  meeting of the Society of Physical Chemistry, Indian Institute of Technology Kanpur, Kanpur,
+  India, 29--31 October 2023.}
+
+\confentry{Poster presentation, National Conference on Recent Advances in Chemistry:
+  Theoretical and Computational Aspects (RAC-TCA 2022), Department of Chemistry, NIT Meghalaya
+  and North-Eastern Hill University, India, 18--20 November 2022. \textbf{Best Poster Award}.}
+
+% ---------------- Awards ----------------
+\section{Awards \& Recognition}
+
+\begin{itemize}
+  \item \textbf{INSPIRE Scholarship for Higher Education (SHE)}, Department of Science and
+        Technology, Government of India (2016--2019). Awarded under the Innovation in Science Pursuit
+        for Inspired Research (INSPIRE) programme; eligibility based on being within the top 1\% of the
+        WBCHSE board examination.
+  \item \textbf{GATE 2021 --- Physics}, Graduate Aptitude Test in Engineering (2021). Qualified
+        with All India Rank 177.
+  \item \textbf{National Graduate Physics Examination (NGPE)}, Indian Association of Physics
+        Teachers (IAPT) (2019). Recognized among the national top 26 students in NGPE-2019.
+  \item \textbf{JEST 2019 --- Physics}, Joint Entrance Screening Test, JEST Consortium (2019).
+        Qualified with All India Rank 191.
+  \item \textbf{IIT JAM 2019 --- Physics}, Joint Admission Test for M.Sc., Indian Institutes of
+        Technology (2019). Qualified with All India Rank 898.
+\end{itemize}
+
+% ---------------- Technical Expertise ----------------
+\section{Technical \& Computational Expertise}
+
+\textbf{Molecular simulation:} Molecular Dynamics, Enhanced Sampling, Metadynamics, Umbrella
+Sampling, Adaptive Sampling, Rare-Event Sampling, Langevin Dynamics, Weighted Ensemble.\par
+\vspace{4pt}
+\textbf{Machine Learning:} Representation Learning, Autoencoders, Variational Autoencoders,
+Deep Learning, data-driven collective variables, pathway analysis.\par
+\vspace{4pt}
+\textbf{Programming:} Python, NumPy, SciPy, PyTorch, MDAnalysis, MDTraj, C++, Bash.\par
+\vspace{4pt}
+\textbf{Simulation / Scientific Software:} GROMACS, OpenMM, PLUMED, Git, Linux/HPC clusters.
+
+% ---------------- Research Themes ----------------
+% \section{Research Themes}
+% \keywordsline{Rare-event kinetics · Adaptive sampling · Transition-path discovery ·
+%   Weighted-ensemble simulations · Pathway-resolved kinetics · Molecular free-energy landscapes ·
+%   Molecular representation learning · Ice polymorph identification · Solvation and structural analysis}
+
+\vspace{0.6em}
+{\footnotesize\color{muted} Last updated August 2026}
+
+\end{document}

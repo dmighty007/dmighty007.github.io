@@ -10,7 +10,7 @@ export let currentSection = "home";
 export let currentSubroute = null;
 
 const sectionTitles = {
-  home: "Dibyendu Maity | Computational Molecular Scientist",
+  home: "Dibyendu Maity | Computational Biophysics",
   research: "Research Case Studies | Dibyendu Maity",
   publications: "Publications & Preprints | Dibyendu Maity",
   software: "Scientific Software & Code | Dibyendu Maity",

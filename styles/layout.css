@@ -3,7 +3,7 @@
     top: 0;
     left: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--teal), var(--gold));
+    background: var(--teal);
     z-index: 1000;
     width: 0;
     transition: width 100ms ease-out;
@@ -31,7 +31,7 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(247, 244, 237, 0.92);
+    background: rgba(243, 246, 248, 0.94);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
 }

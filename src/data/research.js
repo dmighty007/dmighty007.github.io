@@ -31,8 +31,8 @@ export const researchThemes = [
   {
     id: "trails-md",
     title: "Lineage-Aware Adaptive Conformational Sampling",
-    status: "Submitted (2026)",
-    thesisRef: "Thesis Chapter 4",
+    status: "Scientific software (2026)",
+    thesisRef: null,
     subtitle: "How can adaptive simulations explore unknown conformational landscapes while preserving continuous physical histories?",
     problem: "Adaptive sampling algorithms often scatter trajectory seeds, making it difficult to verify whether sampled configurations belong to continuous physical transition pathways.",
     methodology: "Developed TRAILS-MD, an engine-agnostic framework that couples lightweight density-based seed selection with explicit trajectory lineage tracking across fixed or ML-learned collective variables.",
@@ -43,7 +43,7 @@ export const researchThemes = [
   {
     id: "solvation-transferability",
     title: "Molecular Representation Learning & Transferability",
-    status: "Research Square Preprint (2025)",
+    status: "Thesis research (2025)",
     thesisRef: "Thesis Chapter 1",
     subtitle: "How should high-dimensional molecular coordinates and trajectories be encoded for effective property prediction?",
     problem: "Deep learning models for chemical property prediction often achieve high benchmark scores on random dataset splits but fail when tested on out-of-distribution solvents or solutes.",

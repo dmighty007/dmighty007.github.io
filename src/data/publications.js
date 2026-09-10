@@ -1,5 +1,5 @@
 /**
- * Complete 10-publication dataset compiled from Google Scholar & Ph.D. Thesis.
+ * Current publication dataset compiled from the August 2026 CV and Ph.D. Thesis.
  * Each publication features explicit verification metadata, DOIs, status, and Google Scholar citation counts.
  */
 export const publications = [
@@ -205,56 +205,4 @@ export const publications = [
     contribution: "Formulated trajectory-lineage tracking algorithms; implemented transition-network flux-decomposition workflows; ran weighted-ensemble simulations.",
     tags: ["Weighted Ensemble", "Kinetics", "Transition Networks", "Rare Events"]
   },
-  {
-    id: "solvation-transferability-2025",
-    title: "Challenges in Transferable Prediction of Solvation Free Energy: A Comparative Analysis of Molecular Representations and Machine Learning Methods",
-    authors: ["Dibyendu Maity", "Suman Chakrabarty"],
-    year: 2025,
-    journal: "Research Square",
-    volume: null,
-    issue: null,
-    pages: null,
-    doi: "10.21203/rs.3.rs-6727155/v1",
-    url: "https://doi.org/10.21203/rs.3.rs-6727155/v1",
-    status: "preprint",
-    thesisChapter: "Chapter 1",
-    selected: false,
-    verifiedAt: "2026-07-26",
-    evidenceUrl: "https://doi.org/10.21203/rs.3.rs-6727155/v1",
-    metrics: {
-      citationCount: 0,
-      retrievedAt: "2026-07-26",
-      source: "Google Scholar"
-    },
-    abstract: "Evaluating 2D graph embeddings, 3D conformer statistics, SOAP, and trajectory-derived structural features across out-of-distribution solvents and solutes to identify transferability bottlenecks in chemical deep learning.",
-    contribution: "Curated solvation benchmarks; implemented representation pipelines; conducted domain-transfer and out-of-distribution evaluation.",
-    codeUrl: "https://github.com/dmighty007/solvation-transferability",
-    tags: ["Machine Learning", "Solvation Free Energy", "Graph Neural Networks", "Transferability"]
-  },
-  {
-    id: "trails-md-2026",
-    title: "TRAILS-MD: Mapping Complex Conformational Landscapes and Transition Pathways via Lightweight Lineage-Aware Adaptive Sampling",
-    authors: ["Dibyendu Maity", "R. Majumdar", "Suman Chakrabarty"],
-    year: 2026,
-    journal: "Submitted",
-    volume: null,
-    issue: null,
-    pages: null,
-    doi: null,
-    url: "https://github.com/TeamSuman/Trails-MD",
-    status: "submitted",
-    thesisChapter: "Chapter 4",
-    selected: false,
-    verifiedAt: "2026-07-26",
-    evidenceUrl: "https://github.com/TeamSuman/Trails-MD",
-    metrics: {
-      citationCount: 0,
-      retrievedAt: "2026-07-26",
-      source: "Manual Thesis Verification"
-    },
-    abstract: "A lightweight, engine-agnostic framework for lineage-aware adaptive molecular dynamics sampling across fixed or machine-learned collective-variable spaces, reconstructing continuous histories from short parallel trajectories.",
-    contribution: "Developed the core TRAILS-MD package; designed lineage forest data structures; conducted benchmark simulations on biomolecular folding and unbinding.",
-    codeUrl: "https://github.com/TeamSuman/Trails-MD",
-    tags: ["Adaptive MD", "Lineage Tracking", "Engine Agnostic", "Conformational Landscapes"]
-  }
 ];

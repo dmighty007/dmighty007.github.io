@@ -105,8 +105,8 @@ def check_data_schemas():
     if os.path.exists(pub_file):
         content = open(pub_file, encoding="utf-8").read()
         pub_ids = re.findall(r'id:\s*"([^"]+)"', content)
-        if len(pub_ids) != 10:
-            errors.append(f"Expected 10 publication records, found {len(pub_ids)}")
+        if len(pub_ids) != 8:
+            errors.append(f"Expected 8 publication records, found {len(pub_ids)}")
         if len(set(pub_ids)) != len(pub_ids):
             errors.append("Duplicate publication IDs detected in publications.js")
 
@@ -125,14 +125,14 @@ def check_data_schemas():
     if os.path.exists(soft_file):
         content = open(soft_file, encoding="utf-8").read()
         soft_ids = re.findall(r'id:\s*"([^"]+)"', content)
-        if len(soft_ids) != 5:
-            errors.append(f"Expected 5 software projects, found {len(soft_ids)}")
+        if len(soft_ids) != 4:
+            errors.append(f"Expected 4 software projects, found {len(soft_ids)}")
         if len(set(soft_ids)) != len(soft_ids):
             errors.append("Duplicate software IDs detected in software.js")
 
         verifications = re.findall(r'verificationStatus:\s*"([^"]+)"', content)
-        if len(verifications) < 5:
-            warnings.append(f"Only {len(verifications)}/5 software entries have explicit verificationStatus")
+        if len(verifications) < 4:
+            warnings.append(f"Only {len(verifications)}/4 software entries have explicit verificationStatus")
 
     return errors, warnings
 
@@ -220,7 +220,7 @@ def main():
         for e in schema_errs:
             log("ERROR", e)
     else:
-        log("PASS", "Data schemas verified: 10 publications and 5 software projects match schema contracts.")
+        log("PASS", "Data schemas verified: 8 publications and 4 software projects match schema contracts.")
 
     # 4. SEO & Metadata Validation
     seo_errs, seo_warns = check_seo_files()

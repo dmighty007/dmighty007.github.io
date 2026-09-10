@@ -1,6 +1,6 @@
 # Dibyendu Maity — Academic & Research Portfolio
 
-This repository contains the academic and research portfolio website of **Dibyendu Maity**, a Computational Molecular Scientist specializing in machine learning methods for molecular states, rare events, structural phase identification, and molecular dynamics kinetics.
+This repository contains the academic and research portfolio website of **Dibyendu Maity**, a computational biophysicist specializing in machine-learning-guided methods for molecular states, rare events, structural phase identification, and molecular dynamics kinetics.
 
 ---
 
@@ -154,8 +154,8 @@ When deploying to hosting platforms (e.g. Netlify, Cloudflare Pages, GitHub Page
 |---|---|---|
 | **Static Asset Integrity** | **PASS** | `python3 tools/validate.py` (Local files exist) |
 | **HTML DOM & ARIA** | **PASS** | Unique IDs, resolving ARIA controls, complete alt tags |
-| **Publication Schemas** | **PASS** | 10 publications verified against Google Scholar & Thesis |
-| **Software Schemas** | **PASS** | 5 tools verified with execution status labels |
+| **Publication Schemas** | **PASS** | 8 publications verified against the latest CV & Thesis |
+| **Software Schemas** | **PASS** | 4 tools verified with execution status labels |
 | **ES Module Syntax** | **PASS** | 21 modules verified via `node --check` |
 | **E2E Browser Navigation** | **PASS** | Playwright test suite (`tests/portfolio.spec.js`) |
 | **Accessibility Target** | **PASS** | WCAG 2.1 AA implementation verified |
