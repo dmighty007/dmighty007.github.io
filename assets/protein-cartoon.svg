@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="title desc">
+  <title id="title">Ubiquitin protein cartoon</title><desc id="desc">A stylised ribbon representation of the Ubiquitin protein structure, PDB 1UBQ.</desc>
+  <rect width="960" height="720" fill="#fffdf8"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M208 392 C112 330 159 206 273 246 C354 274 284 351 344 395 C400 437 499 393 486 288 C474 190 607 172 646 265 C680 348 601 408 670 466 C741 525 844 445 793 360" stroke="#3c7a76" stroke-width="26"/>
+    <path d="M210 392 C282 477 394 519 482 462 C547 420 568 349 527 288" stroke="#b8863a" stroke-width="21"/>
+    <path d="M526 289 C595 222 710 214 766 286 C817 352 770 462 680 475" stroke="#17384f" stroke-width="28"/>
+    <path d="M335 393 L426 343 L413 438 Z" fill="#8b5e4a" stroke="#8b5e4a" stroke-width="8"/>
+    <path d="M490 467 L583 429 L554 522 Z" fill="#3c7a76" stroke="#3c7a76" stroke-width="8"/>
+    <path d="M648 267 L734 220 L719 313 Z" fill="#17384f" stroke="#17384f" stroke-width="8"/>
+  </g>
+  <g fill="#fffdf8" opacity=".78"><circle cx="209" cy="392" r="7"/><circle cx="344" cy="395" r="7"/><circle cx="486" cy="288" r="7"/><circle cx="670" cy="466" r="7"/></g>
+  <text x="480" y="610" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600" fill="#17384f">Ubiquitin · ribbon representation</text>
+</svg>

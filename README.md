@@ -160,3 +160,8 @@ When deploying to hosting platforms (e.g. Netlify, Cloudflare Pages, GitHub Page
 | **E2E Browser Navigation** | **PASS** | Playwright test suite (`tests/portfolio.spec.js`) |
 | **Accessibility Target** | **PASS** | WCAG 2.1 AA implementation verified |
 | **SEO & Sitemap** | **PASS** | `robots.txt` & `sitemap.xml` validated |
+# Dibyendu Maity — Academic Portfolio
+
+## Updating identity assets
+
+The About page intentionally uses `assets/headshot-placeholder.svg` until a professional portrait is available. Replace that file with a portrait of Dibyendu Maity (preferably a square or near-square image) and update the image `alt` text in `index.html` to “Portrait of Dibyendu Maity”. No stock or generated portrait is used.

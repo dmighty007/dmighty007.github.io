@@ -34,14 +34,10 @@
         <meta name="author" content="Dibyendu Maity" />
         <meta name="robots" content="index, follow" />
         <meta name="theme-color" content="#1e3552" />
-        <link
-            rel="icon"
-            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>DM</text></svg>"
-        />
-
-        <link rel="prefetch" href="./js/vendor/three.min.js" as="script" />
-        <link rel="prefetch" href="./js/vendor/3Dmol-min.js" as="script" />
-        <link rel="prefetch" href="./js/vendor/1ubq.pdb" as="fetch" crossorigin="anonymous" />
+        <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="./assets/favicon-32.png" sizes="32x32" type="image/png" />
+        <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" sizes="180x180" />
+        <link rel="manifest" href="./site.webmanifest" />
 
         <link rel="stylesheet" href="./styles/tokens.css" />
         <link rel="stylesheet" href="./styles/reset.css" />
@@ -213,62 +209,71 @@
                     <div class="hero-visual">
                         <!-- Static Image Fallback Poster -->
                         <picture class="hero-poster" id="hero-poster">
-                            <source srcset="assets/portfolio-preview.avif" type="image/avif" />
-                            <source srcset="assets/portfolio-preview.webp" type="image/webp" />
                             <img
-                                src="assets/portfolio-preview.png"
+                                src="assets/fes-landscape.svg"
                                 alt="Free-energy landscape showing metastable basins and rare-event transition pathway"
                                 width="960"
                                 height="720"
-                                loading="lazy"
+                                loading="eager"
+                                fetchpriority="high"
+                                decoding="async"
                             />
                         </picture>
 
                         <div
-                            class="research-graphic research-graphic-3d"
-                            aria-label="Interactive 3D visualization showing free-energy surface landscape and protein cartoon structure"
+                            class="research-graphic research-graphic-3d landscape-explorer"
+                            aria-label="Interactive free-energy landscape explorer"
                         >
-                            <canvas id="hero-scene" aria-hidden="true"></canvas>
-                            <div id="protein-3dmol-container" aria-hidden="true"></div>
-
-                            <!-- WAI-ARIA Tab Controls -->
-                            <div class="hero-controls-pill" role="region" aria-label="Hero visual view controls">
-                                <div class="hero-carousel-tabs" role="tablist" aria-label="Visual view options">
-                                    <button
-                                        class="hero-tab-btn is-active"
-                                        id="hero-tab-fes"
-                                        role="tab"
-                                        aria-selected="true"
-                                        aria-controls="hero-scene"
-                                        tabindex="0"
-                                    >
-                                        <span>FES Landscape</span>
-                                    </button>
-                                    <button
-                                        class="hero-tab-btn"
-                                        id="hero-tab-protein"
-                                        role="tab"
-                                        aria-selected="false"
-                                        aria-controls="protein-3dmol-container"
-                                        tabindex="-1"
-                                    >
-                                        <span>Protein Cartoon</span>
-                                    </button>
+                            <section class="hero-slide is-active" id="landscape-panel" aria-label="Free-energy landscape" aria-hidden="false">
+                                <canvas id="hero-landscape" tabindex="0" aria-label="Free-energy landscape with two metastable basins and a transition pathway"></canvas>
+                                <div class="landscape-heading" aria-hidden="true">
+                                    <span>Free-energy landscape</span>
+                                    <small>Rare-event pathway explorer</small>
                                 </div>
-                                <span class="hero-ctrl-divider" aria-hidden="true"></span>
+                                <div class="landscape-legend" aria-hidden="true">
+                                    <span><i class="legend-dot basin-a"></i>Basin A</span>
+                                    <span><i class="legend-dot saddle"></i>Transition state</span>
+                                    <span><i class="legend-dot basin-b"></i>Basin B</span>
+                                </div>
+                                <p class="landscape-hint" id="landscape-status">Move across the landscape to inspect basins and the barrier.</p>
+                                <div class="hero-controls-pill" role="group" aria-label="Landscape animation controls">
                                 <button
                                     class="hero-ctrl-btn"
                                     id="hero-toggle-anim"
-                                    aria-label="Pause animation"
-                                    title="Pause / Play animation"
+                                    type="button"
+                                    aria-label="Pause trajectory animation"
+                                    title="Pause trajectory animation"
                                 >
                                     <svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
                                     <svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                 </button>
+                                <button class="hero-ctrl-btn landscape-reset" id="hero-reset-anim" type="button" aria-label="Reset trajectory animation" title="Reset trajectory animation">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg>
+                                </button>
+                                </div>
+                            </section>
+                            <section class="hero-slide protein-slide" id="protein-panel" aria-label="Protein cartoon structure" aria-hidden="true">
+                                <img class="protein-cartoon" src="./assets/protein-cartoon.svg" alt="Stylised ribbon representation of Ubiquitin protein structure, PDB 1UBQ" />
+                                <div class="protein-caption"><span>Protein cartoon</span><small>Ubiquitin · PDB 1UBQ</small></div>
+                            </section>
+                            <div class="hero-carousel-nav" role="group" aria-label="Scientific visual carousel">
+                                <button class="carousel-arrow" id="hero-carousel-prev" type="button" aria-label="Show previous visual">←</button>
+                                <button class="carousel-dot is-active" type="button" data-hero-slide="landscape" aria-pressed="true" aria-label="Show free-energy landscape"></button>
+                                <button class="carousel-dot" type="button" data-hero-slide="protein" aria-pressed="false" aria-label="Show protein cartoon"></button>
+                                <button class="carousel-arrow" id="hero-carousel-next" type="button" aria-label="Show next visual">→</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <section class="research-snapshot" aria-labelledby="research-snapshot-title">
+                    <p class="snapshot-kicker" id="research-snapshot-title">Research at a glance</p>
+                    <dl class="snapshot-grid">
+                        <div><dt id="stat-publications">8</dt><dd>publications<br /><span id="stat-peer-reviewed">7</span> peer-reviewed</dd></div>
+                        <div><dt id="stat-software">4</dt><dd>open-source<br />research tools</dd></div>
+                        <div><dt>Core methods</dt><dd>molecular dynamics · enhanced sampling · machine learning</dd></div>
+                    </dl>
+                </section>
 
                 <section class="featured-research reveal" aria-label="Featured research">
                     <div class="section-header">
@@ -290,28 +295,7 @@
                     <div class="section-header">
                         <h2>News & Updates</h2>
                     </div>
-                    <ul class="news-list">
-                        <li>
-                            <time datetime="2026-08">Aug 2026</time>
-                            <span>Ph.D. thesis submitted to the University of Calcutta. Available for postdoctoral positions from late 2026.</span>
-                        </li>
-                        <li>
-                            <time datetime="2026-06">Jun 2026</time>
-                            <span>Paper on pathway-controlled phase separation published in <em>Angewandte Chemie International Edition</em>.</span>
-                        </li>
-                        <li>
-                            <time datetime="2026-01">Jan 2026</time>
-                            <span>CoWERA paper on temporal coherence guided binless resampling accepted in <em>The Journal of Chemical Physics</em>.</span>
-                        </li>
-                        <li>
-                            <time datetime="2026-04">Apr 2026</time>
-                            <span>Poster Award received at Computational and Data-Driven Advanced Materials (CDAM 2026).</span>
-                        </li>
-                        <li>
-                            <time datetime="2025-10">Oct 2025</time>
-                            <span>PathGennie and IceCoder papers published in <em>Journal of Chemical Theory and Computation</em>.</span>
-                        </li>
-                    </ul>
+                    <ul class="news-list" id="news-list"></ul>
                 </section>
 
                 <section class="contact-cta reveal" aria-label="Contact CTA">
@@ -406,10 +390,12 @@
 
                 <div class="about-hero-layout">
                     <div class="about-identity">
-                        <div class="about-headshot-frame" aria-label="Photograph of Dibyendu Maity">
-                            <div class="headshot-placeholder" id="about-headshot">
-                                <span class="headshot-initials">DM</span>
-                            </div>
+                        <div class="about-headshot-frame">
+                            <img
+                                id="about-headshot"
+                                src="./assets/headshot-placeholder.svg"
+                                alt="Dibyendu Maity monogram; a professional headshot will be added"
+                            />
                         </div>
                         <h3 class="about-name">Dibyendu Maity</h3>
                         <p class="about-title">Computational Biophysicist</p>

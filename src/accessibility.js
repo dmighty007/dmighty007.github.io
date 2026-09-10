@@ -6,6 +6,10 @@
 const $ = (sel, root = document) => root.querySelector(sel);
 
 let menuTrigger = null;
+let lockedBackground = [];
+let previousOverflow = "";
+
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function setLiveStatus(msg) {
   const el = $("#live-status");
@@ -19,6 +23,8 @@ export function openMobileMenu() {
   const toggle = $(".menu-toggle");
   const main = $("#main");
   const header = $(".site-header");
+  const footer = $(".site-footer");
+  const progress = $("#scroll-progress");
 
   if (!menu) return;
 
@@ -28,7 +34,10 @@ export function openMobileMenu() {
   menu.setAttribute("aria-hidden", "false");
   if (toggle) toggle.setAttribute("aria-expanded", "true");
 
-  if (main) main.inert = true;
+  lockedBackground = [main, header, footer, progress].filter(Boolean);
+  lockedBackground.forEach((element) => { element.inert = true; });
+  previousOverflow = document.documentElement.style.overflow;
+  document.documentElement.style.overflow = "hidden";
 
   // Focus first link in drawer
   const firstLink = menu.querySelector("a");
@@ -50,7 +59,9 @@ export function closeMobileMenu() {
   menu.setAttribute("aria-hidden", "true");
   if (toggle) toggle.setAttribute("aria-expanded", "false");
 
-  if (main) main.inert = false;
+  lockedBackground.forEach((element) => { element.inert = false; });
+  lockedBackground = [];
+  document.documentElement.style.overflow = previousOverflow;
 
   if (menuTrigger && typeof menuTrigger.focus === "function") {
     menuTrigger.focus();
@@ -86,6 +97,20 @@ export function setupMobileMenuEvents() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && menu?.classList.contains("is-open")) {
       closeMobileMenu();
+    }
+
+    if (e.key === "Tab" && menu?.classList.contains("is-open")) {
+      const focusable = Array.from(menu.querySelectorAll(FOCUSABLE)).filter((element) => !element.hasAttribute("hidden"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   });
 }

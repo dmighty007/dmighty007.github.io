@@ -1,0 +1,8 @@
+{
+  "name": "Dibyendu Maity | Computational Biophysics",
+  "short_name": "Dibyendu Maity",
+  "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }],
+  "theme_color": "#17384f",
+  "background_color": "#f3f6f8",
+  "display": "browser"
+}

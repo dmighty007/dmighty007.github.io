@@ -549,4 +549,5 @@ window.initHeroSceneScript = function () {
         renderer.render(scene, camera);
     });
     ro.observe(container);
+    return true;
 };

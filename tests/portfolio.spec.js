@@ -49,33 +49,56 @@ test.describe("Portfolio E2E & Accessibility Test Suite", () => {
     const mobileMenu = page.locator("#mobile-menu");
     await expect(mobileMenu).toHaveClass(/is-open/);
     await expect(mobileMenu).toHaveAttribute("aria-hidden", "false");
+    await expect(page.locator("#main")).toHaveJSProperty("inert", true);
+
+    // Focus stays inside the modal drawer when cycling with Shift+Tab.
+    const firstLink = mobileMenu.locator("a").first();
+    const lastLink = mobileMenu.locator("a").last();
+    await lastLink.focus();
+    await page.keyboard.press("Tab");
+    await expect(firstLink).toBeFocused();
 
     // Press Escape key to close mobile menu
     await page.keyboard.press("Escape");
     await expect(mobileMenu).not.toHaveClass(/is-open/);
     await expect(toggleBtn).toHaveAttribute("aria-expanded", "false");
+    await expect(toggleBtn).toBeFocused();
   });
 
-  test("Hero Visual ARIA Tabs & Keyboard Navigation", async ({ page }) => {
-    const tabFes = page.locator("#hero-tab-fes");
-    const tabProtein = page.locator("#hero-tab-protein");
+  test("Hero landscape explorer exposes usable native controls", async ({ page }) => {
+    const landscape = page.locator("#hero-landscape");
+    const animationToggle = page.locator("#hero-toggle-anim");
+    const reset = page.locator("#hero-reset-anim");
 
-    await expect(tabFes).toHaveAttribute("aria-selected", "true");
-    await expect(tabProtein).toHaveAttribute("aria-selected", "false");
+    await expect(landscape).toBeVisible();
+    await expect(landscape).toHaveAttribute("tabindex", "0");
+    await expect(animationToggle).toHaveAttribute("aria-label", "Pause trajectory animation");
+    await animationToggle.click();
+    await expect(animationToggle).toHaveAttribute("aria-label", "Play trajectory animation");
+    await reset.click();
 
-    // Click Protein Cartoon tab
-    await tabProtein.click();
-    await expect(tabProtein).toHaveAttribute("aria-selected", "true");
-    await expect(tabFes).toHaveAttribute("aria-selected", "false");
+    const proteinDot = page.locator('[data-hero-slide="protein"]');
+    await proteinDot.click();
+    await expect(proteinDot).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#protein-panel")).toHaveClass(/is-active/);
+    await page.locator("#hero-carousel-next").click();
+    await expect(page.locator("#landscape-panel")).toHaveClass(/is-active/);
+  });
 
-    // Verify 3Dmol container becomes visible
-    const molContainer = page.locator("#protein-3dmol-container");
-    await expect(molContainer).toBeVisible();
+  test("Hero fallback, news order, and mobile publication controls remain robust", async ({ page }) => {
+    await expect(page.locator("#hero-poster img")).toHaveAttribute("src", "assets/fes-landscape.svg");
+    await expect(page.locator("#hero-poster img")).toHaveAttribute("loading", "eager");
+    await expect(page.locator("#stat-publications")).toHaveText("8");
 
-    // Use Keyboard Arrow Left to return to FES tab
-    await tabProtein.focus();
-    await page.keyboard.press("ArrowLeft");
-    await expect(tabFes).toHaveAttribute("aria-selected", "true");
+    const dates = await page.locator("#news-list time").evaluateAll((items) => items.map((item) => item.getAttribute("datetime")));
+    expect(dates).toEqual([...dates].sort().reverse());
+
+    for (const width of [320, 360, 375, 390, 412, 430]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto("http://localhost:8899/#publications");
+      const dimensions = await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, innerWidth: window.innerWidth }));
+      expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.innerWidth);
+    }
   });
 
   test("Publications Search, Filter & BibTeX Copy", async ({ page }) => {
