@@ -15,13 +15,6 @@
     margin-bottom: 0.75rem;
 }
 
-.hero-identity {
-    margin: -0.25rem 0 0.9rem;
-    color: var(--text-secondary);
-    font-size: 0.84rem;
-    line-height: 1.45;
-}
-
 .hero-description {
     font-size: 1.15rem;
     color: var(--text-secondary);
@@ -109,151 +102,8 @@
     transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
-#hero-landscape {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    cursor: crosshair;
-    background: #e9eef2;
-}
-
-.landscape-explorer {
-    overflow: hidden;
-    isolation: isolate;
-}
-
-.hero-slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(3%);
-    transition: opacity 280ms ease, transform 280ms ease;
-}
-
-.hero-slide.is-active {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(0);
-}
-
-.protein-slide { background: #fffdf8; }
-
-.protein-cartoon { width: 100%; height: 100%; display: block; object-fit: cover; }
-
-.protein-caption {
-    position: absolute;
-    left: 1.15rem;
-    bottom: 1rem;
-    z-index: 2;
-    display: grid;
-    gap: 0.12rem;
-    padding: 0.6rem 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: rgba(255, 253, 248, 0.9);
-    color: var(--navy);
-    font-size: 0.78rem;
-    font-weight: 700;
-}
-
-.protein-caption small { color: var(--text-secondary); font-size: 0.66rem; font-weight: 500; }
-
-.hero-carousel-nav {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.3rem;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: var(--radius-pill);
-    background: rgba(255, 253, 248, 0.88);
-    box-shadow: 0 3px 14px rgba(23, 56, 79, 0.08);
-}
-
-.carousel-arrow, .carousel-dot {
-    border: 0;
-    background: transparent;
-    color: var(--navy);
-    cursor: pointer;
-}
-
-.carousel-arrow { width: 24px; height: 24px; border-radius: 50%; font-size: 1rem; line-height: 1; }
-.carousel-arrow:hover { background: rgba(23, 56, 79, 0.08); }
-.carousel-dot { width: 8px; height: 8px; padding: 0; border-radius: 50%; background: var(--border-strong); }
-.carousel-dot.is-active { width: 18px; border-radius: var(--radius-pill); background: var(--teal); }
-
-.landscape-heading {
-    position: absolute;
-    top: 1.15rem;
-    left: 1.15rem;
-    z-index: 2;
-    display: grid;
-    gap: 0.15rem;
-    padding: 0.65rem 0.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.62);
-    border-radius: var(--radius-sm);
-    background: rgba(255, 253, 248, 0.84);
-    box-shadow: 0 3px 14px rgba(23, 56, 79, 0.08);
-    color: var(--navy);
-    font-size: 0.78rem;
-    font-weight: 700;
-}
-
-.landscape-heading small {
-    color: var(--text-secondary);
-    font-size: 0.66rem;
-    font-weight: 500;
-    letter-spacing: 0.025em;
-}
-
-.landscape-legend {
-    position: absolute;
-    bottom: 1rem;
-    left: 1.15rem;
-    z-index: 2;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem 0.85rem;
-    padding: 0.45rem 0.7rem;
-    border-radius: var(--radius-pill);
-    background: rgba(255, 253, 248, 0.86);
-    color: var(--navy);
-    font-size: 0.68rem;
-    font-weight: 600;
-}
-
-.landscape-legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
-.legend-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
-.basin-a { background: #3c7a76; }
-.saddle { background: #b8863a; }
-.basin-b { background: #1e3552; }
-
-.landscape-hint {
-    position: absolute;
-    right: 1rem;
-    bottom: 3.55rem;
-    z-index: 2;
-    width: min(255px, calc(100% - 2rem));
-    margin: 0;
-    padding: 0.55rem 0.7rem;
-    border-left: 2px solid var(--gold);
-    background: rgba(255, 253, 248, 0.86);
-    color: var(--text-secondary);
-    font-size: 0.72rem;
-    line-height: 1.4;
-}
-
-.landscape-reset { border-left: 1px solid rgba(222, 212, 190, 0.9) !important; border-radius: 0 !important; }
-
 #hero-scene {
     display: block;
-    background: #ede6da;
 }
 
 #hero-scene.is-inactive {
@@ -290,8 +140,6 @@
     border: 1px solid rgba(222, 212, 190, 0.85);
     box-shadow: 0 4px 18px rgba(30, 53, 82, 0.08);
 }
-
-.landscape-explorer .hero-controls-pill { z-index: 3; gap: 0; padding: 3px; }
 
 .hero-carousel-tabs {
     display: flex;
@@ -346,61 +194,6 @@
 .hero-ctrl-btn:hover {
     background: rgba(30, 53, 82, 0.08);
     color: var(--navy);
-}
-
-.research-snapshot {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    align-items: start;
-    gap: 2rem;
-    margin: -1rem 0 4rem;
-    padding: 1.25rem 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-}
-
-.snapshot-kicker {
-    margin: 0;
-    color: var(--teal);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-}
-
-.snapshot-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin: 0;
-}
-
-.snapshot-grid div { min-width: 0; }
-.snapshot-grid dt { color: var(--navy); font-family: "Source Serif 4", Georgia, serif; font-size: 1.35rem; font-weight: 650; line-height: 1.15; }
-.snapshot-grid dd { margin: 0.3rem 0 0; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.45; }
-
-.no-script-evidence {
-    margin: 0 0 3rem;
-    padding: 1.5rem;
-    border: 1px solid var(--border);
-    background: var(--surface);
-}
-
-.no-script-evidence h2 { font-size: 1.35rem; }
-.no-script-evidence p:last-child { margin-bottom: 0; }
-
-@media (max-width: 900px) {
-    .research-snapshot { grid-template-columns: 1fr; gap: 0.9rem; }
-}
-
-@media (max-width: 700px) {
-    .snapshot-grid { grid-template-columns: 1fr; gap: 0.85rem; }
-
-    .landscape-heading { top: 0.75rem; left: 0.75rem; }
-    .hero-carousel-nav { top: 0.7rem; right: 0.7rem; }
-    .landscape-legend { bottom: 0.75rem; left: 0.75rem; max-width: calc(100% - 1.5rem); }
-    .landscape-hint { right: 0.75rem; bottom: 3.9rem; width: 210px; }
-    .protein-caption { left: 0.75rem; bottom: 0.75rem; }
 }
 
 @keyframes mol-spin {

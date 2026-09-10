@@ -55,12 +55,14 @@ window.initHeroSceneScript = function () {
         const dB2 = (x - 1.4) ** 2 + (z - 0.75) ** 2;
         const dS2 = x * x * 1.4 + z * z * 1.4;
 
+        const texture = 0.012 * Math.sin(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x);
         const rawY = (
             -0.85 * Math.exp(-dA2 / 0.8) -
             0.75 * Math.exp(-dB2 / 0.9) +
             0.26 * Math.exp(-dS2) +
             0.035 * (x * x + z * z) -
-            0.12
+            0.12 +
+            texture
         );
 
         const r = Math.hypot(x, z);
@@ -77,49 +79,37 @@ window.initHeroSceneScript = function () {
         const eB = Math.exp(-dB2 / 0.9);
         const eS = Math.exp(-dS2);
 
+        const textureX = 0.012 * (1.7 * Math.cos(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x) - 0.25 * Math.sin(1.7 * x + 0.45 * z) * Math.sin(1.25 * z - 0.25 * x));
+        const textureZ = 0.012 * (0.45 * Math.cos(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x) - 1.25 * Math.sin(1.7 * x + 0.45 * z) * Math.sin(1.25 * z - 0.25 * x));
+
         out.set(
             -0.85 * eA * ((-2 * (x + 1.4)) / 0.8) -
                 0.75 * eB * ((-2 * (x - 1.4)) / 0.9) +
                 0.26 * eS * (-2.8 * x) +
-                0.07 * x,
+            0.07 * x + textureX,
             -0.85 * eA * ((-2 * (z + 0.75)) / 0.8) -
                 0.75 * eB * ((-2 * (z - 0.75)) / 0.9) +
                 0.26 * eS * (-2.8 * z) +
-                0.07 * z
+            0.07 * z + textureZ
         );
         return out;
     }
 
-    const COLOR_BASIN_A = new THREE.Color(0x3c7a76);
-    const COLOR_BASIN_B = new THREE.Color(0x1e3552);
-    const COLOR_SADDLE = new THREE.Color(0xb8863a);
-    const COLOR_SURFACE = new THREE.Color(0xede6da);
+    const COLOR_LOW = new THREE.Color(0x214b63);
+    const COLOR_MID = new THREE.Color(0x5e9a96);
+    const COLOR_HIGH = new THREE.Color(0xd6b46a);
+    const COLOR_EDGE = new THREE.Color(0xe7edf0);
 
     function energyColor(x, z, y, target) {
-        const dA = Math.hypot(x + 1.4, z + 0.75);
-        const dB = Math.hypot(x - 1.4, z - 0.75);
-        const dCenter = Math.hypot(x, z);
-
-        target.copy(COLOR_SURFACE);
-
-        if (dA < 2.2) {
-            const tA = smoothstep(2.2, 0.2, dA) * 0.78;
-            target.lerp(COLOR_BASIN_A, tA);
-        }
-        if (dB < 2.2) {
-            const tB = smoothstep(2.2, 0.2, dB) * 0.74;
-            target.lerp(COLOR_BASIN_B, tB);
-        }
-        if (dCenter < 1.3 && y > -0.3) {
-            const tS = smoothstep(1.3, 0.0, dCenter) * 0.65;
-            target.lerp(COLOR_SADDLE, tS);
+        const height = smoothstep(-0.88, 0.22, y);
+        if (height < 0.52) {
+            target.copy(COLOR_LOW).lerp(COLOR_MID, height / 0.52);
+        } else {
+            target.copy(COLOR_MID).lerp(COLOR_HIGH, (height - 0.52) / 0.48);
         }
 
-        const r = Math.hypot(x, z);
-        if (r > 3.5) {
-            const tEdge = smoothstep(3.5, 6.0, r);
-            target.lerp(COLOR_SURFACE, tEdge);
-        }
+        const edge = smoothstep(3.6, 6.2, Math.hypot(x, z));
+        target.lerp(COLOR_EDGE, edge * 0.72);
 
         return target;
     }
@@ -295,8 +285,8 @@ window.initHeroSceneScript = function () {
 
     const surfaceMat = new THREE.MeshStandardMaterial({
         vertexColors: true,
-        roughness: 0.42,
-        metalness: 0.05,
+        roughness: 0.68,
+        metalness: 0.01,
         side: THREE.DoubleSide,
         polygonOffset: true,
         polygonOffsetFactor: 2,
@@ -310,13 +300,10 @@ window.initHeroSceneScript = function () {
     }
     scene.add(surfaceMesh);
 
-    const isoContours = createIsoContours();
-    scene.add(isoContours);
-
     const pathPoints = computeTransitionPath();
-    const curve = new THREE.CatmullRomCurve3(pathPoints, false, "catmullrom", 0.3);
+    const curve = new THREE.CatmullRomCurve3(pathPoints, false, "centripetal", 0.5);
 
-    const tubeGeo = new THREE.TubeGeometry(curve, 160, 0.016, 12, false);
+    const tubeGeo = new THREE.TubeGeometry(curve, 220, 0.022, 12, false);
     const tubeMat = new THREE.MeshStandardMaterial({
         color: 0x9e3820,
         emissive: 0x5a180a,
@@ -352,7 +339,10 @@ window.initHeroSceneScript = function () {
     const matLeft = new THREE.MeshStandardMaterial({ color: 0x3c7a76, emissive: 0x0c302d, emissiveIntensity: 0.25, roughness: 0.85 });
     const matRight = new THREE.MeshStandardMaterial({ color: 0x1e3552, emissive: 0x081220, emissiveIntensity: 0.25, roughness: 0.85 });
     const matDeviating = new THREE.MeshStandardMaterial({ color: 0x8e5c1e, emissive: 0x4a2e0a, emissiveIntensity: 0.3, roughness: 0.85 });
-    const matTransition = new THREE.MeshStandardMaterial({ color: 0x9e3820, emissive: 0x5a180a, emissiveIntensity: 0.35, roughness: 0.85 });
+    const matTransition = new THREE.MeshStandardMaterial({ color: 0xd47b4d, emissive: 0x552414, emissiveIntensity: 0.18, roughness: 0.72 });
+    const matCrossingLeft = new THREE.MeshStandardMaterial({ color: 0xe0a348, emissive: 0x5a3510, emissiveIntensity: 0.16, roughness: 0.72 });
+    const matCrossingRight = new THREE.MeshStandardMaterial({ color: 0xc66f58, emissive: 0x4a1c19, emissiveIntensity: 0.16, roughness: 0.72 });
+    const matFallback = new THREE.MeshStandardMaterial({ color: 0x9c83b7, emissive: 0x291840, emissiveIntensity: 0.18, roughness: 0.72 });
 
     for (let i = 0; i < (isLowPower ? 8 : 14); i++) {
         const mesh = new THREE.Mesh(sphereGeoSmall, matLeft);
@@ -384,6 +374,35 @@ window.initHeroSceneScript = function () {
         mesh.position.set(hx, fesHeight(hx, hz) + WALKER_LIFT, hz);
         scene.add(mesh);
         walkers.push({ mesh, type: "deviating", pos: new THREE.Vector2(hx, hz), mobilityMultiplier: 1.2, diffusionMultiplier: 1.4 });
+    }
+
+    // A small stochastic population makes basin residence, barrier crossing,
+    // successful transitions, and failed attempts visible at the same time.
+    for (let i = 0; i < (isLowPower ? 3 : 7); i++) {
+        const fromLeft = i % 2 === 0;
+        const home = fromLeft ? BASIN_LEFT : BASIN_RIGHT;
+        const basinMaterial = fromLeft ? matLeft : matRight;
+        const crossingMaterial = fromLeft ? matCrossingLeft : matCrossingRight;
+        const mesh = new THREE.Mesh(sphereGeoSmall, basinMaterial);
+        if (!isLowPower) { mesh.castShadow = true; mesh.receiveShadow = true; }
+        const hx = home.x + (Math.random() - 0.5) * 0.45;
+        const hz = home.z + (Math.random() - 0.5) * 0.45;
+        mesh.position.set(hx, fesHeight(hx, hz) + WALKER_LIFT, hz);
+        scene.add(mesh);
+        walkers.push({
+            mesh,
+            type: "crossing",
+            pos: new THREE.Vector2(hx, hz),
+            home: { ...home },
+            destination: fromLeft ? { ...BASIN_RIGHT } : { ...BASIN_LEFT },
+            progress: 0,
+            direction: fromLeft ? 1 : -1,
+            state: "basin",
+            cooldown: Math.random() * 2.5,
+            phase: Math.random() * TWO_PI,
+            basinMaterial,
+            crossingMaterial,
+        });
     }
 
     const transMesh = new THREE.Mesh(sphereGeoMain, matTransition);
@@ -498,6 +517,60 @@ window.initHeroSceneScript = function () {
                 const w = walkers[i];
                 if (w.type === "transition") continue;
 
+                if (w.type === "crossing") {
+                    w.cooldown -= delta;
+
+                    if (w.state === "basin") {
+                        w.mesh.material = w.cooldown < 0 ? w.crossingMaterial : w.basinMaterial;
+                        fesGradient(w.pos.x, w.pos.y, _grad);
+                        const noiseScale = Math.sqrt(2 * DIFFUSION * delta) * 1.5;
+                        w.pos.x += -MOBILITY * _grad.x * delta + noiseScale * gaussRandom();
+                        w.pos.y += -MOBILITY * _grad.y * delta + noiseScale * gaussRandom();
+
+                        const basinDistance = Math.hypot(w.pos.x - w.home.x, w.pos.y - w.home.z);
+                        if (basinDistance > 0.58) {
+                            w.pos.x = THREE.MathUtils.lerp(w.pos.x, w.home.x, 0.08);
+                            w.pos.y = THREE.MathUtils.lerp(w.pos.y, w.home.z, 0.08);
+                        }
+
+                        if (w.cooldown <= 0 && Math.random() < delta * 0.22) {
+                            w.state = "crossing";
+                            w.progress = w.direction === 1 ? 0 : 1;
+                        }
+                    } else {
+                        w.mesh.material = w.crossingMaterial;
+                        const speed = 0.12 + Math.sin(t * 0.7 + w.phase) * 0.018;
+                        w.progress += w.direction * speed * delta;
+                        const pathPosition = curve.getPointAt(THREE.MathUtils.clamp(w.progress, 0, 1));
+                        const lateralDrift = Math.sin(t * 1.8 + w.phase) * 0.045;
+                        const forwardDrift = Math.cos(t * 1.15 + w.phase) * 0.018;
+                        w.pos.x = pathPosition.x + lateralDrift;
+                        w.pos.y = pathPosition.z + lateralDrift * 0.7 + forwardDrift;
+
+                        const fallback = w.progress > 0.16 && w.progress < 0.84 && Math.random() < delta * 0.11;
+                        const arrived = w.direction === 1 ? w.progress >= 1 : w.progress <= 0;
+                        if (fallback || arrived) {
+                            const successful = arrived && !fallback;
+                            if (successful) {
+                                const previousHome = w.home;
+                                w.home = { ...w.destination };
+                                w.destination = { ...previousHome };
+                            } else {
+                                w.mesh.material = matFallback;
+                            }
+                            w.state = "basin";
+                            w.cooldown = successful ? 2 + Math.random() * 2.5 : 0.8 + Math.random() * 1.5;
+                            w.progress = w.direction === 1 ? 1 : 0;
+                            w.pos.set(w.home.x, w.home.z);
+                            if (successful) w.direction *= -1;
+                        }
+                    }
+
+                    w.mesh.position.set(w.pos.x, fesHeight(w.pos.x, w.pos.y) + WALKER_LIFT, w.pos.y);
+                    w.mesh.scale.setScalar(w.state === "crossing" ? 1.15 : 0.82);
+                    continue;
+                }
+
                 fesGradient(w.pos.x, w.pos.y, _grad);
 
                 let mob = MOBILITY;
@@ -549,5 +622,4 @@ window.initHeroSceneScript = function () {
         renderer.render(scene, camera);
     });
     ro.observe(container);
-    return true;
 };

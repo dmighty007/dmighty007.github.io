@@ -160,8 +160,3 @@ When deploying to hosting platforms (e.g. Netlify, Cloudflare Pages, GitHub Page
 | **E2E Browser Navigation** | **PASS** | Playwright test suite (`tests/portfolio.spec.js`) |
 | **Accessibility Target** | **PASS** | WCAG 2.1 AA implementation verified |
 | **SEO & Sitemap** | **PASS** | `robots.txt` & `sitemap.xml` validated |
-# Dibyendu Maity — Academic Portfolio
-
-## Updating identity assets
-
-The About page uses `assets/dmighty_profile.jpg`, a portrait of Dibyendu Maity. The CSS frame supports portrait and near-square replacements; retain the `alt` text “Portrait of Dibyendu Maity” when updating the image.

@@ -15,16 +15,6 @@
     border: 1px solid transparent;
 }
 
-.text-button {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2.5rem;
-    color: var(--navy);
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: underline;
-}
-
 .primary-button {
     background: var(--navy);
     color: #ffffff;

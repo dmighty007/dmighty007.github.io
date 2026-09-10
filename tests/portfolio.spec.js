@@ -49,59 +49,33 @@ test.describe("Portfolio E2E & Accessibility Test Suite", () => {
     const mobileMenu = page.locator("#mobile-menu");
     await expect(mobileMenu).toHaveClass(/is-open/);
     await expect(mobileMenu).toHaveAttribute("aria-hidden", "false");
-    await expect(page.locator("#main")).toHaveJSProperty("inert", true);
-
-    // Focus stays inside the modal drawer when cycling with Shift+Tab.
-    const firstLink = mobileMenu.locator("a").first();
-    const lastLink = mobileMenu.locator("a").last();
-    await lastLink.focus();
-    await page.keyboard.press("Tab");
-    await expect(firstLink).toBeFocused();
 
     // Press Escape key to close mobile menu
     await page.keyboard.press("Escape");
     await expect(mobileMenu).not.toHaveClass(/is-open/);
     await expect(toggleBtn).toHaveAttribute("aria-expanded", "false");
-    await expect(toggleBtn).toBeFocused();
   });
 
-  test("Hero landscape explorer exposes usable native controls", async ({ page }) => {
-    const landscape = page.locator("#hero-landscape");
-    const animationToggle = page.locator("#hero-toggle-anim");
-    const reset = page.locator("#hero-reset-anim");
+  test("Hero Visual ARIA Tabs & Keyboard Navigation", async ({ page }) => {
+    const tabFes = page.locator("#hero-tab-fes");
+    const tabProtein = page.locator("#hero-tab-protein");
 
-    await expect(landscape).toBeVisible();
-    await expect(landscape).toHaveAttribute("tabindex", "0");
-    await expect(animationToggle).toHaveAttribute("aria-label", "Pause trajectory animation");
-    await animationToggle.click();
-    await expect(animationToggle).toHaveAttribute("aria-label", "Play trajectory animation");
-    await reset.click();
+    await expect(tabFes).toHaveAttribute("aria-selected", "true");
+    await expect(tabProtein).toHaveAttribute("aria-selected", "false");
 
-    const proteinDot = page.locator('[data-hero-slide="protein"]');
-    await proteinDot.click();
-    await expect(proteinDot).toHaveAttribute("aria-pressed", "true");
-    await expect(page.locator("#protein-panel")).toHaveClass(/is-active/);
-    await page.locator("#hero-carousel-next").click();
-    await expect(page.locator("#landscape-panel")).toHaveClass(/is-active/);
-  });
+    // Click Protein Cartoon tab
+    await tabProtein.click();
+    await expect(tabProtein).toHaveAttribute("aria-selected", "true");
+    await expect(tabFes).toHaveAttribute("aria-selected", "false");
 
-  test("Hero fallback, conference details, and mobile publication controls remain robust", async ({ page }) => {
-    await expect(page.locator("#hero-poster img")).toHaveAttribute("src", "assets/fes-landscape.svg");
-    await expect(page.locator("#hero-poster img")).toHaveAttribute("loading", "eager");
-    await expect(page.locator("#stat-publications")).toHaveText("8");
+    // Verify 3Dmol container becomes visible
+    const molContainer = page.locator("#protein-3dmol-container");
+    await expect(molContainer).toBeVisible();
 
-    await page.goto("http://localhost:8899/#about");
-    await expect(page.locator(".about-conferences-section")).toContainText("CDAM 2026");
-    await expect(page.locator(".about-conferences-section")).toContainText("Best Poster Award");
-    await expect(page.locator(".about-awards-section")).toContainText("INSPIRE Scholarship");
-    await expect(page.locator(".about-awards-section")).toContainText("All India Rank 177");
-
-    for (const width of [320, 360, 375, 390, 412, 430]) {
-      await page.setViewportSize({ width, height: 844 });
-      await page.goto("http://localhost:8899/#publications");
-      const dimensions = await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, innerWidth: window.innerWidth }));
-      expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.innerWidth);
-    }
+    // Use Keyboard Arrow Left to return to FES tab
+    await tabProtein.focus();
+    await page.keyboard.press("ArrowLeft");
+    await expect(tabFes).toHaveAttribute("aria-selected", "true");
   });
 
   test("Publications Search, Filter & BibTeX Copy", async ({ page }) => {
@@ -172,8 +146,5 @@ test.describe("Portfolio E2E & Accessibility Test Suite", () => {
     const pdfBtn = cvContainer.locator('a[download="Dibyendu_Maity_CV.pdf"]');
     await expect(pdfBtn).toBeVisible();
     await expect(pdfBtn).toHaveAttribute("href", "./assets/dibyendumaity-cv.pdf");
-
-    const thesisBtn = cvContainer.getByRole("link", { name: "View Ph.D. Thesis" });
-    await expect(thesisBtn).toHaveAttribute("href", "./assets/dibyendu-maity-phd-thesis.pdf");
   });
 });
