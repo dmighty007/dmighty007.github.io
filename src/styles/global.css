@@ -242,3 +242,34 @@ button {
     transition: none;
   }
 }
+
+@media print {
+  :root {
+    --color-bg: #ffffff;
+    --color-bg-raised: #ffffff;
+    --color-text: #111111;
+    --color-text-secondary: #333333;
+    --color-text-tertiary: #555555;
+    --color-border: #cccccc;
+  }
+
+  .site-nav,
+  .site-footer,
+  .skip-link,
+  .no-print {
+    display: none !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  body {
+    font-size: 11pt;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

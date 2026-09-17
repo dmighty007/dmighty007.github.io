@@ -22,6 +22,13 @@ import { educationFull } from '../data/education';
           <p class="about-bio reveal" style={`transition-delay:${i * 60}ms`}>{paragraph}</p>
         ))}
         <p class="about-status reveal">{profile.status}</p>
+        <p class="about-interests reveal">
+          <span class="about-interests-label">Research interests</span>
+          {profile.interests.join(' · ')}
+        </p>
+      </div>
+      <div class="about-portrait reveal">
+        <img src={profile.photo} alt={`Portrait of ${profile.name}`} width="480" height="640" loading="eager" />
       </div>
     </div>
   </section>
@@ -35,6 +42,13 @@ import { educationFull } from '../data/education';
 <style>
   .about-hero {
     padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
   }
 
   .about-grid h1 {
@@ -54,5 +68,50 @@ import { educationFull } from '../data/education';
     margin-top: 1.5rem;
     font-weight: 600;
     color: var(--color-accent);
+  }
+
+  .about-interests {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    max-width: 60ch;
+  }
+
+  .about-interests-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-tertiary);
+    margin-bottom: 0.4rem;
+  }
+
+  .about-portrait {
+    justify-self: center;
+  }
+
+  .about-portrait img {
+    width: 100%;
+    max-width: 16rem;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 760px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about-portrait {
+      order: -1;
+      max-width: 12rem;
+      margin-inline: auto;
+    }
   }
 </style>

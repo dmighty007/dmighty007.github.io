@@ -42,7 +42,6 @@ export const talks: Talk[] = [
   {
     id: 'iiser-kolkata-2024',
     type: 'invited',
-    title: 'Invited lecture',
     event: 'Supramolecular Chemistry Discussion 2024',
     place: 'IISER Kolkata, Kolkata, India',
     date: '8 December 2024',
