@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Timeline from '../components/Timeline.astro';
+import TalksAwards from '../components/TalksAwards.astro';
+import ExpertiseSection from '../components/ExpertiseSection.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { profile } from '../data/profile';
+import { educationFull } from '../data/education';
+---
+
+<BaseLayout
+  title="About — Dibyendu Maity"
+  description="Biography, complete education record, technical expertise, talks, and awards for Dibyendu Maity, a computational biophysics researcher."
+  path="/about"
+>
+  <section class="about-hero">
+    <div class="container about-grid">
+      <div>
+        <p class="eyebrow reveal">About</p>
+        <h1 class="reveal">{profile.name}</h1>
+        {profile.longBio.map((paragraph, i) => (
+          <p class="about-bio reveal" style={`transition-delay:${i * 60}ms`}>{paragraph}</p>
+        ))}
+        <p class="about-status reveal">{profile.status}</p>
+      </div>
+    </div>
+  </section>
+
+  <Timeline full entries={educationFull} />
+  <ExpertiseSection />
+  <TalksAwards />
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .about-hero {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+
+  .about-grid h1 {
+    font-size: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  .about-bio {
+    color: var(--color-text-secondary);
+    max-width: 66ch;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    margin-bottom: 1.1rem;
+  }
+
+  .about-status {
+    margin-top: 1.5rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+</style>

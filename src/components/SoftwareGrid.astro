@@ -1,0 +1,106 @@
+---
+import { software } from '../data/software';
+
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<section class="software" id="software">
+  <div class="container">
+    <p class="eyebrow reveal">Scientific software</p>
+    <h2 class="section-heading reveal">Open-source research tools</h2>
+    <p class="section-lede reveal">
+      Software developed to make rare-event sampling and representation-learning methods usable in ordinary
+      molecular-dynamics and materials-simulation workflows.
+    </p>
+
+    <div class="software-grid">
+      {
+        software.map((item, i) => (
+          <article class="software-card reveal" style={`transition-delay:${i * 60}ms`}>
+            <div class="software-card-head">
+              <h3>{item.name}</h3>
+              <span class="software-lang">{item.language}</span>
+            </div>
+            <p>{item.description}</p>
+            <a href={item.repo} target="_blank" rel="noopener noreferrer" class="btn software-link">
+              View repository ↗
+            </a>
+          </article>
+        ))
+      }
+    </div>
+
+    {!compact && (
+      <p class="software-note reveal">
+        Repository details are maintained on GitHub; visit each project for documentation, examples, and release history.
+      </p>
+    )}
+  </div>
+</section>
+
+<style>
+  .software {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .software-grid {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.5rem;
+  }
+
+  .software-card {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .software-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .software-card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .software-card-head h3 {
+    font-size: 1.1rem;
+  }
+
+  .software-lang {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+  }
+
+  .software-card p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    flex-grow: 1;
+  }
+
+  .software-link {
+    align-self: flex-start;
+    font-size: 0.875rem;
+    padding: 0.45rem 0.9rem;
+  }
+
+  .software-note {
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    color: var(--color-text-tertiary);
+  }
+</style>

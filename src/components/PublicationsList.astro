@@ -1,0 +1,349 @@
+---
+import { publications, publicationYears } from '../data/publications';
+
+interface Props {
+  limit?: number;
+  showControls?: boolean;
+}
+const { limit, showControls = true } = Astro.props;
+
+const sorted = [...publications].sort((a, b) => b.year - a.year);
+const list = limit ? sorted.slice(0, limit) : sorted;
+
+function highlightAuthor(authors: string): string {
+  return authors.replace(/Dibyendu Maity/g, '<strong class="me">Dibyendu Maity</strong>');
+}
+
+function citationLine(pub: (typeof publications)[number]): string {
+  const parts = [pub.venue];
+  if (pub.volume) parts.push(pub.volume);
+  if (pub.pages) parts.push(pub.pages);
+  if (pub.articleNumber) parts.push(pub.articleNumber);
+  return parts.join(', ');
+}
+---
+
+<section class="publications" id="publications-list">
+  {
+    showControls && (
+      <div class="pub-controls">
+        <div class="pub-filters" role="group" aria-label="Filter publications">
+          <button type="button" class="filter-btn is-active" data-filter="all">All</button>
+          <button type="button" class="filter-btn" data-filter="first-author">First / major author</button>
+          <button type="button" class="filter-btn" data-filter="methods">Methods</button>
+          <button type="button" class="filter-btn" data-filter="applications">Applications</button>
+        </div>
+        <div class="pub-search-row">
+          <select id="year-filter" aria-label="Filter by year">
+            <option value="all">All years</option>
+            {publicationYears.map((y) => (
+              <option value={String(y)}>{y}</option>
+            ))}
+          </select>
+          <label class="search-label">
+            <span class="visually-hidden">Search publications</span>
+            <input type="search" id="pub-search" placeholder="Search title, author, venue…" />
+          </label>
+        </div>
+      </div>
+    )
+  }
+
+  <ul class="pub-list" id="pub-list">
+    {
+      list.map((pub) => (
+        <li
+          class="pub-row"
+          data-tags={pub.tags.join(',')}
+          data-year={pub.year}
+          data-first-author={pub.isFirstAuthor}
+          data-search={`${pub.title} ${pub.authors} ${pub.venue}`.toLowerCase()}
+        >
+          <span class="pub-year">{pub.year}</span>
+          <div class="pub-main">
+            <h3 class="pub-title">{pub.title}</h3>
+            <p class="pub-authors" set:html={highlightAuthor(pub.authors)} />
+            <p class="pub-venue">
+              <em>{citationLine(pub)}</em>
+              {pub.status === 'preprint' && <span class="pub-status">Preprint</span>}
+            </p>
+            <div class="pub-actions">
+              <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" class="pub-action">
+                DOI ↗
+              </a>
+              {pub.code && (
+                <a href={pub.code} target="_blank" rel="noopener noreferrer" class="pub-action">
+                  Code ↗
+                </a>
+              )}
+              <button
+                type="button"
+                class="pub-action pub-bibtex"
+                data-bibtex-id={pub.id}
+                data-authors={pub.authors}
+                data-title={pub.title}
+                data-venue={pub.venue}
+                data-year={pub.year}
+                data-volume={pub.volume ?? ''}
+                data-pages={pub.pages ?? pub.articleNumber ?? ''}
+                data-doi={pub.doi}
+              >
+                Copy BibTeX
+              </button>
+            </div>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="pub-empty" id="pub-empty" hidden>No publications match the current filters.</p>
+</section>
+
+<style>
+  .publications {
+    margin-top: 2.5rem;
+  }
+
+  .pub-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .pub-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    border: 1px solid var(--color-border-strong);
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: all var(--duration-fast) var(--ease-standard);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+
+  .filter-btn.is-active {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+
+  .pub-search-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .pub-search-row select,
+  .pub-search-row input {
+    font: inherit;
+    font-size: 0.875rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .pub-search-row input {
+    min-width: 14rem;
+  }
+
+  .pub-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .pub-row {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 1.25rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    transition: opacity var(--duration-base) var(--ease-standard), transform var(--duration-base) var(--ease-standard);
+  }
+
+  .pub-row[hidden] {
+    display: none;
+  }
+
+  .pub-year {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-text-tertiary);
+    padding-top: 0.15rem;
+  }
+
+  .pub-title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .pub-authors {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+
+  .pub-authors :global(.me) {
+    color: var(--color-text);
+  }
+
+  .pub-venue {
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+    color: var(--color-text-tertiary);
+  }
+
+  .pub-status {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: 4px;
+    padding: 0.05rem 0.4rem;
+  }
+
+  .pub-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.85rem;
+  }
+
+  .pub-action {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .pub-action:hover {
+    text-decoration: underline;
+  }
+
+  .pub-empty {
+    padding-block: 2rem;
+    color: var(--color-text-tertiary);
+    text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .pub-row {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+  }
+</style>
+
+<script>
+  const list = document.getElementById('pub-list');
+  const rows = Array.from(document.querySelectorAll<HTMLLIElement>('.pub-row'));
+  const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.filter-btn'));
+  const yearSelect = document.getElementById('year-filter') as HTMLSelectElement | null;
+  const searchInput = document.getElementById('pub-search') as HTMLInputElement | null;
+  const emptyState = document.getElementById('pub-empty');
+
+  let activeFilter = 'all';
+
+  function applyFilters() {
+    const year = yearSelect?.value ?? 'all';
+    const query = (searchInput?.value ?? '').trim().toLowerCase();
+    let visibleCount = 0;
+
+    for (const row of rows) {
+      const tags = (row.dataset.tags ?? '').split(',');
+      const rowYear = row.dataset.year ?? '';
+      const isFirstAuthor = row.dataset.firstAuthor === 'true';
+      const searchable = row.dataset.search ?? '';
+
+      const matchesFilter =
+        activeFilter === 'all' ||
+        (activeFilter === 'first-author' && isFirstAuthor) ||
+        tags.includes(activeFilter);
+      const matchesYear = year === 'all' || rowYear === year;
+      const matchesQuery = query === '' || searchable.includes(query);
+
+      const visible = matchesFilter && matchesYear && matchesQuery;
+      row.hidden = !visible;
+      if (visible) visibleCount += 1;
+    }
+
+    if (emptyState) emptyState.hidden = visibleCount > 0;
+  }
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      activeFilter = btn.dataset.filter ?? 'all';
+      applyFilters();
+    });
+  });
+
+  yearSelect?.addEventListener('change', applyFilters);
+  searchInput?.addEventListener('input', applyFilters);
+
+  function buildBibtex(btn: HTMLButtonElement): string {
+    const authors = btn.dataset.authors ?? '';
+    const title = btn.dataset.title ?? '';
+    const venue = btn.dataset.venue ?? '';
+    const year = btn.dataset.year ?? '';
+    const volume = btn.dataset.volume ?? '';
+    const pages = btn.dataset.pages ?? '';
+    const doi = btn.dataset.doi ?? '';
+    const key = (btn.dataset.bibtexId ?? 'ref').replace(/[^a-z0-9-]/gi, '');
+
+    const fields = [
+      `  author  = {${authors.replace(/, (?=[A-Z])/g, ' and ')}}`,
+      `  title   = {${title}}`,
+      `  journal = {${venue}}`,
+      `  year    = {${year}}`,
+    ];
+    if (volume) fields.push(`  volume  = {${volume}}`);
+    if (pages) fields.push(`  pages   = {${pages}}`);
+    if (doi) fields.push(`  doi     = {${doi}}`);
+
+    return `@article{${key},\n${fields.join(',\n')}\n}`;
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.pub-bibtex').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const bibtex = buildBibtex(btn);
+      try {
+        await navigator.clipboard.writeText(bibtex);
+        const original = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        setTimeout(() => {
+          btn.textContent = original;
+        }, 1600);
+      } catch {
+        window.prompt('Copy BibTeX:', bibtex);
+      }
+    });
+  });
+</script>

@@ -1,0 +1,73 @@
+---
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { profile } from '../data/profile';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  path: string;
+  structuredData?: Record<string, unknown>;
+}
+
+const { title, description = profile.seoDescription, path, structuredData } = Astro.props;
+const canonicalURL = new URL(path, Astro.site);
+const ogImage = new URL('/og-image.svg', Astro.site).toString();
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: 'Computational Biophysics Researcher',
+  description: profile.seoDescription,
+  url: Astro.site?.toString(),
+  email: `mailto:${profile.email}`,
+  affiliation: {
+    '@type': 'CollegeOrUniversity',
+    name: profile.affiliation,
+  },
+  sameAs: [profile.links.scholar, profile.links.github],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script src="../scripts/reveal.ts"></script>
+  </body>
+</html>

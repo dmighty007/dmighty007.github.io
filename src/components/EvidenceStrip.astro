@@ -1,0 +1,90 @@
+---
+import { publications } from '../data/publications';
+import { software } from '../data/software';
+import { talks } from '../data/talks';
+import { awards } from '../data/awards';
+import { profile } from '../data/profile';
+
+const posterAwardCount = awards.filter((a) => a.category === 'conference').length;
+
+const items = [
+  { label: 'Peer-reviewed publications', value: String(publications.filter((p) => p.status === 'published').length) },
+  { label: 'Scientific software projects', value: String(software.length) },
+  { label: 'Conference presentations', value: String(talks.length) },
+  { label: 'Poster / talk awards', value: String(posterAwardCount) },
+];
+---
+
+<section class="evidence">
+  <div class="container evidence-inner">
+    <div class="evidence-grid">
+      {
+        items.map((item, i) => (
+          <div class="evidence-item reveal" style={`transition-delay:${i * 60}ms`}>
+            <span class="evidence-value">{item.value}</span>
+            <span class="evidence-label">{item.label}</span>
+          </div>
+        ))
+      }
+    </div>
+    <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer" class="scholar-link reveal">
+      Full record on Google Scholar →
+    </a>
+  </div>
+</section>
+
+<style>
+  .evidence {
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-raised);
+    padding-block: clamp(2rem, 5vw, 3rem);
+  }
+
+  .evidence-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .evidence-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .evidence-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .evidence-label {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    max-width: 12ch;
+  }
+
+  .scholar-link {
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    .evidence-grid {
+      grid-template-columns: repeat(2, auto);
+    }
+  }
+</style>

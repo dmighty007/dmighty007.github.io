@@ -1,0 +1,150 @@
+---
+// Minimalist free-energy landscape with transition pathways, adaptive-sampling
+// walkers, and a faint latent-space motif. Purely decorative and scientifically
+// evocative rather than a plot of real data.
+---
+
+<div class="hero-visual" role="img" aria-label="Illustration of a free-energy landscape with molecular transition pathways connecting two metastable states">
+  <svg viewBox="0 0 640 480" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="basinA" cx="30%" cy="35%" r="60%">
+        <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.14" />
+        <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0" />
+      </radialGradient>
+      <radialGradient id="basinB" cx="75%" cy="70%" r="60%">
+        <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.14" />
+        <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    <rect x="0" y="0" width="640" height="480" fill="url(#basinA)" />
+    <rect x="0" y="0" width="640" height="480" fill="url(#basinB)" />
+
+    <!-- contour rings, basin A -->
+    <g class="contours" fill="none">
+      <ellipse cx="180" cy="170" rx="150" ry="105" />
+      <ellipse cx="180" cy="170" rx="112" ry="78" />
+      <ellipse cx="180" cy="170" rx="74" ry="52" />
+      <ellipse cx="180" cy="170" rx="38" ry="27" />
+    </g>
+
+    <!-- contour rings, basin B -->
+    <g class="contours" fill="none">
+      <ellipse cx="470" cy="320" rx="145" ry="100" />
+      <ellipse cx="470" cy="320" rx="108" ry="74" />
+      <ellipse cx="470" cy="320" rx="70" ry="48" />
+      <ellipse cx="470" cy="320" rx="34" ry="24" />
+    </g>
+
+    <!-- faint background trajectories -->
+    <g class="faint-paths" fill="none">
+      <path d="M 150 200 C 220 260, 260 300, 330 300 S 430 260, 460 280" />
+      <path d="M 200 140 C 260 150, 320 190, 380 230 S 440 300, 460 300" />
+      <path d="M 160 210 C 210 280, 280 330, 350 320 S 430 280, 465 300" />
+    </g>
+
+    <!-- primary transition pathway -->
+    <path
+      id="primary-path"
+      class="primary-path"
+      d="M 180 170 C 250 190, 300 250, 340 270 S 430 300, 470 320"
+      fill="none"
+    />
+
+    <!-- basin minima -->
+    <circle class="minimum" cx="180" cy="170" r="4" />
+    <circle class="minimum" cx="470" cy="320" r="4" />
+
+    <!-- adaptive-sampling walkers -->
+    <circle class="walker walker-1" r="3.5" />
+    <circle class="walker walker-2" r="3" />
+    <circle class="walker walker-3" r="3" />
+  </svg>
+</div>
+
+<style>
+  .hero-visual {
+    width: 100%;
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  .contours {
+    stroke: var(--color-text-tertiary);
+    stroke-width: 1;
+    opacity: 0.35;
+  }
+
+  .faint-paths {
+    stroke: var(--color-accent);
+    stroke-width: 1;
+    opacity: 0.18;
+    stroke-linecap: round;
+  }
+
+  .primary-path {
+    stroke: var(--color-accent);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-dasharray: 480;
+    stroke-dashoffset: 480;
+    animation: draw-path 3.6s var(--ease-standard) 0.3s forwards;
+  }
+
+  .minimum {
+    fill: var(--color-text);
+    opacity: 0.55;
+  }
+
+  .walker {
+    fill: var(--color-accent);
+    offset-path: path('M 180 170 C 250 190, 300 250, 340 270 S 430 300, 470 320');
+    offset-rotate: 0deg;
+    opacity: 0;
+  }
+
+  .walker-1 {
+    animation: walk 7s ease-in-out 1.2s infinite;
+  }
+
+  .walker-2 {
+    animation: walk 7s ease-in-out 3.4s infinite;
+  }
+
+  .walker-3 {
+    animation: walk 8.5s ease-in-out 5s infinite;
+  }
+
+  @keyframes draw-path {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes walk {
+    0% {
+      offset-distance: 0%;
+      opacity: 0;
+    }
+    8% {
+      opacity: 0.9;
+    }
+    92% {
+      opacity: 0.9;
+    }
+    100% {
+      offset-distance: 100%;
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .primary-path {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+    .walker {
+      display: none;
+    }
+  }
+</style>

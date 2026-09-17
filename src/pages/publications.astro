@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PublicationsList from '../components/PublicationsList.astro';
+import { publications } from '../data/publications';
+import { profile } from '../data/profile';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': publications.map((pub) => ({
+    '@type': 'ScholarlyArticle',
+    headline: pub.title,
+    author: pub.authors.split(', ').map((name) => ({ '@type': 'Person', name })),
+    datePublished: String(pub.year),
+    isPartOf: { '@type': 'Periodical', name: pub.venue },
+    sameAs: `https://doi.org/${pub.doi}`,
+  })),
+};
+---
+
+<BaseLayout
+  title="Publications — Dibyendu Maity"
+  description="Peer-reviewed publications and preprints by Dibyendu Maity in computational biophysics, rare-event sampling, and machine learning for molecular simulation."
+  path="/publications"
+  structuredData={structuredData}
+>
+  <section class="pubs-hero">
+    <div class="container">
+      <p class="eyebrow reveal">Publications</p>
+      <h1 class="reveal">Peer-reviewed work and preprints</h1>
+      <p class="pubs-intro reveal">
+        Complete list of publications from the CV. Filter by authorship role or research category, search by
+        keyword, or open the full record on
+        <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer">Google Scholar</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <PublicationsList />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .pubs-hero {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+
+  .pubs-hero h1 {
+    font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.75rem);
+    margin: 0.5rem 0 1.25rem;
+  }
+
+  .pubs-intro {
+    color: var(--color-text-secondary);
+    max-width: 62ch;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .pubs-intro a {
+    color: var(--color-accent);
+  }
+</style>

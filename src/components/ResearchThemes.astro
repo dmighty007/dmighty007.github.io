@@ -1,0 +1,80 @@
+---
+import { researchThemes } from '../data/expertise';
+import { profile } from '../data/profile';
+
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<section class="research-themes" id="research">
+  <div class="container">
+    <p class="eyebrow reveal">Research</p>
+    <h2 class="section-heading reveal">A synthesis of the research profile</h2>
+    <p class="section-lede reveal">{profile.longBio[0]}</p>
+
+    <div class="theme-grid">
+      {
+        researchThemes.map((theme, i) => (
+          <article class="theme-card reveal" style={`transition-delay:${i * 70}ms`}>
+            <span class="theme-index">0{i + 1}</span>
+            <h3>{theme.title}</h3>
+            <p>{theme.description}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    {
+      !compact && (
+        <a href="/research" class="btn btn-ghost more-link reveal">
+          Read the full research overview →
+        </a>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .research-themes {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+    gap: 1.5px;
+    margin-top: 2.5rem;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+  }
+
+  .theme-card {
+    background: var(--color-bg);
+    padding: 1.75rem;
+  }
+
+  .theme-index {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text-tertiary);
+    margin-bottom: 0.75rem;
+  }
+
+  .theme-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .theme-card p {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .more-link {
+    margin-top: 2rem;
+  }
+</style>

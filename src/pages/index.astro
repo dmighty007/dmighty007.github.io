@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ResearchThemes from '../components/ResearchThemes.astro';
+import FeaturedProjects from '../components/FeaturedProjects.astro';
+import EvidenceStrip from '../components/EvidenceStrip.astro';
+import Timeline from '../components/Timeline.astro';
+import SoftwareGrid from '../components/SoftwareGrid.astro';
+import PublicationsList from '../components/PublicationsList.astro';
+import ContactSection from '../components/ContactSection.astro';
+---
+
+<BaseLayout title="Dibyendu Maity — Computational Biophysics Researcher" path="/">
+  <Hero />
+  <EvidenceStrip />
+  <ResearchThemes />
+  <FeaturedProjects limit={3} />
+
+  <section class="section-alt">
+    <div class="container">
+      <p class="eyebrow reveal">Selected publications</p>
+      <h2 class="section-heading reveal">Recent work</h2>
+      <PublicationsList limit={5} showControls={false} />
+      <a href="/publications" class="btn btn-ghost" style="margin-top:1rem;display:inline-block;">
+        View all publications →
+      </a>
+    </div>
+  </section>
+
+  <SoftwareGrid compact />
+  <Timeline />
+  <ContactSection />
+</BaseLayout>

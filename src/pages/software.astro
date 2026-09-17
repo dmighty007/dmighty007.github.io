@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SoftwareGrid from '../components/SoftwareGrid.astro';
+---
+
+<BaseLayout
+  title="Software — Dibyendu Maity"
+  description="Open-source scientific software by Dibyendu Maity for adaptive sampling, rare-event pathway generation, and representation learning in molecular simulation."
+  path="/software"
+>
+  <section class="software-hero">
+    <div class="container">
+      <p class="eyebrow reveal">Scientific software</p>
+      <h1 class="reveal">Research code as a research contribution</h1>
+      <p class="software-intro reveal">
+        Each project below is developed and maintained on GitHub. They aim to make specific sampling and
+        representation-learning methods usable outside the group that developed them.
+      </p>
+    </div>
+  </section>
+
+  <SoftwareGrid />
+</BaseLayout>
+
+<style>
+  .software-hero {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+
+  .software-hero h1 {
+    font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.75rem);
+    margin: 0.5rem 0 1.25rem;
+  }
+
+  .software-intro {
+    color: var(--color-text-secondary);
+    max-width: 60ch;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+</style>

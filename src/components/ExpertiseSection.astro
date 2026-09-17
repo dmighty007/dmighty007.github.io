@@ -1,0 +1,48 @@
+---
+import { expertise } from '../data/expertise';
+---
+
+<section class="expertise" id="expertise">
+  <div class="container">
+    <p class="eyebrow reveal">Technical expertise</p>
+    <h2 class="section-heading reveal">Methods & tools</h2>
+
+    <div class="expertise-grid">
+      {
+        expertise.map((group, i) => (
+          <div class="expertise-group reveal" style={`transition-delay:${i * 60}ms`}>
+            <h3>{group.title}</h3>
+            <p>{group.items.join(' · ')}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .expertise {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .expertise-grid {
+    margin-top: 2.25rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 2rem 2.5rem;
+  }
+
+  .expertise-group h3 {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .expertise-group p {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+</style>

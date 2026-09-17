@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ResearchThemes from '../components/ResearchThemes.astro';
+import FeaturedProjects from '../components/FeaturedProjects.astro';
+import { profile } from '../data/profile';
+---
+
+<BaseLayout
+  title="Research — Dibyendu Maity"
+  description="Research overview: rare-event sampling, transition pathways and kinetics, machine-learned molecular representations, and molecular & materials simulation."
+  path="/research"
+>
+  <section class="research-hero">
+    <div class="container">
+      <p class="eyebrow reveal">Research overview</p>
+      <h1 class="reveal">Rare events, pathways, and learned representations</h1>
+      <p class="research-intro reveal">{profile.longBio[1]}</p>
+    </div>
+  </section>
+
+  <ResearchThemes compact />
+  <FeaturedProjects />
+</BaseLayout>
+
+<style>
+  .research-hero {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+
+  .research-hero h1 {
+    font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.75rem);
+    margin: 0.5rem 0 1.25rem;
+    max-width: 30ch;
+  }
+
+  .research-intro {
+    color: var(--color-text-secondary);
+    max-width: 62ch;
+    font-size: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+    line-height: 1.6;
+  }
+</style>

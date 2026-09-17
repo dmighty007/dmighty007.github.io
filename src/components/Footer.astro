@@ -1,0 +1,95 @@
+---
+import { profile } from '../data/profile';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <svg class="footer-motif" viewBox="0 0 200 24" aria-hidden="true" focusable="false">
+      <path d="M0 18 C 30 18, 40 6, 70 8 S 120 20, 150 10 S 180 4, 200 6" />
+      <circle cx="200" cy="6" r="3" />
+    </svg>
+    <div class="footer-grid">
+      <div>
+        <p class="footer-name">{profile.name}</p>
+        <p class="footer-tagline">{profile.tagline}</p>
+      </div>
+      <nav aria-label="Footer" class="footer-links">
+        <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer">Google Scholar</a>
+        <a href={profile.links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href={`mailto:${profile.email}`}>Email</a>
+        <a href={profile.links.cv}>CV</a>
+      </nav>
+    </div>
+    <p class="footer-copy">&copy; {year} {profile.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    padding-block: 2.5rem 2rem;
+    background: var(--color-bg-raised);
+  }
+
+  .footer-motif {
+    width: 100%;
+    max-width: 12rem;
+    height: auto;
+    stroke: var(--color-accent);
+    fill: none;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    opacity: 0.7;
+    margin-bottom: 1.75rem;
+  }
+
+  .footer-motif circle {
+    fill: var(--color-accent);
+    stroke: none;
+  }
+
+  .footer-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .footer-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+
+  .footer-tagline {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  .footer-links a {
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .footer-links a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer-copy {
+    margin-top: 2rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-tertiary);
+  }
+</style>

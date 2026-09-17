@@ -1,0 +1,154 @@
+---
+import { talks } from '../data/talks';
+import { awards } from '../data/awards';
+
+const typeLabel: Record<string, string> = {
+  invited: 'Invited talk',
+  lightning: 'Lightning talk',
+  poster: 'Poster',
+};
+
+const academicAwards = awards.filter((a) => a.category === 'academic');
+---
+
+<section class="talks-awards section-alt" id="talks">
+  <div class="container talks-grid">
+    <div>
+      <p class="eyebrow reveal">Talks & conferences</p>
+      <h2 class="section-heading reveal">Selected presentations</h2>
+      <ul class="talk-list">
+        {
+          talks.map((talk, i) => (
+            <li class="talk-item reveal" style={`transition-delay:${Math.min(i, 6) * 40}ms`}>
+              <span class="talk-type" data-type={talk.type}>{typeLabel[talk.type]}</span>
+              <div class="talk-body">
+                {talk.title && <p class="talk-title">{talk.title}</p>}
+                <p class="talk-event">{talk.event}</p>
+                <p class="talk-meta">{talk.place} · {talk.date}</p>
+                {talk.award && <span class="talk-award">{talk.award}</span>}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div id="awards">
+      <p class="eyebrow reveal">Awards & recognition</p>
+      <h2 class="section-heading reveal">Academic distinctions</h2>
+      <ul class="award-list">
+        {
+          academicAwards.map((award, i) => (
+            <li class="award-item reveal" style={`transition-delay:${i * 50}ms`}>
+              <h3>{award.title}</h3>
+              <p class="award-issuer">{award.issuer} · {award.year}</p>
+              {award.detail && <p class="award-detail">{award.detail}</p>}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .talks-awards {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .talks-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .talk-list,
+  .award-list {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .talk-item {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .talk-type {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--color-text-tertiary);
+    padding-top: 0.15rem;
+  }
+
+  .talk-type[data-type='invited'] {
+    color: var(--color-accent);
+  }
+
+  .talk-title {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .talk-event {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .talk-meta {
+    font-size: 0.8125rem;
+    color: var(--color-text-tertiary);
+    margin-top: 0.2rem;
+  }
+
+  .talk-award {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: 4px;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .award-item {
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .award-item h3 {
+    font-size: 0.95rem;
+  }
+
+  .award-issuer {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-top: 0.3rem;
+  }
+
+  .award-detail {
+    font-size: 0.8125rem;
+    color: var(--color-text-tertiary);
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 820px) {
+    .talks-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .talk-item {
+      grid-template-columns: 5rem 1fr;
+    }
+  }
+</style>

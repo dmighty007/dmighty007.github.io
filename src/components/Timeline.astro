@@ -1,0 +1,102 @@
+---
+import { educationTimeline } from '../data/education';
+
+interface Props {
+  full?: boolean;
+  entries?: typeof educationTimeline;
+}
+const { full = false, entries } = Astro.props;
+const items = entries ?? educationTimeline;
+const eyebrow = full ? 'Education' : 'Academic progression';
+const heading = full ? 'Complete education record' : 'Timeline';
+---
+
+<section class="timeline-section" id="timeline">
+  <div class="container">
+    <p class="eyebrow reveal">{eyebrow}</p>
+    <h2 class="section-heading reveal">{heading}</h2>
+    <ol class="timeline">
+      {
+        items.map((entry, i) => (
+          <li class="timeline-item reveal" style={`transition-delay:${i * 60}ms`}>
+            <div class="timeline-marker" aria-hidden="true" />
+            <div class="timeline-content">
+              <span class="timeline-years">{entry.years}</span>
+              <h3>{entry.degree}</h3>
+              <p class="timeline-institution">{entry.institution}</p>
+              {entry.advisor && <p class="timeline-detail">Advisor: {entry.advisor}</p>}
+              {entry.detail && <p class="timeline-detail">{entry.detail}</p>}
+              {entry.status && <p class="timeline-status">{entry.status}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .timeline-section {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    border-left: 2px solid var(--color-border);
+    max-width: 46rem;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 2.25rem 1.75rem;
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    left: -6.5px;
+    top: 0.35rem;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 2px solid var(--color-accent);
+  }
+
+  .timeline-years {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-tertiary);
+  }
+
+  .timeline-content h3 {
+    font-size: 1.1rem;
+    margin-top: 0.35rem;
+  }
+
+  .timeline-institution {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    margin-top: 0.35rem;
+  }
+
+  .timeline-detail {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    margin-top: 0.35rem;
+    line-height: 1.5;
+  }
+
+  .timeline-status {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+</style>

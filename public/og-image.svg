@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#faf8f4"/>
+  <g stroke="#1f6f6b" stroke-width="2" fill="none" opacity="0.35">
+    <ellipse cx="260" cy="220" rx="180" ry="120"/>
+    <ellipse cx="260" cy="220" rx="120" ry="80"/>
+    <ellipse cx="950" cy="440" rx="180" ry="120"/>
+    <ellipse cx="950" cy="440" rx="120" ry="80"/>
+  </g>
+  <path d="M 260 220 C 400 260, 600 340, 720 380 S 880 420, 950 440" stroke="#1f6f6b" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="260" cy="220" r="7" fill="#1c2128"/>
+  <circle cx="950" cy="440" r="7" fill="#1c2128"/>
+  <text x="90" y="130" font-family="Georgia, 'Source Serif 4', serif" font-size="56" font-weight="600" fill="#1c2128">Dibyendu Maity</text>
+  <text x="90" y="175" font-family="Arial, sans-serif" font-size="26" fill="#565f6b">Computational Biophysics · Molecular Simulation · Machine Learning</text>
+  <text x="90" y="560" font-family="Arial, sans-serif" font-size="22" fill="#7a828d">Rare-event sampling · Transition pathways · Learned molecular representations</text>
+</svg>

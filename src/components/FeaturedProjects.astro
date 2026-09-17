@@ -1,0 +1,153 @@
+---
+import { featuredProjects } from '../data/projects';
+import ProjectVisual from './ProjectVisual.astro';
+
+interface Props {
+  limit?: number;
+}
+const { limit } = Astro.props;
+const projects = limit ? featuredProjects.slice(0, limit) : featuredProjects;
+---
+
+<section class="featured" id="featured-research">
+  <div class="container">
+    <p class="eyebrow reveal">Featured research</p>
+    <h2 class="section-heading reveal">Methodological contributions</h2>
+
+    <div class="project-list">
+      {
+        projects.map((project, i) => (
+          <article class:list={['project-case', 'reveal', { reversed: i % 2 === 1 }]}>
+            <div class="project-visual-col">
+              <ProjectVisual variant={project.visual} />
+            </div>
+            <div class="project-text-col">
+              <h3>{project.title}</h3>
+              <p class="project-tagline">{project.tagline}</p>
+
+              <dl class="project-structure">
+                <div>
+                  <dt>Problem</dt>
+                  <dd>{project.problem}</dd>
+                </div>
+                <div>
+                  <dt>Approach</dt>
+                  <dd>{project.approach}</dd>
+                </div>
+                <div>
+                  <dt>Contribution</dt>
+                  <dd>{project.contribution}</dd>
+                </div>
+              </dl>
+
+              <div class="project-links">
+                {project.doi && (
+                  <a href={`https://doi.org/${project.doi}`} target="_blank" rel="noopener noreferrer" class="btn">
+                    Publication · DOI
+                  </a>
+                )}
+                {project.code && (
+                  <a href={project.code} target="_blank" rel="noopener noreferrer" class="btn">
+                    Code repository
+                  </a>
+                )}
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .project-list {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 6vw, 5rem);
+  }
+
+  .project-case {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    align-items: center;
+    padding-block: clamp(2rem, 4vw, 2.5rem);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .project-case.reversed {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+
+  .project-case.reversed .project-visual-col {
+    order: 2;
+  }
+
+  .project-visual-col {
+    display: flex;
+    justify-content: center;
+  }
+
+  .project-text-col h3 {
+    font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.6rem);
+  }
+
+  .project-tagline {
+    color: var(--color-accent);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin-top: 0.35rem;
+  }
+
+  .project-structure {
+    margin: 1.25rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .project-structure dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: var(--color-text-tertiary);
+    margin-bottom: 0.2rem;
+  }
+
+  .project-structure dd {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 820px) {
+    .project-case,
+    .project-case.reversed {
+      grid-template-columns: 1fr;
+    }
+
+    .project-case.reversed .project-visual-col {
+      order: 0;
+    }
+
+    .project-visual-col {
+      max-width: 18rem;
+      margin-inline: auto;
+    }
+  }
+</style>
