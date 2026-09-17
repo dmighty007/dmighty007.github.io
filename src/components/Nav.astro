@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from './ThemeToggle.astro';
+
 const navItems = [
   { href: '/', label: 'Dibyendu Maity', home: true },
   { href: '/research', label: 'Research' },
@@ -17,10 +19,13 @@ const currentPath = Astro.url.pathname;
     <a href="/" class="brand">
       Dibyendu <span>Maity</span>
     </a>
-    <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">
-      <span class="visually-hidden">Toggle navigation menu</span>
-      <span class="nav-toggle-bars" aria-hidden="true"></span>
-    </button>
+    <div class="nav-controls">
+      <ThemeToggle />
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">
+        <span class="visually-hidden">Toggle navigation menu</span>
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+    </div>
     <nav aria-label="Primary" id="nav-links" class="nav-links">
       {
         navItems
@@ -84,6 +89,14 @@ const currentPath = Astro.url.pathname;
     display: flex;
     align-items: center;
     gap: clamp(1rem, 2vw, 1.75rem);
+    order: 2;
+  }
+
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    order: 3;
   }
 
   .nav-link {
