@@ -3,18 +3,25 @@ import { software } from '../data/software';
 
 interface Props {
   compact?: boolean;
+  showHeading?: boolean;
 }
-const { compact = false } = Astro.props;
+const { compact = false, showHeading = true } = Astro.props;
 ---
 
 <section class="software" id="software">
   <div class="container">
-    <p class="eyebrow reveal">Scientific software</p>
-    <h2 class="section-heading reveal">Open-source research tools</h2>
-    <p class="section-lede reveal">
-      Software developed to make rare-event sampling and representation-learning methods usable in ordinary
-      molecular-dynamics and materials-simulation workflows.
-    </p>
+    {
+      showHeading && (
+        <>
+          <p class="eyebrow reveal">Scientific software</p>
+          <h2 class="section-heading reveal">Open-source research tools</h2>
+          <p class="section-lede reveal">
+            Software developed to make rare-event sampling and representation-learning methods usable in ordinary
+            molecular-dynamics and materials-simulation workflows.
+          </p>
+        </>
+      )
+    }
 
     <div class="software-grid">
       {
