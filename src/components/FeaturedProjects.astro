@@ -1,6 +1,5 @@
 ---
 import { featuredProjects } from '../data/projects';
-import ProjectVisual from './ProjectVisual.astro';
 
 interface Props {
   limit?: number;
@@ -19,7 +18,14 @@ const projects = limit ? featuredProjects.slice(0, limit) : featuredProjects;
         projects.map((project, i) => (
           <article class:list={['project-case', 'reveal', { reversed: i % 2 === 1 }]}>
             <div class="project-visual-col">
-              <ProjectVisual variant={project.visual} />
+              <img
+                src={project.image}
+                alt={project.imageAlt}
+                loading="lazy"
+                decoding="async"
+                width="640"
+                height="360"
+              />
             </div>
             <div class="project-text-col">
               <h3>{project.title}</h3>
@@ -92,6 +98,18 @@ const projects = limit ? featuredProjects.slice(0, limit) : featuredProjects;
   .project-visual-col {
     display: flex;
     justify-content: center;
+  }
+
+  .project-visual-col img {
+    width: 100%;
+    max-width: 26rem;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: contain;
+    background: #fbfbfa;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0.75rem;
   }
 
   .project-text-col h3 {

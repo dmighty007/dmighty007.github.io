@@ -8,7 +8,8 @@ export interface FeaturedProject {
   publicationId?: string;
   doi?: string;
   code?: string;
-  visual: 'pathgennie' | 'icecoder' | 'kinetics' | 'trails';
+  image: string;
+  imageAlt: string;
 }
 
 export const featuredProjects: FeaturedProject[] = [
@@ -25,7 +26,9 @@ export const featuredProjects: FeaturedProject[] = [
     publicationId: 'pathgennie-2025',
     doi: '10.1021/acs.jctc.5c01244',
     code: 'https://github.com/dmighty007/PathGennie',
-    visual: 'pathgennie',
+    image: '/images/research/pathgennie.webp',
+    imageAlt:
+      'Infographic summarizing PathGennie: the challenge of rare molecular events with long waiting times, the direction-guided adaptive-sampling concept, and rapid generation of reactive pathways within hundreds of picoseconds.',
   },
   {
     id: 'icecoder',
@@ -40,7 +43,9 @@ export const featuredProjects: FeaturedProject[] = [
     publicationId: 'icecoder-2025',
     doi: '10.1021/acs.jctc.4c01298',
     code: 'https://github.com/dmighty007/IceCoder',
-    visual: 'icecoder',
+    image: '/images/research/icecoder.webp',
+    imageAlt:
+      'Latent-space scatter plot from IceCoder showing liquid water and ice polymorphs Ih, Ic, II, III, V, VI, VII, and XVII separating into distinct clusters learned by the variational autoencoder.',
   },
   {
     id: 'pathway-resolved-kinetics',
@@ -49,12 +54,14 @@ export const featuredProjects: FeaturedProject[] = [
     problem:
       'When a rare event proceeds through multiple competing pathways, standard weighted-ensemble kinetics estimates the overall rate but obscures how much flux flows through each individual channel.',
     approach:
-      'A neural-network path coordinate separates trajectories into distinct pathway families during weighted-ensemble sampling, allowing each channel to be resolved and analyzed independently.',
+      'Candidate transition routes are grouped and refined into smooth reference pathways described by a neural-network path collective variable (PathCV), and independent weighted-ensemble (WE) simulations are then run along each channel.',
     contribution:
       'Enables quantitative, pathway-resolved kinetics — channel-specific fluxes and mean first-passage times — from weighted-ensemble simulations rather than a single lumped rate.',
     publicationId: 'pathway-resolved-kinetics-chemrxiv-2026',
     doi: '10.26434/chemrxiv.15005553/v1',
-    visual: 'kinetics',
+    image: '/images/research/pathway-kinetics.webp',
+    imageAlt:
+      'Schematic showing a neural-network path collective variable (PathCV) combined with weighted-ensemble (WE) sampling, producing separate rate estimates for four distinct pathways.',
   },
   {
     id: 'trails-md',
@@ -63,10 +70,12 @@ export const featuredProjects: FeaturedProject[] = [
     problem:
       'Adaptive sampling campaigns spawn and prune many trajectory segments over time, and tracking how each segment relates to its ancestry is essential for correct reweighting and analysis.',
     approach:
-      'TRAILS-MD is a lightweight, engine-agnostic framework that tracks trajectory lineage explicitly through the adaptive sampling process, independent of the underlying MD engine.',
+      'TRAILS-MD runs many short, segmented parallel walkers and records which earlier segment produced each new one, so continuous transition paths can be reconstructed from many short pieces regardless of the underlying MD engine.',
     contribution:
-      'Provides reusable infrastructure for lineage-aware adaptive molecular-dynamics sampling that can be paired with different simulation engines and sampling strategies.',
+      'Turns rapid, broad exploration into connected, interpretable transition pathways rather than a scatter of disconnected samples, released as reusable adaptive-sampling infrastructure.',
     code: 'https://github.com/TeamSuman/Trails-MD',
-    visual: 'trails',
+    image: '/images/research/trails-md.webp',
+    imageAlt:
+      'Diagram showing many short segmented parallel walkers exploring rapidly from State A and connecting into two distinct transition paths, Path 1 and Path 2, that reach State B.',
   },
 ];
