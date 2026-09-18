@@ -14,25 +14,26 @@ import { educationFull } from '../data/education';
   path="/about"
 >
   <section class="about-hero">
-    <div class="container about-grid">
-      <div>
-        <p class="eyebrow reveal">About</p>
-        <h1 class="reveal">{profile.name}</h1>
-        {profile.longBio.map((paragraph, i) => (
-          <p class="about-bio reveal" style={`transition-delay:${i * 60}ms`}>{paragraph}</p>
-        ))}
-        <p class="about-status reveal">{profile.status}</p>
-        <p class="about-interests reveal">
-          <span class="about-interests-label">Research interests</span>
-          {profile.interests.join(' · ')}
-        </p>
-      </div>
+    <div class="container about-text">
+      <p class="eyebrow reveal">About</p>
+      <h1 class="reveal">{profile.name}</h1>
+
       <figure class="about-portrait reveal">
         <div class="about-portrait-frame">
           <img src={profile.photo} alt={`Portrait of ${profile.name}`} width="480" height="640" loading="eager" />
         </div>
         <figcaption>{profile.location}</figcaption>
       </figure>
+
+      {profile.longBio.map((paragraph, i) => (
+        <p class="about-bio reveal" style={`transition-delay:${i * 60}ms`}>{paragraph}</p>
+      ))}
+      <p class="about-status reveal">{profile.status}</p>
+      <p class="about-interests reveal">
+        <span class="about-interests-label">Research interests</span>
+        {profile.interests.join(' · ')}
+      </p>
+      <div class="about-clear"></div>
     </div>
   </section>
 
@@ -47,27 +48,24 @@ import { educationFull } from '../data/education';
     padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
   }
 
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: clamp(2rem, 5vw, 4rem);
-    align-items: start;
+  .about-text {
+    max-width: 66ch;
   }
 
-  .about-grid h1 {
+  .about-text h1 {
     font-size: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
     margin: 0.5rem 0 1.5rem;
   }
 
   .about-bio {
     color: var(--color-text-secondary);
-    max-width: 66ch;
     font-size: 1.0625rem;
     line-height: 1.65;
     margin-bottom: 1.1rem;
   }
 
   .about-status {
+    clear: both;
     margin-top: 1.5rem;
     font-weight: 600;
     color: var(--color-accent);
@@ -94,10 +92,14 @@ import { educationFull } from '../data/education';
   }
 
   .about-portrait {
-    justify-self: center;
-    margin: 0;
-    width: 100%;
-    max-width: 17rem;
+    float: right;
+    margin: 0.25rem 0 1.25rem 2rem;
+    width: 45%;
+    max-width: 14rem;
+  }
+
+  .about-clear {
+    clear: both;
   }
 
   .about-portrait-frame {
@@ -136,15 +138,12 @@ import { educationFull } from '../data/education';
     letter-spacing: 0.02em;
   }
 
-  @media (max-width: 760px) {
-    .about-grid {
-      grid-template-columns: 1fr;
-    }
-
+  @media (max-width: 560px) {
     .about-portrait {
-      order: -1;
+      float: none;
+      width: 100%;
       max-width: 13rem;
-      margin-inline: auto;
+      margin: 0 auto 1.75rem;
     }
   }
 </style>
