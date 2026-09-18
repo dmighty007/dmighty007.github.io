@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import Hero from '../components/Hero.astro';
 import ResearchThemes from '../components/ResearchThemes.astro';
 import FeaturedProjects from '../components/FeaturedProjects.astro';
@@ -19,7 +20,9 @@ import ContactSection from '../components/ContactSection.astro';
       <p class="eyebrow reveal">Selected publications</p>
       <h2 class="section-heading reveal">Recent work</h2>
       <PublicationsList limit={5} showControls={false} />
-      <a href="/publications" class="btn btn-ghost home-publications-more">View all publications →</a>
+      <a href="/publications" class="btn btn-ghost home-publications-more">
+        View all publications <Icon name="arrow-right" size={15} />
+      </a>
     </div>
   </section>
 
