@@ -61,7 +61,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     const texture = 0.012 * Math.sin(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x);
     const rawY =
       -0.85 * Math.exp(-dA2 / 0.8) - 0.75 * Math.exp(-dB2 / 0.9) + 0.26 * Math.exp(-dS2) + 0.035 * (x * x + z * z) - 0.12 + texture;
-    const edgeFade = smoothstep(4.1, 2.6, Math.hypot(x, z));
+    const edgeFade = smoothstep(4.18, 3.1, Math.hypot(x, z));
     return rawY * edgeFade;
   }
 
@@ -83,17 +83,21 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     return out;
   }
 
-  const COLOR_LOW = new THREE.Color(0x214b63);
-  const COLOR_MID = new THREE.Color(0x5e9a96);
-  const COLOR_HIGH = new THREE.Color(0xd6b46a);
-  const COLOR_EDGE = new THREE.Color(0xe7edf0);
+  // A restrained teal-to-cream gradient matching the site's own palette
+  // (--color-accent-strong / --color-accent / --color-bg) rather than an
+  // unrelated blue-to-gold scheme, so the visualization reads as part of
+  // the page rather than a separate, more saturated graphic.
+  const COLOR_LOW = new THREE.Color(0x123c3a);
+  const COLOR_MID = new THREE.Color(0x1f6f6b);
+  const COLOR_HIGH = new THREE.Color(0xcfc6ac);
+  const COLOR_EDGE = new THREE.Color(0xfaf8f4);
 
   function energyColor(x: number, z: number, y: number, target: THREE.Color): THREE.Color {
     const height = smoothstep(-0.88, 0.22, y);
     if (height < 0.52) target.copy(COLOR_LOW).lerp(COLOR_MID, height / 0.52);
     else target.copy(COLOR_MID).lerp(COLOR_HIGH, (height - 0.52) / 0.48);
-    const edge = smoothstep(2.2, 4.0, Math.hypot(x, z));
-    target.lerp(COLOR_EDGE, edge * 0.72);
+    const edge = smoothstep(3.1, 4.15, Math.hypot(x, z));
+    target.lerp(COLOR_EDGE, edge * 0.85);
     return target;
   }
 
@@ -191,9 +195,9 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
   }
   container.appendChild(renderer.domElement);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-  scene.add(new THREE.HemisphereLight(0xfffdfa, 0xede6da, 0.45));
-  const dirLight = new THREE.DirectionalLight(0xfffdfa, 1.15);
+  scene.add(new THREE.AmbientLight(0xfff6ea, 0.85));
+  scene.add(new THREE.HemisphereLight(0xfff8ef, 0xcfe4e0, 0.5));
+  const dirLight = new THREE.DirectionalLight(0xfff3e2, 1.0);
   dirLight.position.set(3, 7.2, 4.2);
   if (!isLowPower) {
     dirLight.castShadow = true;
@@ -336,18 +340,25 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     });
   }
 
-  const initialCamPos = new THREE.Vector3(1.7, 4.9, 6.9);
-  camera.position.copy(initialCamPos);
-  camera.lookAt(0, -0.3, 0);
+  // A slow orbit (rather than a fixed viewpoint) so the terrain sweeps
+  // through the frame over time instead of leaving the same flat corners
+  // permanently empty; radius/height are tuned tight to the island so it
+  // fills most of the square viewport at every angle.
+  const ORBIT_RADIUS = 6.1;
+  const ORBIT_HEIGHT = 3.0;
+  let orbitAngle = 0.4;
+  const lookTarget = new THREE.Vector3(0, -0.25, 0);
+  const desiredCamPos = new THREE.Vector3();
+  camera.position.set(Math.sin(orbitAngle) * ORBIT_RADIUS, ORBIT_HEIGHT, Math.cos(orbitAngle) * ORBIT_RADIUS);
+  camera.lookAt(lookTarget);
 
   const mouseTarget = new THREE.Vector2(0, 0);
-  const cameraTargetPos = initialCamPos.clone();
 
   function onPointerMove(e: PointerEvent) {
     const rect = container.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    mouseTarget.set(x * 0.32, y * 0.22);
+    mouseTarget.set(x * 0.25, y * 0.6);
   }
   function onPointerLeave() {
     mouseTarget.set(0, 0);
@@ -368,10 +379,11 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     const t = now * 0.001;
 
     if (active && !prefersReducedMotion) {
-      cameraTargetPos.x = initialCamPos.x + mouseTarget.x;
-      cameraTargetPos.y = initialCamPos.y + mouseTarget.y;
-      camera.position.lerp(cameraTargetPos, 0.06);
-      camera.lookAt(0, -0.3, 0);
+      orbitAngle += dt * 0.045;
+      const angle = orbitAngle + mouseTarget.x;
+      desiredCamPos.set(Math.sin(angle) * ORBIT_RADIUS, ORBIT_HEIGHT + mouseTarget.y, Math.cos(angle) * ORBIT_RADIUS);
+      camera.position.lerp(desiredCamPos, 0.05);
+      camera.lookAt(lookTarget);
 
       const period = 2 + 2.2 * 2;
       const mainPhase = (t * 0.14) % period;
