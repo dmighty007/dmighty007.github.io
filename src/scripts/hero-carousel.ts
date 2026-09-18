@@ -7,11 +7,6 @@ interface SlideController {
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function cssVar(name: string, fallback: string): string {
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  return value || fallback;
-}
-
 function observeResize(container: HTMLElement, onResize: (w: number, h: number) => void) {
   const ro = new ResizeObserver((entries) => {
     for (const entry of entries) {
@@ -91,7 +86,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
   const COLOR_LOW = new THREE.Color(0x214b63);
   const COLOR_MID = new THREE.Color(0x5e9a96);
   const COLOR_HIGH = new THREE.Color(0xd6b46a);
-  const COLOR_EDGE = new THREE.Color(cssVar('--color-bg-raised', '#f3f1ea'));
+  const COLOR_EDGE = new THREE.Color(0xe7edf0);
 
   function energyColor(x: number, z: number, y: number, target: THREE.Color): THREE.Color {
     const height = smoothstep(-0.88, 0.22, y);
@@ -185,17 +180,33 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
   }
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, isLowPower ? 1.5 : 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
+  if (!isLowPower) {
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+  }
   container.appendChild(renderer.domElement);
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.75));
   scene.add(new THREE.HemisphereLight(0xfffdfa, 0xede6da, 0.45));
-  const dirLight = new THREE.DirectionalLight(0xfffdfa, 1.1);
-  dirLight.position.set(5, 12, 7);
+  const dirLight = new THREE.DirectionalLight(0xfffdfa, 1.15);
+  dirLight.position.set(3, 7.2, 4.2);
+  if (!isLowPower) {
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+    dirLight.shadow.camera.left = -GRID_SIZE / 2;
+    dirLight.shadow.camera.right = GRID_SIZE / 2;
+    dirLight.shadow.camera.top = GRID_SIZE / 2;
+    dirLight.shadow.camera.bottom = -GRID_SIZE / 2;
+    dirLight.shadow.camera.near = 1;
+    dirLight.shadow.camera.far = 20;
+    dirLight.shadow.bias = -0.0025;
+  }
   scene.add(dirLight);
 
   const surfaceGeo = new THREE.PlaneGeometry(GRID_SIZE, GRID_SIZE, GRID_SEGS, GRID_SEGS);
@@ -218,6 +229,10 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     surfaceGeo,
     new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.68, metalness: 0.01, side: THREE.DoubleSide })
   );
+  if (!isLowPower) {
+    surfaceMesh.receiveShadow = true;
+    surfaceMesh.castShadow = true;
+  }
   scene.add(surfaceMesh);
   scene.add(createIsoContours());
 
@@ -244,6 +259,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     new THREE.MeshStandardMaterial({ color: 0x9e3820, emissive: 0x5a180a, emissiveIntensity: 0.45, roughness: 0.7, metalness: 0.3 })
   );
   marker.renderOrder = 10;
+  if (!isLowPower) marker.castShadow = true;
   scene.add(marker);
 
   type Walker = {
@@ -276,6 +292,10 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
   ] as const) {
     for (let i = 0; i < swarmCount; i++) {
       const mesh = new THREE.Mesh(smallSphere, mat);
+      if (!isLowPower) {
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+      }
       const hx = home.x + (Math.random() - 0.5) * 0.55;
       const hz = home.z + (Math.random() - 0.5) * 0.55;
       mesh.position.set(hx, fesHeight(hx, hz) + WALKER_LIFT, hz);
@@ -292,6 +312,10 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     const basinMaterial = fromLeft ? matLeft : matRight;
     const crossingMaterial = fromLeft ? matCrossingLeft : matCrossingRight;
     const mesh = new THREE.Mesh(smallSphere, basinMaterial);
+    if (!isLowPower) {
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+    }
     const hx = home.x + (Math.random() - 0.5) * 0.4;
     const hz = home.z + (Math.random() - 0.5) * 0.4;
     mesh.position.set(hx, fesHeight(hx, hz) + WALKER_LIFT, hz);
@@ -312,7 +336,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     });
   }
 
-  const initialCamPos = new THREE.Vector3(1.4, 3.6, 5.1);
+  const initialCamPos = new THREE.Vector3(1.7, 4.9, 6.9);
   camera.position.copy(initialCamPos);
   camera.lookAt(0, -0.3, 0);
 
@@ -453,17 +477,30 @@ function initProtein(container: HTMLElement, onFirstFrame: () => void): SlideCon
   let active = true;
   let loaded = false;
 
-  $3Dmol.download('pdb:3PTB', viewer, {}, () => {
-    viewer.setStyle({ hetflag: false }, { cartoon: { color: 'spectrum', thickness: 0.9 } });
-    viewer.setStyle({ hetflag: true, resn: 'BEN' }, { stick: { colorscheme: 'greenCarbon', radius: 0.18 } });
-    viewer.setStyle({ resn: 'HOH' }, {});
-    viewer.zoomTo();
-    viewer.zoom(0.9);
-    viewer.render();
-    loaded = true;
-    onFirstFrame();
-    if (active && !prefersReducedMotion) viewer.spin('y', 0.55);
-  });
+  // Fetched from same-origin public/models/3ptb.pdb rather than 3Dmol's
+  // remote RCSB download helper, which has no timeout and can hang
+  // indefinitely for a visitor if models.rcsb.org is slow or unreachable.
+  fetch('/models/3ptb.pdb')
+    .then((res) => {
+      if (!res.ok) throw new Error(`Failed to fetch PDB: ${res.status}`);
+      return res.text();
+    })
+    .then((pdbData) => {
+      viewer.addModel(pdbData, 'pdb');
+      viewer.setStyle({ hetflag: false }, { cartoon: { color: 'spectrum', thickness: 0.9 } });
+      viewer.setStyle({ hetflag: true, resn: 'BEN' }, { stick: { colorscheme: 'greenCarbon', radius: 0.18 } });
+      viewer.setStyle({ resn: 'HOH' }, {});
+      viewer.zoomTo();
+      viewer.zoom(0.9);
+      viewer.render();
+      loaded = true;
+      onFirstFrame();
+      if (active && !prefersReducedMotion) viewer.spin('y', 0.55);
+    })
+    .catch((err) => {
+      console.warn('Could not load protein structure:', err);
+      onFirstFrame();
+    });
 
   observeResize(container, () => {
     if (!loaded) return;
