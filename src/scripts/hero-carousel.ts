@@ -556,7 +556,7 @@ if (root) {
   const prevBtn = root.querySelector<HTMLButtonElement>('.carousel-prev');
   const nextBtn = root.querySelector<HTMLButtonElement>('.carousel-next');
 
-  const captions = ['Free-energy landscape', 'Ligand–protein unbinding · PDB 3PTB'];
+  const captions = ['Free-energy landscape', 'Ligand–protein'];
 
   let readyCount = 0;
   const markReady = () => {
