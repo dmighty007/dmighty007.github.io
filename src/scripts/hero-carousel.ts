@@ -12,33 +12,6 @@ function cssVar(name: string, fallback: string): string {
   return value || fallback;
 }
 
-function makeDotTexture(): THREE.Texture {
-  const size = 64;
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d')!;
-  const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  gradient.addColorStop(0, 'rgba(255,255,255,1)');
-  gradient.addColorStop(0.5, 'rgba(255,255,255,0.7)');
-  gradient.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, size, size);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.needsUpdate = true;
-  return texture;
-}
-
-function mulberry32(seed: number) {
-  return function random() {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 function observeResize(container: HTMLElement, onResize: (w: number, h: number) => void) {
   const ro = new ResizeObserver((entries) => {
     for (const entry of entries) {
@@ -254,115 +227,12 @@ function initProtein(container: HTMLElement, onFirstFrame: () => void): SlideCon
 }
 
 /* ------------------------------------------------------------------ */
-/* Slide 3: a learned latent-space point cloud — an IceCoder-style    */
-/* embedding where structurally distinct clusters separate cleanly.   */
-/* ------------------------------------------------------------------ */
-function initLatent(container: HTMLElement, onFirstFrame: () => void): SlideController {
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  container.appendChild(renderer.domElement);
-
-  const palette = ['#1f6f6b', '#c9772f', '#4a6fa5', '#8a5fb0', '#b0554f', '#5f8f4e', '#a68a2e'];
-  const random = mulberry32(7);
-  const clusterCount = palette.length;
-  const perCluster = 220;
-  const totalPoints = clusterCount * perCluster;
-
-  const positions = new Float32Array(totalPoints * 3);
-  const colors = new Float32Array(totalPoints * 3);
-
-  let idx = 0;
-  for (let c = 0; c < clusterCount; c++) {
-    const theta = (c / clusterCount) * Math.PI * 2;
-    const radius = 2.5 + (c % 2) * 0.6;
-    const cx = Math.cos(theta) * radius;
-    const cy = (random() - 0.5) * 1.6;
-    const cz = Math.sin(theta) * radius;
-    const color = new THREE.Color(palette[c]);
-    const spread = 0.42 + random() * 0.12;
-
-    for (let i = 0; i < perCluster; i++) {
-      const gx = (random() + random() + random() - 1.5) * spread;
-      const gy = (random() + random() + random() - 1.5) * spread;
-      const gz = (random() + random() + random() - 1.5) * spread;
-      positions[idx * 3] = cx + gx;
-      positions[idx * 3 + 1] = cy + gy;
-      positions[idx * 3 + 2] = cz + gz;
-      colors[idx * 3] = color.r;
-      colors[idx * 3 + 1] = color.g;
-      colors[idx * 3 + 2] = color.b;
-      idx++;
-    }
-  }
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-  const material = new THREE.PointsMaterial({
-    size: 0.16,
-    vertexColors: true,
-    map: makeDotTexture(),
-    transparent: true,
-    depthWrite: false,
-    opacity: 0.92,
-  });
-
-  const group = new THREE.Group();
-  group.add(new THREE.Points(geometry, material));
-  group.rotation.x = 0.35;
-  scene.add(group);
-
-  camera.position.set(0, 0, 8);
-  camera.lookAt(0, 0, 0);
-
-  let active = true;
-  let rafId = 0;
-  let lastTime = performance.now();
-  let rendered = false;
-
-  function frame(now: number) {
-    rafId = requestAnimationFrame(frame);
-    const dt = Math.min((now - lastTime) / 1000, 0.05);
-    lastTime = now;
-
-    if (active && !prefersReducedMotion) {
-      group.rotation.y += dt * 0.18;
-    }
-
-    renderer.render(scene, camera);
-    if (!rendered) {
-      rendered = true;
-      onFirstFrame();
-    }
-  }
-
-  observeResize(container, (w, h) => {
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  });
-
-  rafId = requestAnimationFrame(frame);
-
-  return {
-    setActive(next: boolean) {
-      active = next;
-      lastTime = performance.now();
-    },
-  };
-}
-
-/* ------------------------------------------------------------------ */
 /* Carousel wiring                                                     */
 /* ------------------------------------------------------------------ */
 const root = document.getElementById('hero-carousel');
 if (root) {
   const fesStage = document.getElementById('fes3d-stage') as HTMLElement;
   const proteinStage = document.getElementById('protein3d-stage') as HTMLElement;
-  const latentStage = document.getElementById('latent3d-stage') as HTMLElement;
   const loadingEl = document.getElementById('stage-loading');
   const slides = Array.from(root.querySelectorAll<HTMLElement>('.carousel-slide'));
   const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('.carousel-dot'));
@@ -371,11 +241,7 @@ if (root) {
   const prevBtn = root.querySelector<HTMLButtonElement>('.carousel-prev');
   const nextBtn = root.querySelector<HTMLButtonElement>('.carousel-next');
 
-  const captions = [
-    'Free-energy landscape',
-    'Ligand–protein unbinding · PDB 3PTB',
-    'Learned latent representation',
-  ];
+  const captions = ['Free-energy landscape', 'Ligand–protein unbinding · PDB 3PTB'];
 
   let readyCount = 0;
   const markReady = () => {
@@ -386,7 +252,6 @@ if (root) {
   const controllers: SlideController[] = [
     initFES(fesStage, markReady),
     initProtein(proteinStage, markReady),
-    initLatent(latentStage, markReady),
   ];
 
   let current = 0;

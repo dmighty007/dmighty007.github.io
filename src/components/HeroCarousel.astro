@@ -1,9 +1,8 @@
 ---
-// Rotating 3D showcase: a live free-energy-surface render, a real ligand-bound
-// protein structure, and a learned latent-space point cloud. All three are
-// generated/rendered client-side (three.js + 3Dmol.js) rather than static
-// images, so the hero reads as an active piece of scientific software rather
-// than a picture of one.
+// Rotating 3D showcase: a live free-energy-surface render and a real
+// ligand-bound protein structure. Both are generated/rendered client-side
+// (three.js + 3Dmol.js) rather than static images, so the hero reads as an
+// active piece of scientific software rather than a picture of one.
 ---
 
 <div class="hero-carousel" id="hero-carousel">
@@ -13,9 +12,6 @@
     </div>
     <div class="carousel-slide" data-index="1">
       <div id="protein3d-stage" class="stage-canvas"></div>
-    </div>
-    <div class="carousel-slide" data-index="2">
-      <div id="latent3d-stage" class="stage-canvas"></div>
     </div>
     <div class="stage-loading" id="stage-loading" aria-hidden="true">
       <span></span><span></span><span></span>
@@ -37,7 +33,6 @@
   <div class="carousel-dots" role="tablist" aria-label="Visualization slides">
     <button type="button" class="carousel-dot is-active" data-index="0" role="tab" aria-selected="true" aria-label="Show free-energy landscape"></button>
     <button type="button" class="carousel-dot" data-index="1" role="tab" aria-selected="false" aria-label="Show protein–ligand structure"></button>
-    <button type="button" class="carousel-dot" data-index="2" role="tab" aria-selected="false" aria-label="Show learned latent representation"></button>
   </div>
 </div>
 
