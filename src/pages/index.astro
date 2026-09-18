@@ -14,14 +14,12 @@ import ContactSection from '../components/ContactSection.astro';
   <ResearchThemes />
   <FeaturedProjects limit={3} />
 
-  <section class="section-alt">
+  <section class="section section-alt">
     <div class="container">
       <p class="eyebrow reveal">Selected publications</p>
       <h2 class="section-heading reveal">Recent work</h2>
       <PublicationsList limit={5} showControls={false} />
-      <a href="/publications" class="btn btn-ghost" style="margin-top:1rem;display:inline-block;">
-        View all publications →
-      </a>
+      <a href="/publications" class="btn btn-ghost home-publications-more">View all publications →</a>
     </div>
   </section>
 
@@ -29,3 +27,10 @@ import ContactSection from '../components/ContactSection.astro';
   <Timeline />
   <ContactSection />
 </BaseLayout>
+
+<style>
+  .home-publications-more {
+    margin-top: 1.5rem;
+    display: inline-block;
+  }
+</style>

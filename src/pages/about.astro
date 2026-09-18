@@ -14,26 +14,28 @@ import { educationFull } from '../data/education';
   path="/about"
 >
   <section class="about-hero">
-    <div class="container about-text">
-      <p class="eyebrow reveal">About</p>
-      <h1 class="reveal">{profile.name}</h1>
+    <div class="container">
+      <div class="about-text">
+        <p class="eyebrow reveal">About</p>
+        <h1 class="reveal">{profile.name}</h1>
 
-      <figure class="about-portrait reveal">
-        <div class="about-portrait-frame">
-          <img src={profile.photo} alt={`Portrait of ${profile.name}`} width="480" height="640" loading="eager" />
-        </div>
-        <figcaption>{profile.location}</figcaption>
-      </figure>
+        <figure class="about-portrait reveal">
+          <div class="about-portrait-frame">
+            <img src={profile.photo} alt={`Portrait of ${profile.name}`} width="480" height="640" loading="eager" />
+          </div>
+          <figcaption>{profile.location}</figcaption>
+        </figure>
 
-      {profile.longBio.map((paragraph, i) => (
-        <p class="about-bio reveal" style={`transition-delay:${i * 60}ms`}>{paragraph}</p>
-      ))}
-      <p class="about-status reveal">{profile.status}</p>
-      <p class="about-interests reveal">
-        <span class="about-interests-label">Research interests</span>
-        {profile.interests.join(' · ')}
-      </p>
-      <div class="about-clear"></div>
+        {profile.longBio.map((paragraph, i) => (
+          <p class="about-bio reveal" style={`transition-delay:${i * 60}ms`}>{paragraph}</p>
+        ))}
+        <p class="about-status reveal">{profile.status}</p>
+        <p class="about-interests reveal">
+          <span class="about-interests-label">Research interests</span>
+          {profile.interests.join(' · ')}
+        </p>
+        <div class="about-clear"></div>
+      </div>
     </div>
   </section>
 
@@ -49,7 +51,7 @@ import { educationFull } from '../data/education';
   }
 
   .about-text {
-    max-width: 66ch;
+    max-width: 50rem;
   }
 
   .about-text h1 {
@@ -59,6 +61,7 @@ import { educationFull } from '../data/education';
 
   .about-bio {
     color: var(--color-text-secondary);
+    max-width: 66ch;
     font-size: 1.0625rem;
     line-height: 1.65;
     margin-bottom: 1.1rem;
