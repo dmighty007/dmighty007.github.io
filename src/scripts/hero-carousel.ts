@@ -343,14 +343,20 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     });
   }
 
-  // A single fixed viewpoint (tuned so the basin-to-basin diagonal fills
-  // the square frame corner-to-corner, matching the reference framing)
-  // rather than a continuous orbit — only a small pointer-driven parallax
-  // is layered on top.
-  const CAM_RADIUS = 5.2;
-  const CAM_HEIGHT = 2.5;
-  const FIXED_ANGLE = 0.12;
-  const lookTarget = new THREE.Vector3(0, -0.25, 0);
+  // Near-top-down bird's-eye viewpoint: camera high above the surface with
+  // a small horizontal offset so both basins read as circular depressions
+  // and the transition-path diagonal runs upper-left → lower-right.
+  // const CAM_RADIUS = 1.8;
+  // const CAM_HEIGHT = 8.5;
+  // const FIXED_ANGLE = -0.78;
+  // const FIXED_ANGLE = -0.78;
+
+  const CAM_RADIUS = 5.0;
+  const CAM_HEIGHT = 5.3;
+  const FIXED_ANGLE = -0.78;
+
+  
+  const lookTarget = new THREE.Vector3(0.0, -0.15, 0.0);
   const desiredCamPos = new THREE.Vector3();
   camera.position.set(Math.sin(FIXED_ANGLE) * CAM_RADIUS, CAM_HEIGHT, Math.cos(FIXED_ANGLE) * CAM_RADIUS);
   camera.lookAt(lookTarget);
@@ -361,7 +367,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     const rect = container.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    mouseTarget.set(x * 0.25, y * 0.6);
+    mouseTarget.set(x * 0.12, y * 0.25);
   }
   function onPointerLeave() {
     mouseTarget.set(0, 0);
