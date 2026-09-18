@@ -57,7 +57,7 @@ function citationLine(pub: (typeof publications)[number]): string {
           class="pub-row"
           data-tags={pub.tags.join(',')}
           data-year={pub.year}
-          data-first-author={pub.isFirstAuthor}
+          data-first-author={pub.isFirstAuthor ? 'true' : 'false'}
           data-search={`${pub.title} ${pub.authors} ${pub.venue}`.toLowerCase()}
         >
           <span class="pub-year">{pub.year}</span>
