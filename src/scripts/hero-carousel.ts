@@ -20,9 +20,8 @@ function observeResize(container: HTMLElement, onResize: (w: number, h: number) 
 
 /* ------------------------------------------------------------------ */
 /* Slide 1: a live-rendered 3D free-energy surface — analytical         */
-/* two-basin potential, string-method minimum-energy path, topographic  */
-/* iso-contours, and a small Langevin-dynamics walker population.       */
-/* Ported from the author's original hero-scene visualization.          */
+/* four-basin potential with a network of string-method minimum-energy   */
+/* paths, topographic iso-contours, and Langevin-dynamics walkers.       */
 /* ------------------------------------------------------------------ */
 function initFES(container: HTMLElement, onFirstFrame: () => void): SlideController {
   const isLowPower = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || window.innerWidth <= 700;
@@ -30,22 +29,26 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
   const GRID_SIZE = 8.4;
   const CONTOUR_RES = isLowPower ? 60 : 110;
 
-  const BASIN_LEFT = { x: -1.4, z: -0.75 };
-  const BASIN_RIGHT = { x: 1.4, z: 0.75 };
+  /* ---- Basin definitions ---- */
+  interface Basin { x: number; z: number; depth: number; sigma2: number }
+  const BASINS: Basin[] = [
+    { x: -1.6, z:  0.0, depth: -0.90, sigma2: 0.75 },  // A: deep reactant
+    { x:  0.2, z: -1.6, depth: -0.55, sigma2: 0.65 },  // B: shallow intermediate
+    { x: -0.1, z:  1.5, depth: -0.60, sigma2: 0.70 },  // C: metastable trap
+    { x:  1.6, z:  0.0, depth: -0.85, sigma2: 0.80 },  // D: deep product
+  ];
+  const [BASIN_A, BASIN_B, BASIN_C, BASIN_D] = BASINS;
+
   const MOBILITY = 0.45;
   const THERMAL_ENERGY = 0.02;
   const DIFFUSION = MOBILITY * THERMAL_ENERGY;
   const WALKER_LIFT = 0.045;
 
+  /* ---- Utility functions ---- */
   function gaussRandom(): number {
-    let u = 0;
-    let v = 0;
-    let s = 0;
-    do {
-      u = Math.random() * 2 - 1;
-      v = Math.random() * 2 - 1;
-      s = u * u + v * v;
-    } while (s >= 1 || s === 0);
+    let u = 0, v = 0, s = 0;
+    do { u = Math.random() * 2 - 1; v = Math.random() * 2 - 1; s = u * u + v * v; }
+    while (s >= 1 || s === 0);
     return u * Math.sqrt((-2 * Math.log(s)) / s);
   }
 
@@ -54,49 +57,60 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     return t * t * (3 - 2 * t);
   }
 
+  /* ---- Potential energy surface ---- */
   function fesHeight(x: number, z: number): number {
-    const dA2 = (x + 1.4) ** 2 + (z + 0.75) ** 2;
-    const dB2 = (x - 1.4) ** 2 + (z - 0.75) ** 2;
-    const dS2 = x * x * 1.4 + z * z * 1.4;
-    const texture = 0.012 * Math.sin(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x);
-    const rawY =
-      -0.85 * Math.exp(-dA2 / 0.8) - 0.75 * Math.exp(-dB2 / 0.9) + 0.26 * Math.exp(-dS2) + 0.035 * (x * x + z * z) - 0.12 + texture;
+    let rawY = 0;
+    for (const b of BASINS) {
+      const d2 = (x - b.x) ** 2 + (z - b.z) ** 2;
+      rawY += b.depth * Math.exp(-d2 / b.sigma2);
+    }
+    // central barrier
+    const dC2 = x * x * 1.4 + z * z * 1.4;
+    rawY += 0.26 * Math.exp(-dC2);
+    // harmonic bowl + offset
+    rawY += 0.035 * (x * x + z * z) - 0.12;
+    // texture
+    rawY += 0.012 * Math.sin(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x);
+    // edge fade
     const edgeFade = smoothstep(4.18, 3.1, Math.hypot(x, z));
     return rawY * edgeFade;
   }
 
   function fesGradient(x: number, z: number, out: THREE.Vector2): THREE.Vector2 {
-    const dA2 = (x + 1.4) ** 2 + (z + 0.75) ** 2;
-    const dB2 = (x - 1.4) ** 2 + (z - 0.75) ** 2;
-    const dS2 = x * x * 1.4 + z * z * 1.4;
-    const eA = Math.exp(-dA2 / 0.8);
-    const eB = Math.exp(-dB2 / 0.9);
-    const eS = Math.exp(-dS2);
-    const textureX =
-      0.012 * (1.7 * Math.cos(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x) - 0.25 * Math.sin(1.7 * x + 0.45 * z) * Math.sin(1.25 * z - 0.25 * x));
-    const textureZ =
-      0.012 * (0.45 * Math.cos(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x) - 1.25 * Math.sin(1.7 * x + 0.45 * z) * Math.sin(1.25 * z - 0.25 * x));
-    out.set(
-      -0.85 * eA * ((-2 * (x + 1.4)) / 0.8) - 0.75 * eB * ((-2 * (x - 1.4)) / 0.9) + 0.26 * eS * (-2.8 * x) + 0.07 * x + textureX,
-      -0.85 * eA * ((-2 * (z + 0.75)) / 0.8) - 0.75 * eB * ((-2 * (z - 0.75)) / 0.9) + 0.26 * eS * (-2.8 * z) + 0.07 * z + textureZ
-    );
+    let gx = 0, gz = 0;
+    for (const b of BASINS) {
+      const dx = x - b.x;
+      const dz = z - b.z;
+      const d2 = dx * dx + dz * dz;
+      const e = Math.exp(-d2 / b.sigma2);
+      gx += b.depth * e * (-2 * dx / b.sigma2);
+      gz += b.depth * e * (-2 * dz / b.sigma2);
+    }
+    // central barrier gradient
+    const dC2 = x * x * 1.4 + z * z * 1.4;
+    const eC = Math.exp(-dC2);
+    gx += 0.26 * eC * (-2.8 * x);
+    gz += 0.26 * eC * (-2.8 * z);
+    // harmonic
+    gx += 0.07 * x;
+    gz += 0.07 * z;
+    // texture gradients
+    gx += 0.012 * (1.7 * Math.cos(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x)
+      - 0.25 * Math.sin(1.7 * x + 0.45 * z) * Math.sin(1.25 * z - 0.25 * x));
+    gz += 0.012 * (0.45 * Math.cos(1.7 * x + 0.45 * z) * Math.cos(1.25 * z - 0.25 * x)
+      - 1.25 * Math.sin(1.7 * x + 0.45 * z) * Math.sin(1.25 * z - 0.25 * x));
+    out.set(gx, gz);
     return out;
   }
 
-  // A restrained teal-to-cream gradient matching the site's own palette
-  // (--color-accent-strong / --color-accent / --color-bg) rather than an
-  // unrelated blue-to-gold scheme, so the visualization reads as part of
-  // the page rather than a separate, more saturated graphic.
-  // Coolwarm-style diverging colormap: cool blue-teal basins warming to a
-  // sandy neutral on the highlands, fading to the page background at the
-  // rim.
-  const COLOR_LOW = new THREE.Color(0x3d5f68);
-  const COLOR_MID = new THREE.Color(0x8fb4bb);
+  /* ---- Coolwarm-style colormap ---- */
+  const COLOR_LOW  = new THREE.Color(0x3d5f68);
+  const COLOR_MID  = new THREE.Color(0x8fb4bb);
   const COLOR_HIGH = new THREE.Color(0xd9cdad);
   const COLOR_EDGE = new THREE.Color(0xfaf8f4);
 
   function energyColor(x: number, z: number, y: number, target: THREE.Color): THREE.Color {
-    const height = smoothstep(-0.88, 0.22, y);
+    const height = smoothstep(-0.92, 0.22, y);
     if (height < 0.52) target.copy(COLOR_LOW).lerp(COLOR_MID, height / 0.52);
     else target.copy(COLOR_MID).lerp(COLOR_HIGH, (height - 0.52) / 0.48);
     const edge = smoothstep(3.1, 4.15, Math.hypot(x, z));
@@ -104,14 +118,15 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     return target;
   }
 
-  function computeTransitionPath(): THREE.Vector3[] {
+  /* ---- String-method minimum-energy paths ---- */
+  function computeTransitionPath(from: { x: number; z: number }, to: { x: number; z: number }): THREE.Vector3[] {
     const N = 70;
     const images: { x: number; z: number }[] = [];
     for (let i = 0; i <= N; i++) {
       const t = i / N;
       images.push({
-        x: THREE.MathUtils.lerp(BASIN_LEFT.x, BASIN_RIGHT.x, t),
-        z: THREE.MathUtils.lerp(BASIN_LEFT.z, BASIN_RIGHT.z, t) + 0.35 * Math.sin(t * Math.PI),
+        x: THREE.MathUtils.lerp(from.x, to.x, t),
+        z: THREE.MathUtils.lerp(from.z, to.z, t) + 0.35 * Math.sin(t * Math.PI),
       });
     }
     const g = new THREE.Vector2();
@@ -139,8 +154,9 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     return images.map((p) => new THREE.Vector3(p.x, fesHeight(p.x, p.z) + 0.035, p.z));
   }
 
+  /* ---- Iso-contour lines ---- */
   function createIsoContours(): THREE.LineSegments {
-    const levels = [-0.8, -0.65, -0.5, -0.35, -0.2, -0.05, 0.1, 0.25];
+    const levels = [-0.85, -0.70, -0.55, -0.40, -0.25, -0.10, 0.05, 0.20];
     const step = GRID_SIZE / CONTOUR_RES;
     const half = GRID_SIZE / 2;
     const heights = new Float32Array((CONTOUR_RES + 1) * (CONTOUR_RES + 1));
@@ -160,7 +176,6 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
         const x1 = x0 + step;
         for (let j = 0; j < CONTOUR_RES; j++) {
           const z0 = -half + j * step;
-          const z1 = z0 + step;
           const h00 = getH(i, j);
           const h10 = getH(i + 1, j);
           const h01 = getH(i, j + 1);
@@ -171,7 +186,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
           }
           if ((h00 <= lvl && h01 > lvl) || (h00 > lvl && h01 <= lvl)) {
             const t = (lvl - h00) / (h01 - h00 || 1e-5);
-            const cz = THREE.MathUtils.lerp(z0, z1, t);
+            const cz = THREE.MathUtils.lerp(-half + j * step, -half + (j + 1) * step, t);
             linePoints.push(x0, lvl + 0.006, cz, x0 + step * 0.4, lvl + 0.006, cz);
           }
         }
@@ -186,6 +201,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     return segments;
   }
 
+  /* ---- Scene setup ---- */
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -216,6 +232,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
   }
   scene.add(dirLight);
 
+  /* ---- Surface mesh ---- */
   const surfaceGeo = new THREE.PlaneGeometry(GRID_SIZE, GRID_SIZE, GRID_SEGS, GRID_SEGS);
   surfaceGeo.rotateX(-Math.PI / 2);
   const posAttr = surfaceGeo.attributes.position as THREE.BufferAttribute;
@@ -243,32 +260,81 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
   scene.add(surfaceMesh);
   scene.add(createIsoContours());
 
-  const pathPoints = computeTransitionPath();
-  const curve = new THREE.CatmullRomCurve3(pathPoints, false, 'centripetal', 0.5);
-  const tube = new THREE.Mesh(
-    new THREE.TubeGeometry(curve, 160, 0.02, 10, false),
+  /* ---- Transition paths (4 channels) ---- */
+  const pathAD = computeTransitionPath(BASIN_A, BASIN_D);
+  const pathAB = computeTransitionPath(BASIN_A, BASIN_B);
+  const pathBD = computeTransitionPath(BASIN_B, BASIN_D);
+  const pathAC = computeTransitionPath(BASIN_A, BASIN_C);
+
+  const curveAD = new THREE.CatmullRomCurve3(pathAD, false, 'centripetal', 0.5);
+  const curveAB = new THREE.CatmullRomCurve3(pathAB, false, 'centripetal', 0.5);
+  const curveBD = new THREE.CatmullRomCurve3(pathBD, false, 'centripetal', 0.5);
+  const curveAC = new THREE.CatmullRomCurve3(pathAC, false, 'centripetal', 0.5);
+
+  // Path A→D: bold primary pathway (red-brown)
+  const tubeAD = new THREE.Mesh(
+    new THREE.TubeGeometry(curveAD, 160, 0.022, 10, false),
     new THREE.MeshStandardMaterial({
-      color: 0x9e3820,
-      emissive: 0x5a180a,
-      emissiveIntensity: 0.35,
-      roughness: 0.6,
-      metalness: 0.25,
-      transparent: true,
-      opacity: 0.75,
-      depthWrite: false,
+      color: 0x9e3820, emissive: 0x5a180a, emissiveIntensity: 0.35,
+      roughness: 0.6, metalness: 0.25, transparent: true, opacity: 0.80, depthWrite: false,
     })
   );
-  tube.renderOrder = 3;
-  scene.add(tube);
+  tubeAD.renderOrder = 3;
+  tubeAD.visible = false;
 
-  const marker = new THREE.Mesh(
+  // Path A→B: medium secondary channel (teal)
+  const tubeAB = new THREE.Mesh(
+    new THREE.TubeGeometry(curveAB, 120, 0.016, 8, false),
+    new THREE.MeshStandardMaterial({
+      color: 0x3d7a7a, emissive: 0x0c302d, emissiveIntensity: 0.30,
+      roughness: 0.65, metalness: 0.20, transparent: true, opacity: 0.55, depthWrite: false,
+    })
+  );
+  tubeAB.renderOrder = 3;
+  tubeAB.visible = false;
+
+  // Path B→D: medium secondary channel (teal)
+  const tubeBD = new THREE.Mesh(
+    new THREE.TubeGeometry(curveBD, 120, 0.016, 8, false),
+    new THREE.MeshStandardMaterial({
+      color: 0x3d7a7a, emissive: 0x0c302d, emissiveIntensity: 0.30,
+      roughness: 0.65, metalness: 0.20, transparent: true, opacity: 0.55, depthWrite: false,
+    })
+  );
+  tubeBD.renderOrder = 3;
+  tubeBD.visible = false;
+
+  // Path A→C: faint trap channel (muted warm)
+  const tubeAC = new THREE.Mesh(
+    new THREE.TubeGeometry(curveAC, 100, 0.012, 6, false),
+    new THREE.MeshStandardMaterial({
+      color: 0x7a6a5a, emissive: 0x2a1a10, emissiveIntensity: 0.20,
+      roughness: 0.75, metalness: 0.10, transparent: true, opacity: 0.30, depthWrite: false,
+    })
+  );
+  tubeAC.renderOrder = 3;
+  tubeAC.visible = false;
+
+  /* ---- Animated markers ---- */
+  // Primary marker on A→D (large, red-brown)
+  const markerPrimary = new THREE.Mesh(
     new THREE.SphereGeometry(0.045, 24, 24),
     new THREE.MeshStandardMaterial({ color: 0x9e3820, emissive: 0x5a180a, emissiveIntensity: 0.45, roughness: 0.7, metalness: 0.3 })
   );
-  marker.renderOrder = 10;
-  if (!isLowPower) marker.castShadow = true;
-  scene.add(marker);
+  markerPrimary.renderOrder = 10;
+  if (!isLowPower) markerPrimary.castShadow = true;
+  scene.add(markerPrimary);
 
+  // Secondary marker on A→B (smaller, teal)
+  const markerSecondary = new THREE.Mesh(
+    new THREE.SphereGeometry(0.035, 20, 20),
+    new THREE.MeshStandardMaterial({ color: 0x3d7a7a, emissive: 0x0c302d, emissiveIntensity: 0.40, roughness: 0.7, metalness: 0.3 })
+  );
+  markerSecondary.renderOrder = 10;
+  if (!isLowPower) markerSecondary.castShadow = true;
+  scene.add(markerSecondary);
+
+  /* ---- Walker system ---- */
   type Walker = {
     mesh: THREE.Mesh;
     pos: THREE.Vector2;
@@ -283,98 +349,102 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     basinMaterial?: THREE.Material;
     crossingMaterial?: THREE.Material;
     crossing?: boolean;
+    pathCurve?: THREE.CatmullRomCurve3;
   };
 
   const walkers: Walker[] = [];
   const smallSphere = new THREE.SphereGeometry(0.034, 18, 18);
-  const matLeft = new THREE.MeshStandardMaterial({ color: 0x3c7a76, emissive: 0x0c302d, emissiveIntensity: 0.25, roughness: 0.85 });
-  const matRight = new THREE.MeshStandardMaterial({ color: 0x1e3552, emissive: 0x081220, emissiveIntensity: 0.25, roughness: 0.85 });
-  const matCrossingLeft = new THREE.MeshStandardMaterial({ color: 0xe0a348, emissive: 0x5a3510, emissiveIntensity: 0.16, roughness: 0.72 });
-  const matCrossingRight = new THREE.MeshStandardMaterial({ color: 0xc66f58, emissive: 0x4a1c19, emissiveIntensity: 0.16, roughness: 0.72 });
 
-  const swarmCount = isLowPower ? 6 : 10;
-  for (const [home, mat] of [
-    [BASIN_LEFT, matLeft],
-    [BASIN_RIGHT, matRight],
-  ] as const) {
+  // Materials: one confined-color per basin, crossing highlight colors
+  const matA = new THREE.MeshStandardMaterial({ color: 0x3c7a76, emissive: 0x0c302d, emissiveIntensity: 0.25, roughness: 0.85 });
+  const matB = new THREE.MeshStandardMaterial({ color: 0x4a6280, emissive: 0x0e1a2e, emissiveIntensity: 0.25, roughness: 0.85 });
+  const matC = new THREE.MeshStandardMaterial({ color: 0x6e5075, emissive: 0x1e1020, emissiveIntensity: 0.25, roughness: 0.85 });
+  const matD = new THREE.MeshStandardMaterial({ color: 0x1e3552, emissive: 0x081220, emissiveIntensity: 0.25, roughness: 0.85 });
+  const matCrossAD = new THREE.MeshStandardMaterial({ color: 0xe0a348, emissive: 0x5a3510, emissiveIntensity: 0.16, roughness: 0.72 });
+  const matCrossAB = new THREE.MeshStandardMaterial({ color: 0xc66f58, emissive: 0x4a1c19, emissiveIntensity: 0.16, roughness: 0.72 });
+
+  const basinMaterials = [matA, matB, matC, matD];
+
+  // Basin-confined walkers: jiggle inside each basin via Langevin dynamics
+  const swarmCount = isLowPower ? 3 : 5;
+  for (let bi = 0; bi < BASINS.length; bi++) {
+    const basin = BASINS[bi];
+    const mat = basinMaterials[bi];
     for (let i = 0; i < swarmCount; i++) {
       const mesh = new THREE.Mesh(smallSphere, mat);
-      if (!isLowPower) {
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-      }
-      const hx = home.x + (Math.random() - 0.5) * 0.55;
-      const hz = home.z + (Math.random() - 0.5) * 0.55;
+      if (!isLowPower) { mesh.castShadow = true; mesh.receiveShadow = true; }
+      const hx = basin.x + (Math.random() - 0.5) * 0.50;
+      const hz = basin.z + (Math.random() - 0.5) * 0.50;
       mesh.position.set(hx, fesHeight(hx, hz) + WALKER_LIFT, hz);
       scene.add(mesh);
-      walkers.push({ mesh, pos: new THREE.Vector2(hx, hz), home, confinementRadius: 0.55 });
+      walkers.push({ mesh, pos: new THREE.Vector2(hx, hz), home: basin, confinementRadius: 0.50 });
     }
   }
 
-  const crossingCount = isLowPower ? 2 : 5;
-  for (let i = 0; i < crossingCount; i++) {
-    const fromLeft = i % 2 === 0;
-    const home = fromLeft ? BASIN_LEFT : BASIN_RIGHT;
-    const destination = fromLeft ? BASIN_RIGHT : BASIN_LEFT;
-    const basinMaterial = fromLeft ? matLeft : matRight;
-    const crossingMaterial = fromLeft ? matCrossingLeft : matCrossingRight;
-    const mesh = new THREE.Mesh(smallSphere, basinMaterial);
-    if (!isLowPower) {
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-    }
+  // Crossing walkers on A→D path
+  const crossADCount = isLowPower ? 1 : 3;
+  for (let i = 0; i < crossADCount; i++) {
+    const fromA = i % 2 === 0;
+    const home = fromA ? BASIN_A : BASIN_D;
+    const dest = fromA ? BASIN_D : BASIN_A;
+    const mesh = new THREE.Mesh(smallSphere, fromA ? matA : matD);
+    if (!isLowPower) { mesh.castShadow = true; mesh.receiveShadow = true; }
     const hx = home.x + (Math.random() - 0.5) * 0.4;
     const hz = home.z + (Math.random() - 0.5) * 0.4;
     mesh.position.set(hx, fesHeight(hx, hz) + WALKER_LIFT, hz);
     scene.add(mesh);
     walkers.push({
-      mesh,
-      pos: new THREE.Vector2(hx, hz),
-      home,
-      destination,
-      direction: fromLeft ? 1 : -1,
-      state: 'basin',
-      progress: fromLeft ? 0 : 1,
-      cooldown: Math.random() * 2.2,
-      phase: Math.random() * Math.PI * 2,
-      basinMaterial,
-      crossingMaterial,
-      crossing: true,
+      mesh, pos: new THREE.Vector2(hx, hz), home, destination: dest,
+      direction: fromA ? 1 : -1, state: 'basin', progress: fromA ? 0 : 1,
+      cooldown: Math.random() * 2.5, phase: Math.random() * Math.PI * 2,
+      basinMaterial: fromA ? matA : matD, crossingMaterial: matCrossAD,
+      crossing: true, pathCurve: curveAD,
     });
   }
 
-  // Near-top-down bird's-eye viewpoint: camera high above the surface with
-  // a small horizontal offset so both basins read as circular depressions
-  // and the transition-path diagonal runs upper-left → lower-right.
-  // const CAM_RADIUS = 1.8;
-  // const CAM_HEIGHT = 8.5;
-  // const FIXED_ANGLE = -0.78;
-  // const FIXED_ANGLE = -0.78;
+  // Crossing walkers on A→B path
+  const crossABCount = isLowPower ? 1 : 2;
+  for (let i = 0; i < crossABCount; i++) {
+    const fromA = i % 2 === 0;
+    const home = fromA ? BASIN_A : BASIN_B;
+    const dest = fromA ? BASIN_B : BASIN_A;
+    const mesh = new THREE.Mesh(smallSphere, fromA ? matA : matB);
+    if (!isLowPower) { mesh.castShadow = true; mesh.receiveShadow = true; }
+    const hx = home.x + (Math.random() - 0.5) * 0.4;
+    const hz = home.z + (Math.random() - 0.5) * 0.4;
+    mesh.position.set(hx, fesHeight(hx, hz) + WALKER_LIFT, hz);
+    scene.add(mesh);
+    walkers.push({
+      mesh, pos: new THREE.Vector2(hx, hz), home, destination: dest,
+      direction: fromA ? 1 : -1, state: 'basin', progress: fromA ? 0 : 1,
+      cooldown: Math.random() * 3.0, phase: Math.random() * Math.PI * 2,
+      basinMaterial: fromA ? matA : matB, crossingMaterial: matCrossAB,
+      crossing: true, pathCurve: curveAB,
+    });
+  }
 
+  /* ---- Camera ---- */
+  // User-tuned viewpoint (preserved from earlier session)
   const CAM_RADIUS = 5.0;
   const CAM_HEIGHT = 5.3;
   const FIXED_ANGLE = -0.78;
-
-  
   const lookTarget = new THREE.Vector3(0.0, -0.15, 0.0);
   const desiredCamPos = new THREE.Vector3();
   camera.position.set(Math.sin(FIXED_ANGLE) * CAM_RADIUS, CAM_HEIGHT, Math.cos(FIXED_ANGLE) * CAM_RADIUS);
   camera.lookAt(lookTarget);
 
   const mouseTarget = new THREE.Vector2(0, 0);
-
   function onPointerMove(e: PointerEvent) {
     const rect = container.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
     mouseTarget.set(x * 0.12, y * 0.25);
   }
-  function onPointerLeave() {
-    mouseTarget.set(0, 0);
-  }
+  function onPointerLeave() { mouseTarget.set(0, 0); }
   container.addEventListener('pointermove', onPointerMove);
   container.addEventListener('pointerleave', onPointerLeave);
 
+  /* ---- Animation loop ---- */
   let active = true;
   let rafId = 0;
   let lastTime = performance.now();
@@ -388,25 +458,42 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     const t = now * 0.001;
 
     if (active && !prefersReducedMotion) {
+      // Camera parallax
       const angle = FIXED_ANGLE + mouseTarget.x;
       desiredCamPos.set(Math.sin(angle) * CAM_RADIUS, CAM_HEIGHT + mouseTarget.y, Math.cos(angle) * CAM_RADIUS);
       camera.position.lerp(desiredCamPos, 0.05);
       camera.lookAt(lookTarget);
 
-      const period = 2 + 2.2 * 2;
-      const mainPhase = (t * 0.14) % period;
-      let mainT: number;
-      if (mainPhase < 1) mainT = mainPhase;
-      else if (mainPhase < 1 + 2.2) mainT = 1;
-      else if (mainPhase < 2 + 2.2) mainT = 1 - (mainPhase - 1 - 2.2);
-      else mainT = 0;
-      const mainPos = curve.getPointAt(THREE.MathUtils.clamp(mainT, 0, 0.9999));
-      marker.position.copy(mainPos);
-      marker.position.y += WALKER_LIFT + 0.012;
-      marker.scale.setScalar(1 + Math.sin(t * 2.5 - 0.5) * 0.1);
+      // Primary marker on A→D path (traverse with pause at endpoints)
+      const periodAD = 2 + 2.2 * 2;
+      const phaseAD = (t * 0.14) % periodAD;
+      let tAD: number;
+      if (phaseAD < 1) tAD = phaseAD;
+      else if (phaseAD < 1 + 2.2) tAD = 1;
+      else if (phaseAD < 2 + 2.2) tAD = 1 - (phaseAD - 1 - 2.2);
+      else tAD = 0;
+      const posAD = curveAD.getPointAt(THREE.MathUtils.clamp(tAD, 0, 0.9999));
+      markerPrimary.position.copy(posAD);
+      markerPrimary.position.y += WALKER_LIFT + 0.012;
+      markerPrimary.scale.setScalar(1 + Math.sin(t * 2.5 - 0.5) * 0.1);
 
+      // Secondary marker on A→B path (slightly slower, phase-offset)
+      const periodAB = 2 + 2.0 * 2;
+      const phaseAB = (t * 0.11 + 1.5) % periodAB;
+      let tAB: number;
+      if (phaseAB < 1) tAB = phaseAB;
+      else if (phaseAB < 1 + 2.0) tAB = 1;
+      else if (phaseAB < 2 + 2.0) tAB = 1 - (phaseAB - 1 - 2.0);
+      else tAB = 0;
+      const posAB = curveAB.getPointAt(THREE.MathUtils.clamp(tAB, 0, 0.9999));
+      markerSecondary.position.copy(posAB);
+      markerSecondary.position.y += WALKER_LIFT + 0.012;
+      markerSecondary.scale.setScalar(0.85 + Math.sin(t * 2.0 + 1.0) * 0.08);
+
+      // Walker dynamics
       for (const w of walkers) {
-        if (w.crossing) {
+        if (w.crossing && w.pathCurve) {
+          // Crossing walker: alternate between basin jiggle and path-following
           w.cooldown = (w.cooldown ?? 0) - dt;
           if (w.state === 'basin') {
             w.mesh.material = (w.cooldown ?? 0) < 0 ? w.crossingMaterial! : w.basinMaterial!;
@@ -415,7 +502,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
             w.pos.x += -MOBILITY * grad.x * dt + noiseScale * gaussRandom();
             w.pos.y += -MOBILITY * grad.y * dt + noiseScale * gaussRandom();
             const dist = Math.hypot(w.pos.x - w.home.x, w.pos.y - w.home.z);
-            if (dist > 0.55) {
+            if (dist > 0.50) {
               w.pos.x = THREE.MathUtils.lerp(w.pos.x, w.home.x, 0.08);
               w.pos.y = THREE.MathUtils.lerp(w.pos.y, w.home.z, 0.08);
             }
@@ -427,7 +514,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
             w.mesh.material = w.crossingMaterial!;
             const speed = 0.12 + Math.sin(t * 0.7 + (w.phase ?? 0)) * 0.018;
             w.progress = (w.progress ?? 0) + (w.direction ?? 1) * speed * dt;
-            const p = curve.getPointAt(THREE.MathUtils.clamp(w.progress ?? 0, 0, 1));
+            const p = w.pathCurve.getPointAt(THREE.MathUtils.clamp(w.progress ?? 0, 0, 1));
             const drift = Math.sin(t * 1.8 + (w.phase ?? 0)) * 0.04;
             w.pos.x = p.x + drift;
             w.pos.y = p.z + drift * 0.7;
@@ -438,7 +525,7 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
               w.destination = { ...prevHome };
               w.direction = (w.direction ?? 1) * -1;
               w.state = 'basin';
-              w.cooldown = 2 + Math.random() * 2.2;
+              w.cooldown = 2 + Math.random() * 2.5;
               w.pos.set(w.home.x, w.home.z);
             }
           }
@@ -447,13 +534,14 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
           continue;
         }
 
+        // Basin-confined walker: overdamped Langevin with confinement
         fesGradient(w.pos.x, w.pos.y, grad);
         const noiseScale = Math.sqrt(2 * DIFFUSION * dt);
         w.pos.x += -MOBILITY * grad.x * dt + noiseScale * gaussRandom();
         w.pos.y += -MOBILITY * grad.y * dt + noiseScale * gaussRandom();
         const dh = Math.hypot(w.pos.x - w.home.x, w.pos.y - w.home.z);
-        if (dh > (w.confinementRadius ?? 0.55)) {
-          const pull = Math.min((dh - (w.confinementRadius ?? 0.55)) * 0.7, 0.1);
+        if (dh > (w.confinementRadius ?? 0.50)) {
+          const pull = Math.min((dh - (w.confinementRadius ?? 0.50)) * 0.7, 0.1);
           w.pos.x = THREE.MathUtils.lerp(w.pos.x, w.home.x, pull);
           w.pos.y = THREE.MathUtils.lerp(w.pos.y, w.home.z, pull);
         }
