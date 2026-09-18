@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { featuredProjects } from '../data/projects';
 
 interface Props {
@@ -49,12 +50,12 @@ const projects = limit ? featuredProjects.slice(0, limit) : featuredProjects;
               <div class="project-links">
                 {project.doi && (
                   <a href={`https://doi.org/${project.doi}`} target="_blank" rel="noopener noreferrer" class="btn">
-                    Publication · DOI
+                    <Icon name="external" size={14} /> Publication · DOI
                   </a>
                 )}
                 {project.code && (
                   <a href={project.code} target="_blank" rel="noopener noreferrer" class="btn">
-                    Code repository
+                    <Icon name="github" size={14} /> Code repository
                   </a>
                 )}
               </div>

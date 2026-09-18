@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { researchThemes } from '../data/expertise';
 import { profile } from '../data/profile';
 
@@ -6,6 +7,8 @@ interface Props {
   compact?: boolean;
 }
 const { compact = false } = Astro.props;
+
+const themeIcons = ['flask', 'route', 'cpu', 'layers'] as const;
 ---
 
 <section class="research-themes" id="research">
@@ -18,7 +21,10 @@ const { compact = false } = Astro.props;
       {
         researchThemes.map((theme, i) => (
           <article class="theme-card reveal" style={`transition-delay:${i * 70}ms`}>
-            <span class="theme-index">0{i + 1}</span>
+            <div class="theme-head">
+              <Icon name={themeIcons[i % themeIcons.length]} size={18} />
+              <span class="theme-index">0{i + 1}</span>
+            </div>
             <h3>{theme.title}</h3>
             <p>{theme.description}</p>
           </article>
@@ -55,12 +61,18 @@ const { compact = false } = Astro.props;
     padding: 1.75rem;
   }
 
+  .theme-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    color: var(--color-accent);
+  }
+
   .theme-index {
-    display: block;
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--color-text-tertiary);
-    margin-bottom: 0.75rem;
   }
 
   .theme-card h3 {

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import { profile } from '../data/profile';
 import { educationFull } from '../data/education';
 import { publications } from '../data/publications';
@@ -43,8 +44,8 @@ const typeLabel: Record<string, string> = {
           <p class="cv-header-sub reveal">{profile.title}</p>
         </div>
         <div class="cv-header-actions reveal">
-          <a href={profile.links.cv} class="btn btn-primary" download>Download PDF</a>
-          <button type="button" class="btn" id="print-cv">Print this page</button>
+          <a href={profile.links.cv} class="btn btn-primary" download><Icon name="download" size={15} /> Download PDF</a>
+          <button type="button" class="btn" id="print-cv"><Icon name="printer" size={15} /> Print this page</button>
         </div>
       </div>
     </header>
@@ -59,7 +60,7 @@ const typeLabel: Record<string, string> = {
       </header>
 
       <section class="cv-section reveal">
-        <h2>Research Profile</h2>
+        <h2><Icon name="flask" size={17} /> Research Profile</h2>
         {profile.longBio.map((paragraph) => (
           <p>{paragraph}</p>
         ))}
@@ -67,7 +68,7 @@ const typeLabel: Record<string, string> = {
       </section>
 
       <section class="cv-section reveal">
-        <h2>Education</h2>
+        <h2><Icon name="layers" size={17} /> Education</h2>
         <ul class="cv-list">
           {
             educationFull.map((entry) => (
@@ -87,7 +88,7 @@ const typeLabel: Record<string, string> = {
       </section>
 
       <section class="cv-section reveal">
-        <h2>Selected Publications</h2>
+        <h2><Icon name="file" size={17} /> Selected Publications</h2>
         <ol class="cv-pub-list">
           {
             publications.map((pub) => (
@@ -107,7 +108,7 @@ const typeLabel: Record<string, string> = {
       </section>
 
       <section class="cv-section reveal">
-        <h2>Scientific Software</h2>
+        <h2><Icon name="code" size={17} /> Scientific Software</h2>
         <ul class="cv-list">
           {
             software.map((item) => (
@@ -124,7 +125,7 @@ const typeLabel: Record<string, string> = {
       </section>
 
       <section class="cv-section reveal">
-        <h2>Conference Presentations &amp; Invited Talks</h2>
+        <h2><Icon name="mic" size={17} /> Conference Presentations &amp; Invited Talks</h2>
         <ul class="cv-list">
           {
             talks.map((talk) => (
@@ -140,7 +141,7 @@ const typeLabel: Record<string, string> = {
       </section>
 
       <section class="cv-section reveal">
-        <h2>Awards &amp; Recognition</h2>
+        <h2><Icon name="award" size={17} /> Awards &amp; Recognition</h2>
         <ul class="cv-list">
           {
             academicAwards.map((award) => (
@@ -156,7 +157,7 @@ const typeLabel: Record<string, string> = {
       </section>
 
       <section class="cv-section reveal">
-        <h2>Technical &amp; Computational Expertise</h2>
+        <h2><Icon name="cpu" size={17} /> Technical &amp; Computational Expertise</h2>
         <ul class="cv-expertise">
           {
             expertise.map((group) => (
@@ -221,8 +222,15 @@ const typeLabel: Record<string, string> = {
   }
 
   .cv-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 1.15rem;
     margin-bottom: 1rem;
+  }
+
+  .cv-section h2 :global(.icon-glyph) {
+    color: var(--color-accent);
   }
 
   .cv-section p {

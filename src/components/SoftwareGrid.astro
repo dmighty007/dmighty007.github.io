@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { software } from '../data/software';
 
 interface Props {
@@ -28,12 +29,12 @@ const { compact = false, showHeading = true } = Astro.props;
         software.map((item, i) => (
           <article class="software-card reveal" style={`transition-delay:${i * 60}ms`}>
             <div class="software-card-head">
-              <h3>{item.name}</h3>
+              <h3><Icon name="code" size={15} /> {item.name}</h3>
               <span class="software-lang">{item.language}</span>
             </div>
             <p>{item.description}</p>
             <a href={item.repo} target="_blank" rel="noopener noreferrer" class="btn software-link">
-              View repository ↗
+              <Icon name="github" size={14} /> View repository
             </a>
           </article>
         ))
@@ -82,7 +83,14 @@ const { compact = false, showHeading = true } = Astro.props;
   }
 
   .software-card-head h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     font-size: 1.1rem;
+  }
+
+  .software-card-head h3 :global(.icon-glyph) {
+    color: var(--color-accent);
   }
 
   .software-lang {

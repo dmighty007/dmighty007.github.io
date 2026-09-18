@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { profile } from '../data/profile';
 const year = new Date().getFullYear();
 ---
@@ -15,10 +16,10 @@ const year = new Date().getFullYear();
         <p class="footer-tagline">{profile.tagline}</p>
       </div>
       <nav aria-label="Footer" class="footer-links">
-        <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer">Google Scholar</a>
-        <a href={profile.links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href={`mailto:${profile.email}`}>Email</a>
-        <a href={profile.links.cv}>CV</a>
+        <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer"><Icon name="scholar" size={14} /> Google Scholar</a>
+        <a href={profile.links.github} target="_blank" rel="noopener noreferrer"><Icon name="github" size={14} /> GitHub</a>
+        <a href={`mailto:${profile.email}`}><Icon name="mail" size={14} /> Email</a>
+        <a href={profile.links.cv}><Icon name="download" size={14} /> CV</a>
       </nav>
     </div>
     <p class="footer-copy">&copy; {year} {profile.name}</p>
@@ -76,6 +77,9 @@ const year = new Date().getFullYear();
   }
 
   .footer-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;

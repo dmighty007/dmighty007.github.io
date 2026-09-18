@@ -1,5 +1,8 @@
 ---
+import Icon from './Icon.astro';
 import { expertise } from '../data/expertise';
+
+const groupIcons = ['flask', 'cpu', 'code', 'layers'] as const;
 ---
 
 <section class="expertise" id="expertise">
@@ -11,7 +14,9 @@ import { expertise } from '../data/expertise';
       {
         expertise.map((group, i) => (
           <div class="expertise-group reveal" style={`transition-delay:${i * 60}ms`}>
-            <h3>{group.title}</h3>
+            <h3>
+              <Icon name={groupIcons[i % groupIcons.length]} size={16} /> {group.title}
+            </h3>
             <p>{group.items.join(' · ')}</p>
           </div>
         ))
@@ -33,6 +38,9 @@ import { expertise } from '../data/expertise';
   }
 
   .expertise-group h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
     font-size: 0.95rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;

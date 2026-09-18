@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { publications, publicationYears } from '../data/publications';
 
 interface Props {
@@ -69,11 +70,11 @@ function citationLine(pub: (typeof publications)[number]): string {
             </p>
             <div class="pub-actions">
               <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" class="pub-action">
-                DOI ↗
+                <Icon name="external" size={13} /> DOI
               </a>
               {pub.code && (
                 <a href={pub.code} target="_blank" rel="noopener noreferrer" class="pub-action">
-                  Code ↗
+                  <Icon name="github" size={13} /> Code
                 </a>
               )}
               <button
@@ -88,7 +89,7 @@ function citationLine(pub: (typeof publications)[number]): string {
                 data-pages={pub.pages ?? pub.articleNumber ?? ''}
                 data-doi={pub.doi}
               >
-                Copy BibTeX
+                <Icon name="clipboard" size={13} /> <span class="pub-bibtex-label">Copy BibTeX</span>
               </button>
             </div>
           </div>
@@ -232,6 +233,9 @@ function citationLine(pub: (typeof publications)[number]): string {
   }
 
   .pub-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
     font-size: 0.8125rem;
     font-weight: 500;
     color: var(--color-accent);
@@ -332,14 +336,15 @@ function citationLine(pub: (typeof publications)[number]): string {
   }
 
   document.querySelectorAll<HTMLButtonElement>('.pub-bibtex').forEach((btn) => {
+    const label = btn.querySelector<HTMLElement>('.pub-bibtex-label');
     btn.addEventListener('click', async () => {
       const bibtex = buildBibtex(btn);
       try {
         await navigator.clipboard.writeText(bibtex);
-        const original = btn.textContent;
-        btn.textContent = 'Copied ✓';
+        const original = label?.textContent ?? 'Copy BibTeX';
+        if (label) label.textContent = 'Copied ✓';
         setTimeout(() => {
-          btn.textContent = original;
+          if (label) label.textContent = original;
         }, 1600);
       } catch {
         window.prompt('Copy BibTeX:', bibtex);

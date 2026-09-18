@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { profile } from '../data/profile';
 ---
 
@@ -15,10 +16,14 @@ import { profile } from '../data/profile';
     <p class="section-lede reveal">{profile.availability}</p>
 
     <div class="contact-actions reveal">
-      <a href={`mailto:${profile.email}`} class="btn btn-primary">{profile.email}</a>
-      <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer" class="btn">Google Scholar</a>
-      <a href={profile.links.github} target="_blank" rel="noopener noreferrer" class="btn">GitHub</a>
-      <a href={profile.links.cv} class="btn">Download CV</a>
+      <a href={`mailto:${profile.email}`} class="btn btn-primary"><Icon name="mail" size={15} /> {profile.email}</a>
+      <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer" class="btn">
+        <Icon name="scholar" size={15} /> Google Scholar
+      </a>
+      <a href={profile.links.github} target="_blank" rel="noopener noreferrer" class="btn">
+        <Icon name="github" size={15} /> GitHub
+      </a>
+      <a href={profile.links.cv} class="btn"><Icon name="download" size={15} /> Download CV</a>
     </div>
   </div>
 </section>

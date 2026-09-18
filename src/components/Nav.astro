@@ -1,14 +1,14 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+import Icon from './Icon.astro';
 
 const navItems = [
-  { href: '/', label: 'Dibyendu Maity', home: true },
-  { href: '/research', label: 'Research' },
-  { href: '/publications', label: 'Publications' },
-  { href: '/software', label: 'Software' },
-  { href: '/about', label: 'About' },
-  { href: '/cv', label: 'CV' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '/research', label: 'Research', icon: 'flask' as const },
+  { href: '/publications', label: 'Publications', icon: 'file' as const },
+  { href: '/software', label: 'Software', icon: 'code' as const },
+  { href: '/about', label: 'About', icon: 'user' as const },
+  { href: '/cv', label: 'CV', icon: 'clipboard' as const },
+  { href: '/#contact', label: 'Contact', icon: 'mail' as const },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -16,36 +16,31 @@ const currentPath = Astro.url.pathname;
 
 <header class="site-nav" id="site-nav">
   <div class="container nav-inner">
-    <a href="/" class="brand">
-      Dibyendu <span>Maity</span>
+    <a href="/" class="home-link" aria-label="Home" aria-current={currentPath === '/' ? 'page' : undefined}>
+      <Icon name="home" size={18} />
     </a>
-    <div class="nav-controls">
-      <ThemeToggle />
-      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">
-        <span class="visually-hidden">Toggle navigation menu</span>
-        <span class="nav-toggle-bars" aria-hidden="true"></span>
-      </button>
-    </div>
-    <nav aria-label="Primary" id="nav-links" class="nav-links">
+    <div class="nav-right">
+      <nav aria-label="Primary" id="nav-links" class="nav-links">
       {
-        navItems
-          .filter((item) => !item.home)
-          .map((item) => {
-            const isActive = !item.external && !item.href.includes('#') && currentPath === item.href;
-            return (
-              <a
-                href={item.href}
-                class:list={['nav-link', { 'is-active': isActive }]}
-                aria-current={isActive ? 'page' : undefined}
-                target={item.external ? '_blank' : undefined}
-                rel={item.external ? 'noopener noreferrer' : undefined}
-              >
-                {item.label}
-              </a>
-            );
-          })
+        navItems.map((item) => {
+          const isActive = !item.href.includes('#') && currentPath === item.href;
+          return (
+            <a href={item.href} class:list={['nav-link', { 'is-active': isActive }]} aria-current={isActive ? 'page' : undefined}>
+              <Icon name={item.icon} size={15} />
+              {item.label}
+            </a>
+          );
+        })
       }
-    </nav>
+      </nav>
+      <div class="nav-controls">
+        <ThemeToggle />
+        <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">
+          <span class="visually-hidden">Toggle navigation menu</span>
+          <span class="nav-toggle-bars" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -72,41 +67,63 @@ const currentPath = Astro.url.pathname;
     padding-block: 0.9rem;
   }
 
-  .brand {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.05rem;
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 6px;
+    color: var(--color-text-secondary);
     text-decoration: none;
-    color: var(--color-text);
-    letter-spacing: -0.01em;
+    transition: color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
   }
 
-  .brand span {
+  .home-link:hover,
+  .home-link[aria-current='page'] {
     color: var(--color-accent);
+    background: var(--color-bg-raised);
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
   }
 
   .nav-links {
     display: flex;
     align-items: center;
     gap: clamp(1rem, 2vw, 1.75rem);
-    order: 2;
   }
 
   .nav-controls {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    order: 3;
   }
 
   .nav-link {
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     text-decoration: none;
     font-size: 0.9375rem;
     font-weight: 500;
     color: var(--color-text-secondary);
     padding-block: 0.35rem;
     transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .nav-link :global(.icon-glyph) {
+    opacity: 0.75;
+    transition: opacity var(--duration-fast) var(--ease-standard);
+  }
+
+  .nav-link:hover :global(.icon-glyph),
+  .nav-link.is-active :global(.icon-glyph) {
+    opacity: 1;
   }
 
   .nav-link::after {

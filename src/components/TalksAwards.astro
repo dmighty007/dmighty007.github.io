@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { talks } from '../data/talks';
 import { awards } from '../data/awards';
 
@@ -6,6 +7,12 @@ const typeLabel: Record<string, string> = {
   invited: 'Invited talk',
   lightning: 'Lightning talk',
   poster: 'Poster',
+};
+
+const typeIcon: Record<string, 'mic' | 'zap' | 'image'> = {
+  invited: 'mic',
+  lightning: 'zap',
+  poster: 'image',
 };
 
 const academicAwards = awards.filter((a) => a.category === 'academic');
@@ -20,7 +27,9 @@ const academicAwards = awards.filter((a) => a.category === 'academic');
         {
           talks.map((talk, i) => (
             <li class="talk-item reveal" style={`transition-delay:${Math.min(i, 6) * 40}ms`}>
-              <span class="talk-type" data-type={talk.type}>{typeLabel[talk.type]}</span>
+              <span class="talk-type" data-type={talk.type}>
+                <Icon name={typeIcon[talk.type]} size={13} /> {typeLabel[talk.type]}
+              </span>
               <div class="talk-body">
                 {talk.title && <p class="talk-title">{talk.title}</p>}
                 <p class="talk-event">{talk.event}</p>
@@ -40,7 +49,7 @@ const academicAwards = awards.filter((a) => a.category === 'academic');
         {
           academicAwards.map((award, i) => (
             <li class="award-item reveal" style={`transition-delay:${i * 50}ms`}>
-              <h3>{award.title}</h3>
+              <h3><Icon name="award" size={14} /> {award.title}</h3>
               <p class="award-issuer">{award.issuer} · {award.year}</p>
               {award.detail && <p class="award-detail">{award.detail}</p>}
             </li>
@@ -81,6 +90,9 @@ const academicAwards = awards.filter((a) => a.category === 'academic');
   }
 
   .talk-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.03em;
@@ -127,7 +139,14 @@ const academicAwards = awards.filter((a) => a.category === 'academic');
   }
 
   .award-item h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     font-size: 0.95rem;
+  }
+
+  .award-item h3 :global(.icon-glyph) {
+    color: var(--color-accent);
   }
 
   .award-issuer {

@@ -1,5 +1,6 @@
 ---
 import HeroCarousel from './HeroCarousel.astro';
+import Icon from './Icon.astro';
 import { profile } from '../data/profile';
 ---
 
@@ -15,14 +16,18 @@ import { profile } from '../data/profile';
         <li>{profile.availability}</li>
       </ul>
       <div class="hero-actions">
-        <a href="/research" class="btn btn-primary">Explore Research</a>
-        <a href="/publications" class="btn">View Publications</a>
+        <a href="/research" class="btn btn-primary"><Icon name="flask" size={16} /> Explore Research</a>
+        <a href="/publications" class="btn"><Icon name="file" size={16} /> View Publications</a>
       </div>
       <div class="hero-secondary">
-        <a href={profile.links.cv} class="btn-ghost btn">Download CV</a>
-        <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer" class="btn-ghost btn">Google Scholar</a>
-        <a href={profile.links.github} target="_blank" rel="noopener noreferrer" class="btn-ghost btn">GitHub</a>
-        <a href={`mailto:${profile.email}`} class="btn-ghost btn">Email</a>
+        <a href={profile.links.cv} class="btn-ghost btn"><Icon name="download" size={15} /> Download CV</a>
+        <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer" class="btn-ghost btn">
+          <Icon name="scholar" size={15} /> Google Scholar
+        </a>
+        <a href={profile.links.github} target="_blank" rel="noopener noreferrer" class="btn-ghost btn">
+          <Icon name="github" size={15} /> GitHub
+        </a>
+        <a href={`mailto:${profile.email}`} class="btn-ghost btn"><Icon name="mail" size={15} /> Email</a>
       </div>
     </div>
     <div class="hero-visual-wrap reveal is-visible">
