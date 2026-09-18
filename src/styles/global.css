@@ -243,6 +243,14 @@ button {
   }
 }
 
+/* Without JS, nothing ever adds .is-visible, so .reveal content must not
+   start hidden: html keeps the no-js class (removed by an early inline
+   script the instant JS runs) whenever JS is unavailable or fails. */
+html.no-js .reveal {
+  opacity: 1;
+  transform: none;
+}
+
 @media print {
   :root {
     --color-bg: #ffffff;

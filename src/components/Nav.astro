@@ -220,6 +220,19 @@ const currentPath = Astro.url.pathname;
       max-height: 24rem;
     }
 
+    /* Without JS the hamburger can never toggle .is-open, so the menu
+       must not start collapsed, or the nav becomes unreachable on
+       mobile. */
+    html.no-js .nav-links {
+      position: static;
+      max-height: none;
+      border-bottom: none;
+    }
+
+    html.no-js .nav-toggle {
+      display: none;
+    }
+
     .nav-link {
       width: 100%;
       padding: 0.85rem var(--gutter);

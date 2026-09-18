@@ -32,12 +32,17 @@ const personSchema = {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline>
       (function () {
+        // Remove no-js as early as possible so the .reveal scroll-in
+        // animation (see global.css) only ever applies when JS is actually
+        // available to complete it; otherwise .reveal content would be
+        // stuck at opacity:0 forever for JS-disabled visitors.
+        document.documentElement.classList.remove('no-js');
         try {
           var stored = localStorage.getItem('theme-preference');
           if (stored === 'light' || stored === 'dark') {
