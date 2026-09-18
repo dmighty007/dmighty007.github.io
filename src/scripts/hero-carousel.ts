@@ -87,9 +87,12 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
   // (--color-accent-strong / --color-accent / --color-bg) rather than an
   // unrelated blue-to-gold scheme, so the visualization reads as part of
   // the page rather than a separate, more saturated graphic.
-  const COLOR_LOW = new THREE.Color(0x123c3a);
-  const COLOR_MID = new THREE.Color(0x1f6f6b);
-  const COLOR_HIGH = new THREE.Color(0xcfc6ac);
+  // Coolwarm-style diverging colormap: cool blue-teal basins warming to a
+  // sandy neutral on the highlands, fading to the page background at the
+  // rim.
+  const COLOR_LOW = new THREE.Color(0x3d5f68);
+  const COLOR_MID = new THREE.Color(0x8fb4bb);
+  const COLOR_HIGH = new THREE.Color(0xd9cdad);
   const COLOR_EDGE = new THREE.Color(0xfaf8f4);
 
   function energyColor(x: number, z: number, y: number, target: THREE.Color): THREE.Color {
@@ -340,16 +343,16 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     });
   }
 
-  // A slow orbit (rather than a fixed viewpoint) so the terrain sweeps
-  // through the frame over time instead of leaving the same flat corners
-  // permanently empty; radius/height are tuned tight to the island so it
-  // fills most of the square viewport at every angle.
-  const ORBIT_RADIUS = 6.1;
-  const ORBIT_HEIGHT = 3.0;
-  let orbitAngle = 0.4;
+  // A single fixed viewpoint (tuned so the basin-to-basin diagonal fills
+  // the square frame corner-to-corner, matching the reference framing)
+  // rather than a continuous orbit — only a small pointer-driven parallax
+  // is layered on top.
+  const CAM_RADIUS = 5.2;
+  const CAM_HEIGHT = 2.5;
+  const FIXED_ANGLE = 0.12;
   const lookTarget = new THREE.Vector3(0, -0.25, 0);
   const desiredCamPos = new THREE.Vector3();
-  camera.position.set(Math.sin(orbitAngle) * ORBIT_RADIUS, ORBIT_HEIGHT, Math.cos(orbitAngle) * ORBIT_RADIUS);
+  camera.position.set(Math.sin(FIXED_ANGLE) * CAM_RADIUS, CAM_HEIGHT, Math.cos(FIXED_ANGLE) * CAM_RADIUS);
   camera.lookAt(lookTarget);
 
   const mouseTarget = new THREE.Vector2(0, 0);
@@ -379,9 +382,8 @@ function initFES(container: HTMLElement, onFirstFrame: () => void): SlideControl
     const t = now * 0.001;
 
     if (active && !prefersReducedMotion) {
-      orbitAngle += dt * 0.045;
-      const angle = orbitAngle + mouseTarget.x;
-      desiredCamPos.set(Math.sin(angle) * ORBIT_RADIUS, ORBIT_HEIGHT + mouseTarget.y, Math.cos(angle) * ORBIT_RADIUS);
+      const angle = FIXED_ANGLE + mouseTarget.x;
+      desiredCamPos.set(Math.sin(angle) * CAM_RADIUS, CAM_HEIGHT + mouseTarget.y, Math.cos(angle) * CAM_RADIUS);
       camera.position.lerp(desiredCamPos, 0.05);
       camera.lookAt(lookTarget);
 
