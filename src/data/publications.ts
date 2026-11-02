@@ -17,6 +17,34 @@ export interface Publication {
 
 export const publications: Publication[] = [
   {
+    id: 'trails-md-2026',
+    year: 2026,
+    title:
+      'TRAILS-MD: Mapping Complex Conformational Landscapes and Transition Pathways via Lightweight Lineage-Aware Adaptive Sampling',
+    authors: 'Dibyendu Maity, Rupak Majumdar, Suman Chakrabarty',
+    venue: 'The Journal of Chemical Physics',
+    volume: '165',
+    articleNumber: '164137',
+    doi: '10.1063/5.0350663',
+    status: 'published',
+    isFirstAuthor: true,
+    tags: ['methods'],
+    code: 'https://github.com/TeamSuman/Trails-MD',
+    featured: true,
+  },
+  {
+    id: 'pathway-resolved-kinetics-2026',
+    year: 2026,
+    title: 'Quantitative Pathway-Resolved Kinetics from Neural Network-Guided Weighted Ensemble Simulations',
+    authors: 'Dibyendu Maity, Shaheerah Shahid, Sayari Bhattacharya, Rupak Majumdar, Suman Chakrabarty',
+    venue: 'Journal of Chemical Theory and Computation',
+    doi: '10.1021/acs.jctc.6c01321',
+    status: 'published',
+    isFirstAuthor: true,
+    tags: ['methods'],
+    featured: true,
+  },
+  {
     id: 'cowera-2026',
     year: 2026,
     title:
@@ -116,16 +144,28 @@ export const publications: Publication[] = [
     tags: ['applications'],
   },
   {
-    id: 'pathway-resolved-kinetics-chemrxiv-2026',
-    year: 2026,
-    title: 'Quantitative Pathway-Resolved Kinetics from Neural Network-Guided Weighted Ensemble Simulations',
-    authors: 'Dibyendu Maity, Shaheerah Shahid, S. Bhattacharya, R. Majumdar, Suman Chakrabarty',
-    venue: 'ChemRxiv',
-    doi: '10.26434/chemrxiv.15005553/v1',
+    id: 'solvation-free-energy-preprint-2025',
+    year: 2025,
+    title:
+      'Challenges in Transferable Prediction of Solvation Free Energy: A Comparative Analysis of Molecular Representations and Machine Learning Methods',
+    authors: 'Dibyendu Maity, Suman Chakrabarty',
+    venue: 'Research Square',
+    doi: '10.21203/rs.3.rs-6727155/v1',
     status: 'preprint',
     isFirstAuthor: true,
     tags: ['methods'],
-    featured: true,
+  },
+  {
+    id: 'mtan-admet-preprint-2025',
+    year: 2025,
+    title:
+      'MTAN-ADMET: A Multi-Task Adaptive Neural Network for Efficient and Accurate Prediction of ADMET Properties',
+    authors: 'Shaheerah Shahid, Dibyendu Maity, Suman Chakrabarty',
+    venue: 'ChemRxiv',
+    doi: '10.26434/chemrxiv-2025-zhrsk',
+    status: 'preprint',
+    isFirstAuthor: false,
+    tags: ['methods'],
   },
 ];
 
