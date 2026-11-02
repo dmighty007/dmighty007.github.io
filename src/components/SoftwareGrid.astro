@@ -58,7 +58,7 @@ const { compact = false, showHeading = true } = Astro.props;
   .software-grid {
     margin-top: 2.5rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
     gap: 1.5rem;
   }
 
@@ -80,7 +80,8 @@ const { compact = false, showHeading = true } = Astro.props;
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
   }
 
   .software-card-head h3 {
@@ -88,6 +89,7 @@ const { compact = false, showHeading = true } = Astro.props;
     align-items: center;
     gap: 0.4rem;
     font-size: 1.1rem;
+    white-space: nowrap;
   }
 
   .software-card-head h3 :global(.icon-glyph) {

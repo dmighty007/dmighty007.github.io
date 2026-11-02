@@ -35,151 +35,147 @@ const typeLabel: Record<string, string> = {
   description="Web-based curriculum vitae for Dibyendu Maity: education, publications, scientific software, talks, awards, and technical expertise, with a downloadable PDF."
   path="/cv"
 >
-  <article class="cv-page">
-    <header class="cv-header no-print">
-      <div class="container cv-header-inner">
-        <div>
-          <p class="eyebrow reveal">Curriculum Vitae</p>
-          <h1 class="reveal">{profile.name}</h1>
-          <p class="cv-header-sub reveal">{profile.title}</p>
-        </div>
-        <div class="cv-header-actions reveal">
-          <a href={profile.links.cv} class="btn btn-primary" download><Icon name="download" size={15} /> Download PDF</a>
-          <button type="button" class="btn" id="print-cv"><Icon name="printer" size={15} /> Print this page</button>
-        </div>
+  <section class="cv-toolbar no-print">
+    <div class="container cv-toolbar-inner">
+      <div>
+        <p class="eyebrow reveal">Curriculum Vitae</p>
+        <h1 class="reveal">{profile.name}</h1>
       </div>
-    </header>
-
-    <div class="container cv-sheet">
-      <header class="cv-print-header">
-        <h1>{profile.name}</h1>
-        <p class="cv-print-title">{profile.title}</p>
-        <p class="cv-print-contact">
-          {profile.address} · {profile.phone} · {profile.email} · {profile.emailAlt}
-        </p>
-      </header>
-
-      <section class="cv-section reveal">
-        <h2><Icon name="flask" size={17} /> Research Profile</h2>
-        {profile.longBio.map((paragraph) => (
-          <p>{paragraph}</p>
-        ))}
-        <p class="cv-status">{profile.status}</p>
-      </section>
-
-      <section class="cv-section reveal">
-        <h2><Icon name="layers" size={17} /> Education</h2>
-        <ul class="cv-list">
-          {
-            educationFull.map((entry) => (
-              <li class="cv-entry">
-                <div class="cv-entry-head">
-                  <h3>{entry.degree}</h3>
-                  <span class="cv-years">{entry.years}</span>
-                </div>
-                <p class="cv-entry-sub">{entry.institution}</p>
-                {entry.advisor && <p class="cv-entry-detail">Advisor: {entry.advisor}</p>}
-                {entry.detail && <p class="cv-entry-detail">{entry.detail}</p>}
-                {entry.status && <p class="cv-entry-status">{entry.status}</p>}
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <section class="cv-section reveal">
-        <h2><Icon name="file" size={17} /> Selected Publications</h2>
-        <ol class="cv-pub-list">
-          {
-            publications.map((pub) => (
-              <li>
-                <span set:html={highlightAuthor(pub.authors)} />
-                {' '}
-                <span class="cv-pub-title">“{pub.title}.”</span>{' '}
-                <em>{citationLine(pub)}</em>
-                {pub.status === 'preprint' ? ' (preprint).' : '.'}{' '}
-                <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer">
-                  DOI: {pub.doi}
-                </a>
-              </li>
-            ))
-          }
-        </ol>
-      </section>
-
-      <section class="cv-section reveal">
-        <h2><Icon name="code" size={17} /> Scientific Software</h2>
-        <ul class="cv-list">
-          {
-            software.map((item) => (
-              <li class="cv-entry">
-                <div class="cv-entry-head">
-                  <h3>{item.name} <span class="cv-lang">({item.language})</span></h3>
-                </div>
-                <p class="cv-entry-detail">{item.description}</p>
-                <a href={item.repo} target="_blank" rel="noopener noreferrer">{item.repo.replace('https://', '')}</a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <section class="cv-section reveal">
-        <h2><Icon name="mic" size={17} /> Conference Presentations &amp; Invited Talks</h2>
-        <ul class="cv-list">
-          {
-            talks.map((talk) => (
-              <li class="cv-entry">
-                <p>
-                  <strong>{typeLabel[talk.type]}</strong>{talk.title ? `, “${talk.title}.”` : ''} {talk.event}, {talk.place}, {talk.date}.
-                  {talk.award && <strong class="cv-award"> {talk.award}.</strong>}
-                </p>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <section class="cv-section reveal">
-        <h2><Icon name="award" size={17} /> Awards &amp; Recognition</h2>
-        <ul class="cv-list">
-          {
-            academicAwards.map((award) => (
-              <li class="cv-entry">
-                <p>
-                  <strong>{award.title}</strong>, {award.issuer} ({award.year}).
-                  {award.detail && ` ${award.detail}`}
-                </p>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <section class="cv-section reveal">
-        <h2><Icon name="cpu" size={17} /> Technical &amp; Computational Expertise</h2>
-        <ul class="cv-expertise">
-          {
-            expertise.map((group) => (
-              <li>
-                <strong>{group.title}:</strong> {group.items.join(', ')}.
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <p class="cv-footnote">Last updated August 2026. A downloadable PDF version is available above.</p>
+      <div class="cv-toolbar-actions reveal">
+        <a href={profile.links.cv} class="btn btn-primary" download><Icon name="download" size={15} /> Download PDF</a>
+        <button type="button" class="btn" id="print-cv"><Icon name="printer" size={15} /> Print this page</button>
+      </div>
     </div>
-  </article>
+  </section>
+
+  <section class="cv-page-wrap">
+    <div class="container">
+      <article class="cv-sheet reveal">
+        <header class="cv-doc-header">
+          <h2>{profile.name}</h2>
+          <p class="cv-doc-links">
+            <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            <span aria-hidden="true">·</span>
+            <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer">Google Scholar</a>
+            <span aria-hidden="true">·</span>
+            <a href={profile.links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+          </p>
+        </header>
+
+        <section class="cv-doc-section">
+          <h3>Research Profile</h3>
+          {profile.longBio.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+          <p class="cv-doc-status">{profile.status}</p>
+        </section>
+
+        <section class="cv-doc-section">
+          <h3>Education</h3>
+          <div class="cv-doc-entries">
+            {
+              educationFull.map((entry) => (
+                <div class="cv-doc-entry">
+                  <div class="cv-doc-row">
+                    <span class="cv-doc-title">{entry.degree}</span>
+                    <span class="cv-doc-date">{entry.years}</span>
+                  </div>
+                  <p class="cv-doc-sub">{entry.institution}</p>
+                  {entry.advisor && <p class="cv-doc-detail">Advisor: {entry.advisor}</p>}
+                  {entry.detail && <p class="cv-doc-detail">{entry.detail}</p>}
+                  {entry.status && <p class="cv-doc-detail cv-doc-status-line">{entry.status}</p>}
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+        <section class="cv-doc-section">
+          <h3>Technical &amp; Computational Expertise</h3>
+          <ul class="cv-doc-list">
+            {
+              expertise.map((group) => (
+                <li>
+                  <strong>{group.title}:</strong> {group.items.join(', ')}.
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="cv-doc-section">
+          <h3>Scientific Software</h3>
+          <ul class="cv-doc-list">
+            {
+              software.map((item) => (
+                <li>
+                  <strong>{item.name}</strong> ({item.language}). {item.description}{' '}
+                  <a href={item.repo} target="_blank" rel="noopener noreferrer">
+                    {item.repo.replace('https://', '')}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="cv-doc-section">
+          <h3>Selected Publications</h3>
+          <ol class="cv-doc-numbered">
+            {
+              publications.map((pub) => (
+                <li>
+                  <span set:html={highlightAuthor(pub.authors)} />. &ldquo;{pub.title}.&rdquo; <em>{citationLine(pub)}</em>
+                  {pub.status === 'preprint' ? ' (preprint).' : '.'}{' '}
+                  <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer">
+                    DOI: {pub.doi}
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section class="cv-doc-section">
+          <h3>Presentations &amp; Invited Talks</h3>
+          <ol class="cv-doc-numbered">
+            {
+              talks.map((talk) => (
+                <li>
+                  <strong>{typeLabel[talk.type]}.</strong>{talk.title ? ` “${talk.title}.”` : ''} {talk.event}, {talk.place}, {talk.date}.
+                  {talk.award && <strong class="cv-doc-award"> {talk.award}.</strong>}
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section class="cv-doc-section">
+          <h3>Awards &amp; Recognition</h3>
+          <ul class="cv-doc-list">
+            {
+              academicAwards.map((award) => (
+                <li>
+                  <strong>{award.title}</strong> — {award.issuer}, {award.year}.
+                  {award.detail && ` ${award.detail}`}
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <p class="cv-doc-footnote">Last updated August 2026. A downloadable PDF version is available above.</p>
+      </article>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .cv-header {
+  .cv-toolbar {
     padding-block: clamp(2rem, 5vw, 3.5rem) 1.5rem;
   }
 
-  .cv-header-inner {
+  .cv-toolbar-inner {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -187,205 +183,205 @@ const typeLabel: Record<string, string> = {
     gap: 1.5rem;
   }
 
-  .cv-header h1 {
+  .cv-toolbar h1 {
     font-size: clamp(1.8rem, 1.5rem + 1.2vw, 2.5rem);
     margin: 0.4rem 0 0.35rem;
   }
 
-  .cv-header-sub {
-    color: var(--color-text-secondary);
-  }
-
-  .cv-header-actions {
+  .cv-toolbar-actions {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
   }
 
+  .cv-page-wrap {
+    padding-block: 0 clamp(3rem, 8vw, 5rem);
+  }
+
+  /* --- The document itself: styled to read like a plain, dense,       */
+  /* single-column printed academic CV rather than a site page. ------ */
   .cv-sheet {
-    max-width: 52rem;
-    padding-block: 2rem clamp(3rem, 8vw, 5rem);
+    display: block;
+    max-width: 54rem;
+    margin-inline: auto;
+    background: #fffefb;
+    color: #1a1a1a;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    padding: clamp(1.75rem, 5vw, 3.25rem);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    box-shadow: 0 24px 48px -32px rgba(28, 33, 40, 0.28);
   }
 
-  .cv-print-header {
-    display: none;
+  :root[data-theme='dark'] .cv-sheet {
+    background: #fffefb;
+    color: #1a1a1a;
   }
 
-  .cv-section {
-    padding-block: 1.75rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .cv-section:first-of-type {
-    border-top: none;
-    padding-top: 0;
-  }
-
-  .cv-section h2 {
+  .cv-doc-header {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .cv-doc-header h2 {
+    font-family: inherit;
     font-size: 1.15rem;
-    margin-bottom: 1rem;
-  }
-
-  .cv-section h2 :global(.icon-glyph) {
-    color: var(--color-accent);
-  }
-
-  .cv-section p {
-    color: var(--color-text-secondary);
-    line-height: 1.65;
-    margin-bottom: 0.75rem;
-    font-size: 0.95rem;
-  }
-
-  .cv-status {
-    font-weight: 600;
-    color: var(--color-accent);
-  }
-
-  .cv-list {
-    list-style: none;
+    font-weight: 700;
+    color: #1a1a1a;
     margin: 0;
-    padding: 0;
+  }
+
+  .cv-doc-links {
+    margin: 0;
+    font-size: 0.75rem;
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .cv-doc-links a {
+    color: #1155cc;
+    text-decoration: none;
+  }
+
+  .cv-doc-links a:hover {
+    text-decoration: underline;
+  }
+
+  .cv-doc-section {
+    margin-bottom: 1.1rem;
+  }
+
+  .cv-doc-section h3 {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    text-align: center;
+    color: #1a1a1a;
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .cv-doc-section p {
+    margin: 0 0 0.55rem;
+  }
+
+  .cv-doc-status {
+    font-weight: 700;
+  }
+
+  .cv-doc-entries {
     display: flex;
     flex-direction: column;
-    gap: 1.1rem;
+    gap: 0.75rem;
   }
 
-  .cv-entry-head {
+  .cv-doc-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     gap: 1rem;
-    flex-wrap: wrap;
+    font-weight: 700;
   }
 
-  .cv-entry h3 {
-    font-size: 0.975rem;
-  }
-
-  .cv-lang {
-    font-weight: 400;
-    color: var(--color-text-tertiary);
-    font-size: 0.85rem;
-  }
-
-  .cv-years {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--color-text-tertiary);
+  .cv-doc-date {
     white-space: nowrap;
+    font-weight: 700;
   }
 
-  .cv-entry-sub {
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
+  .cv-doc-sub {
+    font-style: italic;
+    margin: 0.15rem 0 0;
   }
 
-  .cv-entry-detail {
-    color: var(--color-text-secondary);
-    font-size: 0.875rem;
-    margin-top: 0.2rem;
-    line-height: 1.5;
+  .cv-doc-detail {
+    margin: 0.1rem 0 0;
+    font-size: 0.78rem;
   }
 
-  .cv-entry-status {
-    display: inline-block;
-    margin-top: 0.4rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--color-accent);
+  .cv-doc-status-line {
+    font-weight: 700;
+    font-style: normal;
   }
 
-  .cv-entry a {
-    font-size: 0.85rem;
-    color: var(--color-accent);
+  .cv-doc-list {
+    list-style: disc;
+    margin: 0;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .cv-doc-numbered {
+    list-style: decimal;
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .cv-doc-numbered li,
+  .cv-doc-list li {
+    padding-left: 0.15rem;
+  }
+
+  .cv-doc-numbered :global(.me) {
+    font-weight: 700;
+  }
+
+  .cv-doc-numbered a,
+  .cv-doc-list a {
+    color: #1155cc;
+    text-decoration: none;
     word-break: break-word;
   }
 
-  .cv-pub-list {
-    margin: 0;
-    padding-left: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  .cv-doc-numbered a:hover,
+  .cv-doc-list a:hover {
+    text-decoration: underline;
   }
 
-  .cv-pub-list li {
-    font-size: 0.9rem;
-    line-height: 1.65;
-    color: var(--color-text-secondary);
+  .cv-doc-award {
+    font-style: italic;
   }
 
-  .cv-pub-list :global(.me) {
-    color: var(--color-text);
+  .cv-doc-footnote {
+    margin-top: 1.5rem;
+    font-size: 0.7rem;
+    color: #555;
+    font-style: italic;
   }
 
-  .cv-pub-title {
-    color: var(--color-text);
-  }
-
-  .cv-pub-list a {
-    color: var(--color-accent);
-  }
-
-  .cv-award {
-    color: var(--color-accent);
-  }
-
-  .cv-expertise {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-  }
-
-  .cv-expertise strong {
-    color: var(--color-text);
-  }
-
-  .cv-footnote {
-    margin-top: 2rem;
-    font-size: 0.8125rem;
-    color: var(--color-text-tertiary);
+  @media (max-width: 640px) {
+    .cv-doc-row {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
   }
 
   @media print {
-    .cv-print-header {
-      display: block;
-      margin-bottom: 1.5rem;
-    }
-
-    .cv-print-header h1 {
-      font-size: 1.6rem;
-      margin: 0 0 0.2rem;
-    }
-
-    .cv-print-title {
-      color: #333;
-      margin-bottom: 0.4rem;
-    }
-
-    .cv-print-contact {
-      font-size: 0.8rem;
-      color: #333;
+    .cv-page-wrap {
+      padding: 0;
     }
 
     .cv-sheet {
       max-width: none;
+      box-shadow: none;
+      border: none;
+      border-radius: 0;
       padding: 0;
-    }
-
-    .cv-section {
-      break-inside: avoid;
     }
   }
 </style>
