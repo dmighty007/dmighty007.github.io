@@ -57,8 +57,8 @@ export const featuredProjects: FeaturedProject[] = [
       'Candidate transition routes are grouped and refined into smooth reference pathways described by a neural-network path collective variable (PathCV), and independent weighted-ensemble (WE) simulations are then run along each channel.',
     contribution:
       'Enables quantitative, pathway-resolved kinetics — channel-specific fluxes and mean first-passage times — from weighted-ensemble simulations rather than a single lumped rate.',
-    publicationId: 'pathway-resolved-kinetics-chemrxiv-2026',
-    doi: '10.26434/chemrxiv.15005553/v1',
+    publicationId: 'pathway-resolved-kinetics-2026',
+    doi: '10.1021/acs.jctc.6c01321',
     image: '/images/research/pathway-kinetics.webp',
     imageAlt:
       'Schematic showing a neural-network path collective variable (PathCV) combined with weighted-ensemble (WE) sampling, producing separate rate estimates for four distinct pathways.',
@@ -73,6 +73,8 @@ export const featuredProjects: FeaturedProject[] = [
       'TRAILS-MD runs many short, segmented parallel walkers and records which earlier segment produced each new one, so continuous transition paths can be reconstructed from many short pieces regardless of the underlying MD engine.',
     contribution:
       'Turns rapid, broad exploration into connected, interpretable transition pathways rather than a scatter of disconnected samples, released as reusable adaptive-sampling infrastructure.',
+    publicationId: 'trails-md-2026',
+    doi: '10.1063/5.0350663',
     code: 'https://github.com/TeamSuman/Trails-MD',
     image: '/images/research/trails-md.webp',
     imageAlt:

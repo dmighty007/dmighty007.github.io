@@ -10,6 +10,13 @@ export interface Talk {
 
 export const talks: Talk[] = [
   {
+    id: 'fpc-2026',
+    type: 'poster',
+    event: 'Frontiers of Physical Chemistry: Experiments, Computations and Theory (FPC-2026)',
+    place: 'S. N. Bose National Centre for Basic Sciences, Kolkata, India',
+    date: '28–31 October 2026',
+  },
+  {
     id: 'cdam-2026',
     type: 'poster',
     event: 'Computational and Data-Driven Advanced Materials (CDAM 2026)',
@@ -52,6 +59,13 @@ export const talks: Talk[] = [
     event: 'CHEMDOJO 3.0',
     place: 'India',
     date: '1–4 October 2024',
+  },
+  {
+    id: 'tpsam-2024',
+    type: 'poster',
+    event: 'Time-Dependent Phenomena in Soft and Active Matter (TPSAM-2024)',
+    place: 'S. N. Bose National Centre for Basic Sciences, Kolkata, India',
+    date: '8–9 March 2024',
   },
   {
     id: 'md60-2024',

@@ -34,8 +34,25 @@ export const software: SoftwareProject[] = [
   {
     id: 'solorder',
     name: 'SolOrder',
-    language: 'Python / C++',
-    description: 'Local solvation and structural-order-parameter analysis utilities for molecular simulations.',
+    language: 'Python / Numba',
+    description:
+      'Pip-installable library of water structural order parameters (tetrahedrality, LSI, F4, Steinhardt, Voronoi, CHILL/CHILL+ and more) with parallel execution, validated on ice polymorphs and nucleation snapshots.',
     repo: 'https://github.com/dmighty007/SolOrder',
+  },
+  {
+    id: 'mdmovie',
+    name: 'MD Movie Maker',
+    language: 'Python',
+    description:
+      'Turns a molecular-dynamics trajectory into a multi-panel movie, with the molecule, synced analysis plots and free-energy-surface trails, exported to MP4 or GIF.',
+    repo: 'https://github.com/dmighty007/mdmovie',
+  },
+  {
+    id: 'slideforge',
+    name: 'SlideForge',
+    language: 'JavaScript / Python',
+    description:
+      'Free desktop presentation app for researchers: editable charts, curve fits, LaTeX equations and rotatable molecular structures on slides, with PowerPoint and PDF export.',
+    repo: 'https://github.com/dmighty007/slideforge-studio',
   },
 ];
